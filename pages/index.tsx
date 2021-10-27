@@ -18,7 +18,7 @@ export default function Home() {
     (router.query?.mode as string) || "mints",
   ]);
   const [endpoint, setEndpoint] = useState(
-    "https://solana-api.projectserum.com"
+    "https://pentacle.genesysgo.net"
   );
   const setRoute = (route) => {
     router.push({ query: { mode: route } });

@@ -1,8 +1,10 @@
 import jsonFormat from "json-format";
 import { download } from "./download";
 import { resolveSequentially } from "./resolve-sequentially";
+import {from } from 'rxjs';
+import {mergeMap, toArray, map } from 'rxjs/operators';
 let holders = {};
-const getTokenHolder = (url) => (key) => {
+const getTokenHolder = (url, key, setCounter) => {
   return fetch(url, {
     body: `{
         "jsonrpc":"2.0", 
@@ -33,7 +35,8 @@ const getTokenHolder = (url) => (key) => {
   })
     .then((res) => res.json())
     .then(async (res) => {
-      res.result.forEach((r) => {
+      res.result.forEach((r, i) => {
+        setCounter(i + 1);
         if (r.account.data.parsed.info.tokenAmount.uiAmount > 0) {
           if (!holders[r.account.data.parsed.info.owner]) {
             holders[r.account.data.parsed.info.owner] = {
@@ -50,16 +53,22 @@ const getTokenHolder = (url) => (key) => {
 };
 
 export const getHolders = (mintIds: string[], setCounter, url) => {
-  return resolveSequentially(mintIds, getTokenHolder(url), setCounter).then(
-    () => {
-      download(
-        `token-holders-${Date.now()}.json`,
-        jsonFormat(holders, {
-          type: "space",
-          size: 2,
-        })
-      );
-      holders = {};
-    }
-  );
+  return from(mintIds).pipe(
+    mergeMap(id => getTokenHolder(url, id, setCounter), 10),
+    toArray(),
+    map(() => holders),
+    
+  )
+  // return resolveSequentially(mintIds, getTokenHolder(url), setCounter).then(
+  //   () => {
+  //     download(
+  //       `token-holders-${Date.now()}.json`,
+  //       jsonFormat(holders, {
+  //         type: "space",
+  //         size: 2,
+  //       })
+  //     );
+  //     holders = {};
+  //   }
+  // );
 };

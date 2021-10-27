@@ -6,7 +6,7 @@ import { DownloadOutlined } from "@ant-design/icons";
 import { getHolders } from "../util/get-holders";
 const { TextArea } = Input;
 
-export const GibHolders = ({endpoint}) => {
+export const GibHolders = ({ endpoint }) => {
   const [form] = Form.useForm();
   const [counter, setCounter] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -20,25 +20,25 @@ export const GibHolders = ({endpoint}) => {
     });
 
     setLoading(true);
-    getHolders(jsonVal, setCounter, endpoint)
-      .then(() => {
-        setLoading(false);
-      })
-      .catch((e) => {
-        alert(e);
-        setLoading(false);
-      })
-      .finally(() => {
-        notification.close("downloading");
-      });
-  }
-
+    getHolders(jsonVal, setCounter, endpoint).subscribe(
+      {
+        next: () => { setLoading(false)},
+        error: (e) => {
+          alert(e);
+          setLoading(false);
+        },
+        complete: () => {
+          notification.close("downloading");
+        }
+      }
+    );
+  };
 
   return (
     <>
       <p>
-        Gib-Holders serves one purpose: To gib you holders from Solana Mint
-        IDs. It will return an object with holders, mints and amounts.
+        Gib-Holders serves one purpose: To gib you holders from Solana Mint IDs.
+        It will return an object with holders, mints and amounts.
       </p>
       <Divider />
 
@@ -54,12 +54,7 @@ export const GibHolders = ({endpoint}) => {
         <label style={{ marginBottom: "2rem" }}>
           Please gib SOL mint IDs as JSON array to get their holders.
         </label>
-        <Form.Item
-          name="holders"
-          rules={[
-            jsonValidator(setJsonVal)
-          ]}
-        >
+        <Form.Item name="holders" rules={[jsonValidator(setJsonVal)]}>
           <TextArea
             rows={4}
             className={`${styles.card} ${styles["full-width"]}`}
