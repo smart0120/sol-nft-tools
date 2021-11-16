@@ -1,6 +1,7 @@
-import {from } from 'rxjs';
-import {mergeMap, toArray, map, tap } from 'rxjs/operators';
+import { from } from "rxjs";
+import { mergeMap, toArray, map, tap } from "rxjs/operators";
 let holders = {};
+let i = 0;
 const getTokenHolder = (url, key, setCounter) => {
   return fetch(url, {
     body: `{
@@ -32,8 +33,9 @@ const getTokenHolder = (url, key, setCounter) => {
   })
     .then((res) => res.json())
     .then(async (res) => {
+      i++;
+      setCounter(i + 1);
       res.result.forEach((r, i) => {
-        setCounter(i + 1);
         if (r.account.data.parsed.info.tokenAmount.uiAmount > 0) {
           if (!holders[r.account.data.parsed.info.owner]) {
             holders[r.account.data.parsed.info.owner] = {
@@ -51,9 +53,12 @@ const getTokenHolder = (url, key, setCounter) => {
 
 export const getHolders = (mintIds: string[], setCounter, url) => {
   return from(mintIds).pipe(
-    mergeMap(id => getTokenHolder(url, id, setCounter), 10),
+    mergeMap((id) => getTokenHolder(url, id, setCounter), 10),
     toArray(),
-    map(() => ({...holders})), 
-    tap(() => holders = {})
-  )
+    map(() => ({ ...holders })),
+    tap(() => {
+      holders = {};
+      i = 0;
+    })
+  );
 };
