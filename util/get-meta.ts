@@ -3,10 +3,7 @@ import { deserializeUnchecked, BinaryReader, BinaryWriter } from "borsh";
 import { PublicKey, AccountInfo } from "@solana/web3.js";
 import * as anchor from "@project-serum/anchor";
 export const METADATA_PREFIX = "metadata";
-import jsonFormat from "json-format";
-import { resolveSequentially } from "./resolve-sequentially";
-import { download } from "./download";
-import { from, map, mergeMap, toArray } from "rxjs";
+import { from, map, mergeMap, tap, toArray } from "rxjs";
 
 class Creator {
   address: PublicKey;
@@ -281,38 +278,39 @@ async function fetchMetadataFromPDA(pubkey: PublicKey, url: string) {
   return metadataInfo;
 }
 
-const mints = [];
-const createJsonObject = async (url: string, key: string, setCounter:Function): Promise<unknown> => {
-    const tokenMetadata = await getMetadata(
-      new anchor.web3.PublicKey(key),
-      url
-    );
-    const arweaveData = await fetch(tokenMetadata.data.uri).then((res) =>
-      res.json().catch()
-    ).catch(() => {
-      mints.push({tokenMetadata, failed: true});
+let mints = [];
+const createJsonObject = async (
+  url: string,
+  key: string,
+  setCounter: Function
+): Promise<unknown> => {
+  const tokenMetadata = await getMetadata(new anchor.web3.PublicKey(key), url);
+  const arweaveData = await fetch(tokenMetadata.data.uri)
+    .then((res) => res.json().catch())
+    .catch(() => {
+      mints.push({ tokenMetadata, failed: true });
     });
-    setCounter(mints.length);
-    mints.push({
-      tokenData: {
-        ...tokenMetadata.data,
-        creators: tokenMetadata.data.creators.map((d) => {
-          return {
-            share: d.share,
-            address: new PublicKey(d.address).toBase58(),
-            verified: !!d.verified,
-          };
-        }),
-      },
-      metadata: arweaveData,
-      mint: key,
-    });
-    return await new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(undefined);
-      }, 150);
-    });
-  };
+  setCounter(mints.length);
+  mints.push({
+    tokenData: {
+      ...tokenMetadata.data,
+      creators: tokenMetadata.data.creators.map((d) => {
+        return {
+          share: d.share,
+          address: new PublicKey(d.address).toBase58(),
+          verified: !!d.verified,
+        };
+      }),
+    },
+    metadata: arweaveData,
+    mint: key,
+  });
+  return await new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(undefined);
+    }, 150);
+  });
+};
 
 export const getMeta = (
   tokens: string[],
@@ -320,11 +318,12 @@ export const getMeta = (
   url: string
 ) => {
   return from(tokens).pipe(
-    mergeMap(id => createJsonObject(url, id, setCounter), 10),
+    mergeMap((id) => createJsonObject(url, id, setCounter), 10),
     toArray(),
-    map(() => mints), 
-  )
-  
+    map(() => [...mints]),
+    tap(() => mints = [])
+  );
+
   // return resolveSequentially(tokens, createJsonObject(url), setCounter).then(
   //   function () {
   //     download(

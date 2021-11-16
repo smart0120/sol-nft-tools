@@ -1,8 +1,5 @@
-import jsonFormat from "json-format";
-import { download } from "./download";
-import { resolveSequentially } from "./resolve-sequentially";
 import {from } from 'rxjs';
-import {mergeMap, toArray, map } from 'rxjs/operators';
+import {mergeMap, toArray, map, tap } from 'rxjs/operators';
 let holders = {};
 const getTokenHolder = (url, key, setCounter) => {
   return fetch(url, {
@@ -56,6 +53,7 @@ export const getHolders = (mintIds: string[], setCounter, url) => {
   return from(mintIds).pipe(
     mergeMap(id => getTokenHolder(url, id, setCounter), 10),
     toArray(),
-    map(() => holders), 
+    map(() => ({...holders})), 
+    tap(() => holders = {})
   )
 };

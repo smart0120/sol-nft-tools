@@ -5,7 +5,7 @@ import styles from "../styles/Home.module.css";
 import { DownloadOutlined } from "@ant-design/icons";
 import { getHolders } from "../util/get-holders";
 import { download } from "../util/download";
-import jsonFormat from 'json-format';
+import jsonFormat from "json-format";
 const { TextArea } = Input;
 
 export const GibHolders = ({ endpoint }) => {
@@ -22,18 +22,19 @@ export const GibHolders = ({ endpoint }) => {
     });
 
     setLoading(true);
-    getHolders(jsonVal, setCounter, endpoint).subscribe(
-      {
-        next: (e) => { download('gib-holders.json', jsonFormat(e, {size: 1, type: 'tab'})); setLoading(false)},
-        error: (e) => {
-          alert(e);
-          setLoading(false);
-        },
-        complete: () => {
-          notification.close("downloading");
-        }
-      }
-    );
+    getHolders(jsonVal, setCounter, endpoint).subscribe({
+      next: (e) => {
+        download("gib-holders.json", jsonFormat(e, { size: 1, type: "tab" }));
+        setLoading(false);
+      },
+      error: (e) => {
+        alert(e);
+        setLoading(false);
+      },
+      complete: () => {
+        notification.close("downloading");
+      },
+    });
   };
 
   return (
