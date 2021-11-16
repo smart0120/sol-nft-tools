@@ -4,6 +4,8 @@ import { Divider, Form, Button, Input, notification } from 'antd';
 import { jsonValidator } from '../util/validators';
 import styles from "../styles/Home.module.css";
 import { getMeta } from '../util/get-meta';
+import { download } from '../util/download';
+import jsonFormat from 'json-format';
 
 const { TextArea } = Input;
 
@@ -22,16 +24,19 @@ export const GibMeta = ({endpoint}) => {
 
     setLoading(true);
     getMeta(jsonVal, setCounter, endpoint)
-      .then(() => {
+    .subscribe({
+      next: (e) => {
+        download('gib-meta.json',  jsonFormat(e, {size: 1, type: 'tab'}))
         setLoading(false);
-      })
-      .catch((e) => {
+      },
+      error: (e) => {
         alert(e);
         setLoading(false);
-      })
-      .finally(() => {
+      },
+      complete: () => {
         notification.close("downloading");
-      });
+      }
+    });
   };
   return (
     <>

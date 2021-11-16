@@ -56,19 +56,6 @@ export const getHolders = (mintIds: string[], setCounter, url) => {
   return from(mintIds).pipe(
     mergeMap(id => getTokenHolder(url, id, setCounter), 10),
     toArray(),
-    map(() => holders),
-    
+    map(() => holders), 
   )
-  // return resolveSequentially(mintIds, getTokenHolder(url), setCounter).then(
-  //   () => {
-  //     download(
-  //       `token-holders-${Date.now()}.json`,
-  //       jsonFormat(holders, {
-  //         type: "space",
-  //         size: 2,
-  //       })
-  //     );
-  //     holders = {};
-  //   }
-  // );
 };

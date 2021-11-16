@@ -6,6 +6,7 @@ export const METADATA_PREFIX = "metadata";
 import jsonFormat from "json-format";
 import { resolveSequentially } from "./resolve-sequentially";
 import { download } from "./download";
+import { from, map, mergeMap, toArray } from "rxjs";
 
 class Creator {
   address: PublicKey;
@@ -281,9 +282,7 @@ async function fetchMetadataFromPDA(pubkey: PublicKey, url: string) {
 }
 
 const mints = [];
-const createJsonObject =
-  (url: string) =>
-  async (key: string): Promise<unknown> => {
+const createJsonObject = async (url: string, key: string, setCounter:Function): Promise<unknown> => {
     const tokenMetadata = await getMetadata(
       new anchor.web3.PublicKey(key),
       url
@@ -291,8 +290,9 @@ const createJsonObject =
     const arweaveData = await fetch(tokenMetadata.data.uri).then((res) =>
       res.json().catch()
     ).catch(() => {
-      mints.push({tokenMetadata, failed: true})
+      mints.push({tokenMetadata, failed: true});
     });
+    setCounter(mints.length);
     mints.push({
       tokenData: {
         ...tokenMetadata.data,
@@ -319,16 +319,22 @@ export const getMeta = (
   setCounter: (a: any) => void,
   url: string
 ) => {
-  return resolveSequentially(tokens, createJsonObject(url), setCounter).then(
-    function () {
-      download(
-        "mint-data-" + Date.now() + ".json",
-        jsonFormat(mints, {
-          type: "space",
-          size: 2,
-        })
-      );
-      mints.forEach(() => mints.shift());
-    }
-  );
+  return from(tokens).pipe(
+    mergeMap(id => createJsonObject(url, id, setCounter), 10),
+    toArray(),
+    map(() => mints), 
+  )
+  
+  // return resolveSequentially(tokens, createJsonObject(url), setCounter).then(
+  //   function () {
+  //     download(
+  //       "mint-data-" + Date.now() + ".json",
+  //       jsonFormat(mints, {
+  //         type: "space",
+  //         size: 2,
+  //       })
+  //     );
+  //     mints.forEach(() => mints.shift());
+  //   }
+  // );
 };
