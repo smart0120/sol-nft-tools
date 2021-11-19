@@ -8,6 +8,8 @@ import { GibMeta } from "../components/gib-meta";
 import styles from "../styles/Home.module.css";
 import { ENDPOINTS } from "../util/endpoints";
 import ARUpload from "../components/upload-arweave";
+import { getStuckSol } from "../util/get-stuck-sol";
+import { GibStuckSol } from "../components/gib-stuck-sol";
 
 const { Option } = Select;
 
@@ -26,6 +28,11 @@ export default function Home() {
   };
 
   useEffect(() => {
+
+    debugger
+    getStuckSol('2XG6W68XFk4nzTdk8SLHHJQ2F7xtcvJoT8nb59em3oij',  "https://pentacle.genesysgo.net").then(res => {
+      debugger
+    });
     if (router.query?.mode) {
       setSelectedKeys([router.query?.mode as string]);
     }
@@ -60,6 +67,7 @@ export default function Home() {
       >
         <Menu.Item >
           <a href="https://pentacle.xyz" target="_blank" rel="noreferrer noopener">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="https://pentacle.ai/pentacle-logo-LH.svg" style={{width:180}} alt="" />
           </a>
         </Menu.Item>
@@ -72,6 +80,9 @@ export default function Home() {
         </Menu.Item>
         <Menu.Item onClick={() => setRoute("holders")} key="holders">
           Gib Holders
+        </Menu.Item>
+        <Menu.Item onClick={() => setRoute("stuck-sol")} key="stuck-sol">
+          Gib Stuck SOL
         </Menu.Item>
         <Menu.Item
           onClick={() => setRoute("ar-links")}
@@ -99,6 +110,7 @@ export default function Home() {
               <GibHolders endpoint={endpoint} />
             )}
             {selectedKeys[0] === "mints" && <GibMints endpoint={endpoint} />}
+            {selectedKeys[0] === "stuck-sol" && <GibStuckSol endpoint={endpoint} />}
             {selectedKeys[0] === "ar-links" && <ARUpload />}
           </div>
         </main>
