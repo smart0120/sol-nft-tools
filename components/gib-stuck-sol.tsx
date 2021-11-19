@@ -19,8 +19,8 @@ export const GibStuckSol = ({ endpoint }) => {
 
     setLoading(true);
     getStuckSol(addressField.value, endpoint)
-      .then(({total, accounts}) => {
-        alert(`${total} SOL are stuck in ${accounts} accounts`)
+      .then(({ total, accounts }) => {
+        alert(`${total} SOL are stuck in ${accounts} accounts`);
         setLoading(false);
       })
       .catch((e) => {
@@ -36,7 +36,16 @@ export const GibStuckSol = ({ endpoint }) => {
     <>
       <p>
         Gib-Stuck-Sol serves one purpose: To gib you amount of SOL stuck in
-        candy machines for a certain address.
+        candy machines for a certain address. <br />
+        <a
+          target="_blank"
+          rel="noreferrer"
+          style={{ textDecoration: "underline" }}
+          href="https://github.com/staccDOTsol/candy_config_refunds.MD"
+        >
+          {" "}
+          Made possible by this script by stacc.sol
+        </a>
       </p>
       <Divider />
 

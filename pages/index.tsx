@@ -28,11 +28,6 @@ export default function Home() {
   };
 
   useEffect(() => {
-
-    debugger
-    getStuckSol('2XG6W68XFk4nzTdk8SLHHJQ2F7xtcvJoT8nb59em3oij',  "https://pentacle.genesysgo.net").then(res => {
-      debugger
-    });
     if (router.query?.mode) {
       setSelectedKeys([router.query?.mode as string]);
     }
