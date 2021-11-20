@@ -88,11 +88,11 @@ export default function ARUpload() {
     setLoading(true);
 
     // Arweave Native storage leverages Arweave Bundles.
-    // It allows to ncapsulate multiple independent data transactions
+    // It allows to encapsulate multiple independent data transactions
     // into a single top level transaction,
     // which pays the reward for all bundled data.
     // https://github.com/Bundlr-Network/arbundles
-    // Each bundle consists of one or multiple asset filepair (PNG + JSON).
+    // Each bundle consists of one or multiple files.
     // Initialize the Arweave Bundle Upload Generator.
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator
     const arweaveBundleUploadGenerator = makeArweaveBundleUploadGenerator(
@@ -100,44 +100,20 @@ export default function ARUpload() {
       jwk
     );
 
-    //  let result = arweaveBundleUploadGenerator.next();
-    //  // Loop over every uploaded bundle of asset filepairs (PNG + JSON)
-    //  // and save the results to the Cache object, persist it to the Cache file.
-    //  while (!result.done) {
-    //    const { cacheKeys, arweavePathManifestLinks, updatedManifests } =
-    //      await result.value;
-    //    updateCacheAfterUpload(
-    //      cache,
-    //      cacheKeys,
-    //      arweavePathManifestLinks,
-    //      updatedManifests,
-    //    );
-    //    saveCache(cacheName, env, cache);
-    //    log.info('Saved bundle upload result to cache.');
-    //    result = arweaveBundleUploadGenerator.next();
-    //  }
-    //  log.info('Upload done.');
+    let bundleUploader = arweaveBundleUploadGenerator.next();
+    let results = [];
+     // Loop over every uploaded bundle
+    while (!bundleUploader.done) {
+      const bundlingResult = await bundleUploader.value;
+      if (bundlingResult) {
+        results.push(bundlingResult);
+      }
+      bundleUploader = arweaveBundleUploadGenerator.next();
+    }
 
-    return;
-
-    const res = await Promise.all(
-      files.map(async (f) => {
-        const transaction = await arweave.createTransaction(
-          { data: f.buffer },
-          jwk
-        );
-        transaction.addTag("Content-Type", f.file.type);
-        await arweave.transactions.sign(transaction, jwk);
-        await uploadToArweave(transaction);
-        return {
-          link: `https://arweave.net/${transaction.id}`,
-          name: f.file.name,
-        };
-      })
-    );
-
+    console.log(results);
     setLoading(false);
-    download(`AR-upload-${Date.now()}.json`, jsonFormat(res));
+    download(`AR-upload-${Date.now()}.json`, jsonFormat(results));
   }, [files, jwk]);
 
   const downloadKey = useCallback(() => {
