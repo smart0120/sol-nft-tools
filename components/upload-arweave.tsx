@@ -13,17 +13,8 @@ export const arweave = Arweave.init({
   host: "arweave.net",
   port: 443,
   protocol: "https",
+  timeout: 60000,
 });
-
-const uploadToArweave = async (transaction) => {
-  const uploader = await arweave.transactions.getUploader(transaction);
-  while (!uploader.isComplete) {
-    await uploader.uploadChunk();
-    console.log(
-      `${uploader.pctComplete}% complete, ${uploader.uploadedChunks}/${uploader.totalChunks}`
-    );
-  }
-};
 
 const fileToBuffer = (
   file: File
@@ -102,11 +93,13 @@ export default function ARUpload() {
 
     let bundleUploader = arweaveBundleUploadGenerator.next();
     let results = [];
-     // Loop over every uploaded bundle
+    
     while (!bundleUploader.done) {
       const bundlingResult = await bundleUploader.value;
       if (bundlingResult) {
-        results.push(bundlingResult);
+        results.push(
+          ...bundlingResult.items.map((i) => ({ link: i.link, name: i.name }))
+        );
       }
       bundleUploader = arweaveBundleUploadGenerator.next();
     }
