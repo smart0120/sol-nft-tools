@@ -137,23 +137,21 @@ export default function ARUpload() {
       setAddress(addr);
       localStorage.setItem("arweave-key", key);
       notification.open({
-        message: 'Successfully imported key!'
+        message: "Successfully imported key!",
       });
     } catch (e) {
       notification.open({
-        message: 'Key could not be imported!',
-      })
+        message: "Key could not be imported!",
+      });
     }
-  }, [jwkForm])
+  }, [jwkForm]);
 
   return (
     <>
       <p>
         Gib AR-Links lets you upload files to arweave. Please make sure to use
-        files smaller than 250mb.
-
-        Caution: Beta Version!
-        It is possible that some files may fail to upload without error.
+        files smaller than 250mb. Caution: Beta Version! It is possible that
+        some files may fail to upload without error.
       </p>
       <p>
         Send some AR to this wallet to start uploading. You can download and
@@ -212,7 +210,9 @@ export default function ARUpload() {
               <div style={{ textAlign: "center" }}>Or</div>
               <br />
               <Card>
-                <h3 style={{ textAlign: "center" }}>Import Wallet (JWK JSON)</h3>
+                <h3 style={{ textAlign: "center" }}>
+                  Import Wallet (JWK JSON)
+                </h3>
                 <br />
                 <Form.Item name="key">
                   <Input.TextArea rows={10} />
