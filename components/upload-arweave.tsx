@@ -7,6 +7,7 @@ import { DownloadOutlined } from "@ant-design/icons";
 import { download } from "../util/download";
 import jsonFormat from "json-format";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import { makeArweaveBundleUploadGenerator } from "../util/upload-arweave-bundles/upload-generator";
 
 export const arweave = Arweave.init({
   host: "arweave.net",
@@ -85,6 +86,40 @@ export default function ARUpload() {
 
   const upload = useCallback(async () => {
     setLoading(true);
+
+    // Arweave Native storage leverages Arweave Bundles.
+    // It allows to ncapsulate multiple independent data transactions
+    // into a single top level transaction,
+    // which pays the reward for all bundled data.
+    // https://github.com/Bundlr-Network/arbundles
+    // Each bundle consists of one or multiple asset filepair (PNG + JSON).
+    // Initialize the Arweave Bundle Upload Generator.
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator
+    const arweaveBundleUploadGenerator = makeArweaveBundleUploadGenerator(
+      files,
+      jwk
+    );
+
+    //  let result = arweaveBundleUploadGenerator.next();
+    //  // Loop over every uploaded bundle of asset filepairs (PNG + JSON)
+    //  // and save the results to the Cache object, persist it to the Cache file.
+    //  while (!result.done) {
+    //    const { cacheKeys, arweavePathManifestLinks, updatedManifests } =
+    //      await result.value;
+    //    updateCacheAfterUpload(
+    //      cache,
+    //      cacheKeys,
+    //      arweavePathManifestLinks,
+    //      updatedManifests,
+    //    );
+    //    saveCache(cacheName, env, cache);
+    //    log.info('Saved bundle upload result to cache.');
+    //    result = arweaveBundleUploadGenerator.next();
+    //  }
+    //  log.info('Upload done.');
+
+    return;
+
     const res = await Promise.all(
       files.map(async (f) => {
         const transaction = await arweave.createTransaction(
