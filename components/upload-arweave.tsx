@@ -7,22 +7,14 @@ import { DownloadOutlined } from "@ant-design/icons";
 import { download } from "../util/download";
 import jsonFormat from "json-format";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import { makeArweaveBundleUploadGenerator } from "../util/upload-arweave-bundles/upload-generator";
 
 export const arweave = Arweave.init({
   host: "arweave.net",
   port: 443,
   protocol: "https",
+  timeout: 60000,
 });
-
-const uploadToArweave = async (transaction) => {
-  const uploader = await arweave.transactions.getUploader(transaction);
-  while (!uploader.isComplete) {
-    await uploader.uploadChunk();
-    console.log(
-      `${uploader.pctComplete}% complete, ${uploader.uploadedChunks}/${uploader.totalChunks}`
-    );
-  }
-};
 
 const fileToBuffer = (
   file: File
@@ -85,24 +77,36 @@ export default function ARUpload() {
 
   const upload = useCallback(async () => {
     setLoading(true);
-    const res = await Promise.all(
-      files.map(async (f) => {
-        const transaction = await arweave.createTransaction(
-          { data: f.buffer },
-          jwk
-        );
-        transaction.addTag("Content-Type", f.file.type);
-        await arweave.transactions.sign(transaction, jwk);
-        await uploadToArweave(transaction);
-        return {
-          link: `https://arweave.net/${transaction.id}`,
-          name: f.file.name,
-        };
-      })
+
+    // Arweave Native storage leverages Arweave Bundles.
+    // It allows to encapsulate multiple independent data transactions
+    // into a single top level transaction,
+    // which pays the reward for all bundled data.
+    // https://github.com/Bundlr-Network/arbundles
+    // Each bundle consists of one or multiple files.
+    // Initialize the Arweave Bundle Upload Generator.
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator
+    const arweaveBundleUploadGenerator = makeArweaveBundleUploadGenerator(
+      files,
+      jwk
     );
 
+    let bundleUploader = arweaveBundleUploadGenerator.next();
+    let results = [];
+    
+    while (!bundleUploader.done) {
+      const bundlingResult = await bundleUploader.value;
+      if (bundlingResult) {
+        results.push(
+          ...bundlingResult.items.map((i) => ({ link: i.link, name: i.name }))
+        );
+      }
+      bundleUploader = arweaveBundleUploadGenerator.next();
+    }
+
+    console.log(results);
     setLoading(false);
-    download(`AR-upload-${Date.now()}.json`, jsonFormat(res));
+    download(`AR-upload-${Date.now()}.json`, jsonFormat(results));
   }, [files, jwk]);
 
   const downloadKey = useCallback(() => {
@@ -137,23 +141,21 @@ export default function ARUpload() {
       setAddress(addr);
       localStorage.setItem("arweave-key", key);
       notification.open({
-        message: 'Successfully imported key!'
+        message: "Successfully imported key!",
       });
     } catch (e) {
       notification.open({
-        message: 'Key could not be imported!',
-      })
+        message: "Key could not be imported!",
+      });
     }
-  }, [jwkForm])
+  }, [jwkForm]);
 
   return (
     <>
       <p>
         Gib AR-Links lets you upload files to arweave. Please make sure to use
-        files smaller than 250mb.
-
-        Caution: Beta Version!
-        It is possible that some files may fail to upload without error.
+        files smaller than 250mb. Caution: Beta Version! It is possible that
+        some files may fail to upload without error.
       </p>
       <p>
         Send some AR to this wallet to start uploading. You can download and
@@ -212,7 +214,9 @@ export default function ARUpload() {
               <div style={{ textAlign: "center" }}>Or</div>
               <br />
               <Card>
-                <h3 style={{ textAlign: "center" }}>Import Wallet (JWK JSON)</h3>
+                <h3 style={{ textAlign: "center" }}>
+                  Import Wallet (JWK JSON)
+                </h3>
                 <br />
                 <Form.Item name="key">
                   <Input.TextArea rows={10} />
