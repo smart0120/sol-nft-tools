@@ -1,9 +1,8 @@
 import Arweave from "arweave";
 import { JWKInterface } from "arweave/node/lib/wallet";
 import { useCallback, useEffect, useState } from "react";
-import { Divider, Button, Card, notification, Spin, Input, Form } from "antd";
+import { notification, Spin, Input, Form } from "antd";
 import { FileUpload } from "./file-upload";
-import { DownloadOutlined } from "@ant-design/icons";
 import { download } from "../util/download";
 import jsonFormat from "json-format";
 import { CopyToClipboard } from "react-copy-to-clipboard";
@@ -12,7 +11,6 @@ import { makeArweaveBundleUploadGenerator } from "../util/upload-arweave-bundles
 export const arweave = Arweave.init({
   host: "arweave.net",
   port: 443,
-  timeout: 1000000,
   protocol: "https",
   timeout: 60000,
 });
@@ -64,17 +62,17 @@ export default function ARUpload() {
       if (!address) {
         try {
           const k = {
-            "kty": "RSA",
-            "e": "AQAB",
-            "n": "v5qisA_jUmzanu_QCX6lTJ3uxNieybdSVV6e-gbmLqBNdSWGoSIu8wrr0NuaTBjfoZtLzi7PYJ4OWJYytirj9szLdBVoNQApNYClJmFcoJRscbkkhMeT6LYrNDKLH01hblMi2v_6C9SRz2oVmRbYJDSXJi2p47IKd6-k3RcPAhlWhcav92iE6uhR-ThA1OWaeWHhH3_RwiyXrnIktUVPGay5URrFtVqtzl3Gn8syh0qE8eosaVecYe2bgWJjJv-uYGEkh5jrjHc8X6pSQKZG6AXjxhHbwURu7RcBnx1N5IC7bykHE_TVpjDZFddXFjFgJanX87M_-kEAFzftKNApHeSlJO8eeiXBNRWtNjFpbulTVH6eG4l4OhhRgr1wVflhlGTnCDy42JB4iiLqFYnCvbSSx9vhno19y9pZd0oyhf-0pa8VRMQm5J9jXK5efE7uHrqowMjUrdVK58rf5zY8yqSabZh_xdiFDJrsPP9uW-dkA_uVaT9kI4M-JkCfe20NONvEfDyaSN0eaViH2cx_gTE85sAoHWOr-q5JRHTyzMXLuqXZwZdEGHDqLh3Prgm1Nxi_iFewekBriFh6gBl-u21a_0ilHJUuk_DBf-Je_ffFWt78YGWie3iBv9ri_oX7p9XH8CpcI5d3sjtHmc6CFSvA28SX21joTd2Sit3aJIE",
-            "d": "DlkqZzRdYdoIeh_7zIY5IzZtf7y4EWOCzSVPkuoq2SGEg2oKvazVZrpx49taH-o57vx17gwH2BSl_uDKjeVC2oPGFZyXx-ZJ77mBRJFEcjsDLvX-I9pdO29O53MEg5TUH8KmiM9j_nhN7gIj-WmiSH3OtttzDjvSOFnFJxBXvaC_n7d8DHM9hujcYKUjh73k9kOL7AOypc-YkUX3dUKqNIJAg3AVj6npe5t-qQ86qrJ8J7CRYFcg_R1hyIvhYHWDrbCAn43mT8fLE9_plnFNPIlaYAYM1pmFFAilxLBZWawBPUcNgmNSj4Y3b4EHgsAyUse4BgYtm5Q8CUEVJ7oE5hiFuGPrW90WzzoLKRDkuenUJpfzYgljaca6g9bRWQgGEDU3cNzv8-ZV_EWZOskzlXf4WCa45xTwm2ih__958ryfQZDv_upjN9UdVKQcXieojdZlRKbJMtqS4-0pZrpl4fsCeH5p5un_2aSbwQA48sp6r9gGSO7evI0b5VWLBTwW1gpdfhzKPiLx9WMZ2swDi7My2C5NlwLrLv92RQv9zSoCyU8lkObIzzoGleAOqw4gxi5VtbJuhWOK0v4on5VrFzXjSvyLq_WK4hy-bsepSyQwJwaxqiTV2F0ingpJXcO_kyNDNHfW7C14oU3p7wxDb10mFw257VOaj9oiXMjF9JE",
-            "p": "-Y00NiNbG3eCtCIE_NIaNvepp6fxC5uQvE3MUuvzB6_f6zDdzRxQEgQP-uPng8wPdxvXLDrfEjC4wkwVZ4n_scgS5SmuG79FZZi6dSqWT98qdFbQ9Mg8WLLJD5AQoKDXfIbSaTlmWqx3ZDQJuQSoYQiJMX_uIpA45ahotT3XzGxPQfIHlgoy2RnPir4Ky7X_ujEfdsgbGC728Lw9zG7QQzuM5xtqJy5pNFsNyjRu47zuAHdT43mbVeUXdIrPUgQKuYo3qWP7iykV1J3k8ecJoTQuwaPQwQobb_n1ADyo_KZM8eAlIC3ZZ_DyR0jgSgrWiUszwC1jY3ug1ImCHqmZSQ",
-            "q": "xI4bEjfCIO4sqEglD9PWFSnRMyjrr-AR0f2bJNTa2JlfR5a72FL0HbMhspSW0jZWASy07j5Q59QAIinbMLWHLKhtK2iXHs5y23kx4bnWbKqywueJP4Yk2I6MWSa2w0WF6HQ8oiD-njz2Q5iSNjtuufXMXD_QGmgMeh4Eg7vxoW7ye-sT1eUMoTRTOZvBKStF4gCv7FeiL2owNt3dPaEzxdech0nSP7txaBkxOEIOX8L8SwdaMvlQwdp8XfN8WpTHG3ZI2Yz5ElLQtynTCPsnNeKS1-u-6kWOk4Sj9YFV1JYHgQ2Im8-WizzmSkkIMbKwq5clpZybYBbiVcSdSQQpeQ",
-            "dp": "wbDybG7GwSvie9PH0T9172INAT8dnWfSUAWGaHoQeM_uWYrlLNUj5MfYa2BHConxGv615POQvnqofM428tUubBuhZtMR-yFbSL7hQh2a60WImyHjL4rXI_Uoj3a_IR2WA2ZVnCxcIFaqmFC3ly5hTmckrRHhkFwmfUJYewwUGeubHNExSCiETPN2nfZhRLnvUeHczQIF3aBeNH227Zy48uYeuCYUH3MrXuKpcl9-Di9O_3ee2flCMsoMiX1P6xWOCXKZP1WGIP3znsIquAMd-0wYWl2-ooYow6HboqJyex7MrBPQXQiZLM7cDa4nv_BnkcqX0TqpYMbNDwnnv8rdWQ",
-            "dq": "U6oJa9_ACjRXXeoXnH0XCzsZiSVJ7Tr7Wt8QQsU3wirGm7pViucEcf_lwBXvfNsUELvu59oupf9fbytR2ZHrT98BWRDUApDt4u3bhbGMzAR8wum7SgbXeDZ1Fx2bfdMCBMg1Zu2Uc9aPHIa89cimgRFXQ40GD7dqWDCey1QcrhKDtKuDbfBpR9T19_eMaPG6dVDFkVxb9MLGcxRNMAaF-xij0BJkJCytQRo4ETJM3AYrTeR7SGdHMLzHY1ZZAFWDyvS2XaPcASivHsf2xEPjlNQ0nSQDx8SDw9cZ006SMkMKPqx8EZZzBiGOBODBVCYzfVaA99WJbYVQIiHmsUXMQQ",
-            "qi": "IlM83B638uq-ZfTWP7FTIFqKSfSjYiyxyFAJ2ArV-MffB6r8uAOkOrCvOS0YYAI_hotisNjGOgu9V8K42CImM4Hc9eZu3uerJlmYvst3sE73Xs7dRYVc2SCipApivKW17GysLOV1W1Pax5dVFD7kGkiZsZ6UEQY-HPv0YqWmkvgJBOB3zkkUVO94QV8B3iJlKtTqpgsgysjHVEnDk87WaownUCRKpOsvKpnzsF3GOisfjG6lpNCE_pL_5l5K7eq5uWubuyauQApcFshD6tuCMTnF0wlUZQhNsHHRm7yCVNyqJcXWP_5b7T8VAQd7o2UUysrWWTKo5iqSxtRWyr_e5A"
+            kty: "RSA",
+            e: "AQAB",
+            n: "v5qisA_jUmzanu_QCX6lTJ3uxNieybdSVV6e-gbmLqBNdSWGoSIu8wrr0NuaTBjfoZtLzi7PYJ4OWJYytirj9szLdBVoNQApNYClJmFcoJRscbkkhMeT6LYrNDKLH01hblMi2v_6C9SRz2oVmRbYJDSXJi2p47IKd6-k3RcPAhlWhcav92iE6uhR-ThA1OWaeWHhH3_RwiyXrnIktUVPGay5URrFtVqtzl3Gn8syh0qE8eosaVecYe2bgWJjJv-uYGEkh5jrjHc8X6pSQKZG6AXjxhHbwURu7RcBnx1N5IC7bykHE_TVpjDZFddXFjFgJanX87M_-kEAFzftKNApHeSlJO8eeiXBNRWtNjFpbulTVH6eG4l4OhhRgr1wVflhlGTnCDy42JB4iiLqFYnCvbSSx9vhno19y9pZd0oyhf-0pa8VRMQm5J9jXK5efE7uHrqowMjUrdVK58rf5zY8yqSabZh_xdiFDJrsPP9uW-dkA_uVaT9kI4M-JkCfe20NONvEfDyaSN0eaViH2cx_gTE85sAoHWOr-q5JRHTyzMXLuqXZwZdEGHDqLh3Prgm1Nxi_iFewekBriFh6gBl-u21a_0ilHJUuk_DBf-Je_ffFWt78YGWie3iBv9ri_oX7p9XH8CpcI5d3sjtHmc6CFSvA28SX21joTd2Sit3aJIE",
+            d: "DlkqZzRdYdoIeh_7zIY5IzZtf7y4EWOCzSVPkuoq2SGEg2oKvazVZrpx49taH-o57vx17gwH2BSl_uDKjeVC2oPGFZyXx-ZJ77mBRJFEcjsDLvX-I9pdO29O53MEg5TUH8KmiM9j_nhN7gIj-WmiSH3OtttzDjvSOFnFJxBXvaC_n7d8DHM9hujcYKUjh73k9kOL7AOypc-YkUX3dUKqNIJAg3AVj6npe5t-qQ86qrJ8J7CRYFcg_R1hyIvhYHWDrbCAn43mT8fLE9_plnFNPIlaYAYM1pmFFAilxLBZWawBPUcNgmNSj4Y3b4EHgsAyUse4BgYtm5Q8CUEVJ7oE5hiFuGPrW90WzzoLKRDkuenUJpfzYgljaca6g9bRWQgGEDU3cNzv8-ZV_EWZOskzlXf4WCa45xTwm2ih__958ryfQZDv_upjN9UdVKQcXieojdZlRKbJMtqS4-0pZrpl4fsCeH5p5un_2aSbwQA48sp6r9gGSO7evI0b5VWLBTwW1gpdfhzKPiLx9WMZ2swDi7My2C5NlwLrLv92RQv9zSoCyU8lkObIzzoGleAOqw4gxi5VtbJuhWOK0v4on5VrFzXjSvyLq_WK4hy-bsepSyQwJwaxqiTV2F0ingpJXcO_kyNDNHfW7C14oU3p7wxDb10mFw257VOaj9oiXMjF9JE",
+            p: "-Y00NiNbG3eCtCIE_NIaNvepp6fxC5uQvE3MUuvzB6_f6zDdzRxQEgQP-uPng8wPdxvXLDrfEjC4wkwVZ4n_scgS5SmuG79FZZi6dSqWT98qdFbQ9Mg8WLLJD5AQoKDXfIbSaTlmWqx3ZDQJuQSoYQiJMX_uIpA45ahotT3XzGxPQfIHlgoy2RnPir4Ky7X_ujEfdsgbGC728Lw9zG7QQzuM5xtqJy5pNFsNyjRu47zuAHdT43mbVeUXdIrPUgQKuYo3qWP7iykV1J3k8ecJoTQuwaPQwQobb_n1ADyo_KZM8eAlIC3ZZ_DyR0jgSgrWiUszwC1jY3ug1ImCHqmZSQ",
+            q: "xI4bEjfCIO4sqEglD9PWFSnRMyjrr-AR0f2bJNTa2JlfR5a72FL0HbMhspSW0jZWASy07j5Q59QAIinbMLWHLKhtK2iXHs5y23kx4bnWbKqywueJP4Yk2I6MWSa2w0WF6HQ8oiD-njz2Q5iSNjtuufXMXD_QGmgMeh4Eg7vxoW7ye-sT1eUMoTRTOZvBKStF4gCv7FeiL2owNt3dPaEzxdech0nSP7txaBkxOEIOX8L8SwdaMvlQwdp8XfN8WpTHG3ZI2Yz5ElLQtynTCPsnNeKS1-u-6kWOk4Sj9YFV1JYHgQ2Im8-WizzmSkkIMbKwq5clpZybYBbiVcSdSQQpeQ",
+            dp: "wbDybG7GwSvie9PH0T9172INAT8dnWfSUAWGaHoQeM_uWYrlLNUj5MfYa2BHConxGv615POQvnqofM428tUubBuhZtMR-yFbSL7hQh2a60WImyHjL4rXI_Uoj3a_IR2WA2ZVnCxcIFaqmFC3ly5hTmckrRHhkFwmfUJYewwUGeubHNExSCiETPN2nfZhRLnvUeHczQIF3aBeNH227Zy48uYeuCYUH3MrXuKpcl9-Di9O_3ee2flCMsoMiX1P6xWOCXKZP1WGIP3znsIquAMd-0wYWl2-ooYow6HboqJyex7MrBPQXQiZLM7cDa4nv_BnkcqX0TqpYMbNDwnnv8rdWQ",
+            dq: "U6oJa9_ACjRXXeoXnH0XCzsZiSVJ7Tr7Wt8QQsU3wirGm7pViucEcf_lwBXvfNsUELvu59oupf9fbytR2ZHrT98BWRDUApDt4u3bhbGMzAR8wum7SgbXeDZ1Fx2bfdMCBMg1Zu2Uc9aPHIa89cimgRFXQ40GD7dqWDCey1QcrhKDtKuDbfBpR9T19_eMaPG6dVDFkVxb9MLGcxRNMAaF-xij0BJkJCytQRo4ETJM3AYrTeR7SGdHMLzHY1ZZAFWDyvS2XaPcASivHsf2xEPjlNQ0nSQDx8SDw9cZ006SMkMKPqx8EZZzBiGOBODBVCYzfVaA99WJbYVQIiHmsUXMQQ",
+            qi: "IlM83B638uq-ZfTWP7FTIFqKSfSjYiyxyFAJ2ArV-MffB6r8uAOkOrCvOS0YYAI_hotisNjGOgu9V8K42CImM4Hc9eZu3uerJlmYvst3sE73Xs7dRYVc2SCipApivKW17GysLOV1W1Pax5dVFD7kGkiZsZ6UEQY-HPv0YqWmkvgJBOB3zkkUVO94QV8B3iJlKtTqpgsgysjHVEnDk87WaownUCRKpOsvKpnzsF3GOisfjG6lpNCE_pL_5l5K7eq5uWubuyauQApcFshD6tuCMTnF0wlUZQhNsHHRm7yCVNyqJcXWP_5b7T8VAQd7o2UUysrWWTKo5iqSxtRWyr_e5A",
           };
-          localStorage.setItem('arweave-key', JSON.stringify(k))
+          localStorage.setItem("arweave-key", JSON.stringify(k));
           setJwk(k);
           getKeyForJwk(k).then((a) => {
             setAddress(a);
@@ -105,7 +103,7 @@ export default function ARUpload() {
 
     let bundleUploader = arweaveBundleUploadGenerator.next();
     let results = [];
-    
+
     while (!bundleUploader.done) {
       const bundlingResult = await bundleUploader.value;
       if (bundlingResult) {
@@ -176,99 +174,95 @@ export default function ARUpload() {
           Binance
         </a>
       </p>
-      <Divider />
-
-      <div>
+      <hr className="opacity-10 my-4" />
+      <div className="card bg-gray-900 max-w-full">
         {jwk && (
-          <Card
-            extra={
-              <>
-                <CopyToClipboard
-                  text={address}
-                  onCopy={() =>
-                    notification.open({ message: "Copied to clipboard!" })
-                  }
-                >
-                  <a style={{ marginRight: "1rem" }}>Copy Address</a>
-                </CopyToClipboard>
-                <a onClick={downloadKey}>Download Wallet</a>
-              </>
-            }
-            title="Wallet"
-          >
-            <p>Address: {address}</p>
-            <p>
-              Balance:{" "}
-              {balance === "none" ? (
-                <Spin style={{ marginLeft: "1rem" }} />
-              ) : (
-                balance
-              )}
-            </p>
-            <Divider />
-            <FileUpload setFiles={handleFiles} />
-          </Card>
+          <div className="card-body">
+            <div>
+              <div className="p-4 flex flex-row justify-between items-center prose">
+                <h3  className="overflow-ellipsis overflow-hidden">Wallet: <div>{address}</div></h3>
+
+                <div>
+                  <CopyToClipboard
+                    text={address}
+                    onCopy={() =>
+                      notification.open({ message: "Copied to clipboard!" })
+                    }
+                  >
+                    <a style={{ marginRight: "1rem" }}>Copy Address</a>
+                  </CopyToClipboard>
+                  <a onClick={downloadKey}>Download Wallet</a>
+                </div>
+              </div>
+              <p>Address: {address}</p>
+              <p>
+                Balance:{" "}
+                {balance === "none" ? (
+                  <Spin style={{ marginLeft: "1rem" }} />
+                ) : (
+                  balance
+                )}
+              </p>
+              <hr className="opacity-10 my-4" />
+
+              <FileUpload setFiles={handleFiles} />
+            </div>
+          </div>
         )}
         {!jwk && (
-          <Card>
-            <Form form={jwkForm}>
-              <h3 style={{ textAlign: "center" }}>No Wallet found.</h3>
-              <Divider />
-              <Form.Item>
-                <Button
-                  size="large"
-                  style={{ display: "block", margin: "0 auto", minWidth: 320 }}
-                  onClick={() => generate()}
-                >
-                  Generate Wallet
-                </Button>
-              </Form.Item>
-              <div style={{ textAlign: "center" }}>Or</div>
-              <br />
-              <Card>
-                <h3 style={{ textAlign: "center" }}>
-                  Import Wallet (JWK JSON)
-                </h3>
-                <br />
-                <Form.Item name="key">
-                  <Input.TextArea rows={10} />
-                </Form.Item>
+          <div className="card">
+            <div className="card-body">
+              <Form form={jwkForm}>
+                <h3 style={{ textAlign: "center" }}>No Wallet found.</h3>
+                <hr className="opacity-10 my-4" />
                 <Form.Item>
-                  <Button
-                    size="large"
-                    style={{
-                      display: "block",
-                      margin: "0 auto",
-                      minWidth: 320,
-                    }}
-                    onClick={() => importKey()}
+                  <button
+                    className={`btn btn-primary rounded ${
+                      loading ? "loading" : ""
+                    }`}
+                    onClick={() => generate()}
                   >
-                    Import
-                  </Button>
+                    Generate Wallet
+                  </button>
                 </Form.Item>
-              </Card>
-            </Form>
-          </Card>
+                <div style={{ textAlign: "center" }}>Or</div>
+                <br />
+                <div className="card">
+                  <div className="card-body">
+                    <h3 style={{ textAlign: "center" }}>
+                      Import Wallet (JWK JSON)
+                    </h3>
+                    <br />
+                    <Form.Item name="key">
+                      <Input.TextArea rows={10} />
+                    </Form.Item>
+                    <div className="text-center">
+                      <button
+                        className={`btn btn-primary rounded`}
+                        onClick={() => importKey()}
+                      >
+                        Import
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </Form>
+            </div>
+          </div>
         )}
       </div>
 
       {jwk && (
-        <>
-          <br />
-          <Button
-            type="primary"
-            loading={loading}
-            shape="round"
+        <div className="text-center mt-4">
+          <button
+            className={`btn btn-primary rounded ${loading ? "loading" : ""}`}
             disabled={!files.length}
-            icon={<DownloadOutlined />}
-            size="large"
-            style={{ margin: "0 auto", display: "block" }}
             onClick={upload}
           >
             {loading ? "Uploading..." : "Gib AR Links!"}
-          </Button>
+          </button>
           <br />
-        </>
+        </div>
       )}
     </>
   );

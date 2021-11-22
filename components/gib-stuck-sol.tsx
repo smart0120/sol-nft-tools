@@ -1,11 +1,8 @@
-import styles from "../styles/Home.module.css";
 import React, { useState } from "react";
-import { DownloadOutlined } from "@ant-design/icons";
-import { Divider, Form, Button, Input, notification } from "antd";
+import { Form, notification } from "antd";
 import { solAddressValidator } from "../util/validators";
 import { getStuckSol } from "../util/get-stuck-sol";
 
-const { TextArea } = Input;
 export const GibStuckSol = ({ endpoint }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -33,22 +30,7 @@ export const GibStuckSol = ({ endpoint }) => {
   };
 
   return (
-    <>
-      <p>
-        Gib-Stuck-Sol serves one purpose: To gib you amount of SOL stuck in
-        candy machines for a certain address. <br />
-        <a
-          target="_blank"
-          rel="noreferrer"
-          style={{ textDecoration: "underline" }}
-          href="https://github.com/staccDOTsol/candy_config_refunds.MD"
-        >
-          {" "}
-          Made possible by this script by stacc.sol
-        </a>
-      </p>
-      <Divider />
-
+    <div className="card bg-gray-900">
       <Form
         form={form}
         name="mintIds"
@@ -60,32 +42,41 @@ export const GibStuckSol = ({ endpoint }) => {
           allFields[0].errors;
         }}
         scrollToFirstError
-        className={`${styles["full-width"]} ${styles["d-flex"]} ${styles["flex-col"]}`}
       >
-        <label style={{ marginBottom: "2rem" }}>
-          Please gib SOL address to get amount of SOL stuck in candy machines
-        </label>
-        <Form.Item name="mintIds" rules={[solAddressValidator]}>
-          <TextArea
-            rows={1}
-            className={styles.card}
-            style={{ width: "100%" }}
-          />
-        </Form.Item>
+        <div className="card-body">
+          <p>
+            Gib-Stuck-Sol serves one purpose: To gib you amount of SOL stuck in
+            candy machines for a certain address. <br />
+            <a
+              target="_blank"
+              rel="noreferrer"
+              style={{ textDecoration: "underline" }}
+              href="https://github.com/staccDOTsol/candy_config_refunds.MD"
+            >
+              {" "}
+              Made possible by this script by stacc.sol
+            </a>
+          </p>
+          <hr className="opacity-10 my-4" />
 
-        <Button
-          type="primary"
-          loading={loading}
-          shape="round"
-          disabled={addressField?.errors?.length || !addressField}
-          icon={<DownloadOutlined />}
-          size="large"
-          style={{ margin: "0 auto", display: "block" }}
-          onClick={() => fetchStuckSol()}
-        >
-          {loading ? "Getting configs.." : "Gib Stuck SOL!"}
-        </Button>
+          <label style={{ marginBottom: "2rem" }}>
+            Please gib SOL address to get amount of SOL stuck in candy machines
+          </label>
+          <Form.Item name="mintIds" rules={[solAddressValidator]}>
+            <textarea rows={1} className={`textarea w-full`} />
+          </Form.Item>
+
+          <div className="text-center">
+            <button
+              className={`btn btn-primary rounded ${loading ? "loading" : ""}`}
+              disabled={addressField?.errors?.length || !addressField}
+              onClick={() => fetchStuckSol()}
+            >
+              {loading ? "Getting configs.." : "Gib Stuck SOL!"}
+            </button>
+          </div>
+        </div>
       </Form>
-    </>
+    </div>
   );
 };
