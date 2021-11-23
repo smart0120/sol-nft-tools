@@ -7,6 +7,7 @@ import { download } from "../util/download";
 import jsonFormat from "json-format";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { makeArweaveBundleUploadGenerator } from "../util/upload-arweave-bundles/upload-generator";
+import { shortenAddress } from "../util/shorten-address";
 
 export const arweave = Arweave.init({
   host: "arweave.net",
@@ -160,110 +161,143 @@ export default function ARUpload() {
     }
   }, [jwkForm]);
 
+  const clipboardNotification = useCallback(() => {
+    notification.open({ message: "Copied to clipboard!" });
+  }, []);
+
   return (
     <>
-      <p>
-        Gib AR-Links lets you upload files to arweave. Please make sure to use
-        files smaller than 250mb. Caution: Beta Version! It is possible that
-        some files may fail to upload without error.
-      </p>
-      <p>
-        Send some AR to this wallet to start uploading. You can download and
-        empty the wallet later. You can get AR on{" "}
-        <a href="https://binance.com" target="_blank" rel="noopener noreferrer">
-          Binance
-        </a>
-      </p>
-      <hr className="opacity-10 my-4" />
-      <div className="card bg-gray-900 max-w-full">
-        {jwk && (
-          <div className="card-body">
-            <div>
-              <div className="p-4 flex flex-row justify-between items-center prose">
-                <h3  className="overflow-ellipsis overflow-hidden">Wallet: <div>{address}</div></h3>
-
-                <div>
-                  <CopyToClipboard
-                    text={address}
-                    onCopy={() =>
-                      notification.open({ message: "Copied to clipboard!" })
-                    }
-                  >
-                    <a style={{ marginRight: "1rem" }}>Copy Address</a>
-                  </CopyToClipboard>
-                  <a onClick={downloadKey}>Download Wallet</a>
-                </div>
-              </div>
-              <p>Address: {address}</p>
-              <p>
-                Balance:{" "}
-                {balance === "none" ? (
-                  <Spin style={{ marginLeft: "1rem" }} />
-                ) : (
-                  balance
-                )}
-              </p>
-              <hr className="opacity-10 my-4" />
-
-              <FileUpload setFiles={handleFiles} />
-            </div>
-          </div>
-        )}
-        {!jwk && (
-          <div className="card">
+      <div className="prose max-w-full text-center mb-3">
+        <h1 className="text-4xl">Arweave Upload</h1>
+        <hr className="opacity-10 my-4" />
+      </div>
+      <div>
+        <p className="px-2 text-center">
+          This tool lets you upload files to arweave. Please make sure to use
+          files <strong>smaller than 250mb</strong>. Caution: Beta Version! It
+          is possible that some files may fail to upload without error.
+          <br />
+          Send some AR to this wallet to start uploading. You can download and
+          empty the wallet later. 
+          
+          <br /> You can get AR on{" "}
+          <a
+            href="https://binance.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Binance
+          </a>
+        </p>
+        <hr className="opacity-10 my-4" />
+        <div className="card bg-gray-900 max-w-full">
+          {jwk && (
             <div className="card-body">
-              <Form form={jwkForm}>
-                <h3 style={{ textAlign: "center" }}>No Wallet found.</h3>
-                <hr className="opacity-10 my-4" />
-                <Form.Item>
-                  <button
-                    className={`btn btn-primary rounded ${
-                      loading ? "loading" : ""
-                    }`}
-                    onClick={() => generate()}
-                  >
-                    Generate Wallet
-                  </button>
-                </Form.Item>
-                <div style={{ textAlign: "center" }}>Or</div>
-                <br />
-                <div className="card">
-                  <div className="card-body">
-                    <h3 style={{ textAlign: "center" }}>
-                      Import Wallet (JWK JSON)
-                    </h3>
-                    <br />
-                    <Form.Item name="key">
-                      <Input.TextArea rows={10} />
-                    </Form.Item>
-                    <div className="text-center">
-                      <button
-                        className={`btn btn-primary rounded`}
-                        onClick={() => importKey()}
+              <div className="card bg-primary text-white">
+                <div className="card-body p-4">
+                  <div className="flex flex-row gap-5 items-center">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="arweave-logo.jpeg"
+                      className="rounded-full w-14 h-14"
+                      width="56"
+                      height="56"
+                      alt=""
+                    />
+                    <div>
+                      Address:
+                      <CopyToClipboard
+                        text={address}
+                        onCopy={clipboardNotification}
                       >
-                        Import
-                      </button>
+                        <span className={` cursor-pointer ml-1`}>
+                          {shortenAddress(address)}
+                        </span>
+                      </CopyToClipboard>
+                      <p>
+                        Balance:{" "}
+                        {balance === "none" ? (
+                          <Spin style={{ marginLeft: "1rem" }} />
+                        ) : (
+                          balance
+                        )}
+                      </p>
+                    </div>
+
+                    <div className="ml-auto">
+                      <div className="btn-group">
+                        <button
+                          className="btn btn-circle btn-sm"
+                          onClick={downloadKey}
+                        >
+                          <i className="fa fa-download"></i>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </Form>
-            </div>
-          </div>
-        )}
-      </div>
+              </div>
+              <div className="mt-5">
+                <FileUpload setFiles={handleFiles} />
+              </div>
 
-      {jwk && (
-        <div className="text-center mt-4">
-          <button
-            className={`btn btn-primary rounded ${loading ? "loading" : ""}`}
-            disabled={!files.length}
-            onClick={upload}
-          >
-            {loading ? "Uploading..." : "Gib AR Links!"}
-          </button>
-          <br />
+              <div className="text-center mt-4">
+                <button
+                  className={`btn btn-primary rounded ${
+                    loading ? "loading" : ""
+                  }`}
+                  disabled={!files.length}
+                  onClick={upload}
+                >
+                  {loading ? "Uploading..." : "Gib AR Links!"}
+                </button>
+                <br />
+              </div>
+            </div>
+          )}
+          {!jwk && (
+            <div className="card">
+              <div className="card-body">
+                <Form form={jwkForm}>
+                  <h3 style={{ textAlign: "center" }}>No Wallet found.</h3>
+                  <hr className="opacity-10 my-4" />
+                  <Form.Item>
+                    <button
+                      className={`btn btn-primary rounded ${
+                        loading ? "loading" : ""
+                      }`}
+                      onClick={() => generate()}
+                    >
+                      Generate Wallet
+                    </button>
+                  </Form.Item>
+                  <div style={{ textAlign: "center" }}>Or</div>
+                  <br />
+                  <div className="card">
+                    <div className="card-body">
+                      <h3 style={{ textAlign: "center" }}>
+                        Import Wallet (JWK JSON)
+                      </h3>
+                      <br />
+                      <Form.Item name="key">
+                        <Input.TextArea rows={10} />
+                      </Form.Item>
+                      <div className="text-center">
+                        <button
+                          className={`btn btn-primary rounded`}
+                          onClick={() => importKey()}
+                        >
+                          Import
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </Form>
+              </div>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </>
   );
 }

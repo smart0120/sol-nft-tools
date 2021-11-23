@@ -30,53 +30,60 @@ export const GibStuckSol = ({ endpoint }) => {
   };
 
   return (
-    <div className="card bg-gray-900">
-      <Form
-        form={form}
-        name="mintIds"
-        initialValues={{
-          mintIds: "",
-        }}
-        onFieldsChange={(_, allFields) => {
-          setAddressField(allFields[0]);
-          allFields[0].errors;
-        }}
-        scrollToFirstError
-      >
-        <div className="card-body">
-          <p>
-            Gib-Stuck-Sol serves one purpose: To gib you amount of SOL stuck in
-            candy machines for a certain address. <br />
-            <a
-              target="_blank"
-              rel="noreferrer"
-              style={{ textDecoration: "underline" }}
-              href="https://github.com/staccDOTsol/candy_config_refunds.MD"
-            >
-              {" "}
-              Made possible by this script by stacc.sol
-            </a>
-          </p>
-          <hr className="opacity-10 my-4" />
+    <>
+      <div className="prose max-w-full text-center mb-3">
+        <h1 className="text-4xl">Find stuck SOL</h1>
+        <hr className="opacity-10 my-4" />
+      </div>
+      <p className="px-2 text-center">
+        This tool finds out how much SOL you have stuck in candy machines.{" "}
+        <br />
+        <a
+          target="_blank"
+          rel="noreferrer"
+          style={{ textDecoration: "underline" }}
+          href="https://github.com/staccDOTsol/candy_config_refunds.MD"
+        >
+          {" "}
+          Made possible by this script by stacc.sol
+        </a>
+      </p>
+      <hr className="opacity-10 my-4" />
 
-          <label style={{ marginBottom: "2rem" }}>
-            Please gib SOL address to get amount of SOL stuck in candy machines
-          </label>
-          <Form.Item name="mintIds" rules={[solAddressValidator]}>
-            <textarea rows={1} className={`textarea w-full`} />
-          </Form.Item>
-
-          <div className="text-center">
-            <button
-              className={`btn btn-primary rounded ${loading ? "loading" : ""}`}
-              disabled={addressField?.errors?.length || !addressField}
-              onClick={() => fetchStuckSol()}
-            >
-              {loading ? "Getting configs.." : "Gib Stuck SOL!"}
-            </button>
+      <div className="card bg-gray-900">
+        <Form
+          form={form}
+          name="mintIds"
+          initialValues={{
+            mintIds: "",
+          }}
+          onFieldsChange={(_, allFields) => {
+            setAddressField(allFields[0]);
+            allFields[0].errors;
+          }}
+          scrollToFirstError
+        >
+          <div className="card-body">
+            <label style={{ marginBottom: "2rem" }}>
+              Please gib SOL address to get amount of SOL stuck in candy
+              machines
+            </label>
+            <Form.Item name="mintIds" rules={[solAddressValidator]}>
+              <input className={`textarea w-full`} />
+            </Form.Item>
+            <div className="text-center mt-4">
+              <button
+                className={`btn btn-primary rounded ${loading ? "loading" : ""}`}
+                disabled={addressField?.errors?.length || !addressField}
+                onClick={() => fetchStuckSol()}
+              >
+                {loading ? "Getting configs.." : "Gib Stuck SOL!"}
+              </button>
+            </div>
           </div>
-        </div>
-      </Form>
-    </div>
+        </Form>
+      </div>
+
+    </>
   );
 };

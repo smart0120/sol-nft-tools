@@ -34,49 +34,51 @@ export const GibMeta = ({ endpoint }) => {
     });
   };
   return (
-    <div className="card bg-gray-900 max-w-full">
-      <Form
-        form={form}
-        name="mintIds"
-        initialValues={{
-          mintIds: [],
-        }}
-        scrollToFirstError
-        style={{
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <div className="card-body">
-          <p>
-            Gib-Meta serves one purpose: To gib you metadata from Solana Mint
-            IDs. It will return an object with resolved arweave metadata as well
-            as the metadata associated with the token itself.
-          </p>
-          <hr className="opacity-10 my-4" />
+    <div>
+      <div className="prose max-w-full text-center mb-3">
+        <h1 className="text-4xl">Token Metadata</h1>
+        <hr className="opacity-10 my-4" />
+      </div>
+      <p className='px-2 text-center'>
+        This tool gives you onchain an arweave/ipfs metadata from Solana Mint IDs.
+      </p>
+      <hr className="opacity-10 my-4" />
+      <div className="card bg-gray-900 max-w-full">
+        <Form
+          form={form}
+          name="mintIds"
+          initialValues={{
+            mintIds: [],
+          }}
+          scrollToFirstError
+          style={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <div className="card-body">
+            <label style={{ marginBottom: "2rem" }}>
+              Please gib SOL mint IDs as JSON array to get their metadata
+            </label>
+            <Form.Item name="mintIds" rules={[jsonValidator(setJsonVal)]}>
+              <textarea rows={4} className={`textarea w-full`} />
+            </Form.Item>
 
-          <label style={{ marginBottom: "2rem" }}>
-            Please gib SOL mint IDs as JSON array to get their metadata
-          </label>
-          <Form.Item name="mintIds" rules={[jsonValidator(setJsonVal)]}>
-            <textarea
-              rows={4}
-              className={`textarea w-full`}
-            />
-          </Form.Item>
-
-          <div className="text-center">
-            <button
-              className={`btn btn-primary rounded ${loading ? "loading" : ""}`}
-              disabled={!jsonVal || !jsonVal.length}
-              onClick={() => fetchMeta()}
-            >
-              {loading ? `${counter} / ${jsonVal?.length}` : "Gib Meta!"}
-            </button>
+            <div className="text-center">
+              <button
+                className={`btn btn-primary rounded ${
+                  loading ? "loading" : ""
+                }`}
+                disabled={!jsonVal || !jsonVal.length}
+                onClick={() => fetchMeta()}
+              >
+                {loading ? `${counter} / ${jsonVal?.length}` : "Gib Meta!"}
+              </button>
+            </div>
           </div>
-        </div>
-      </Form>
+        </Form>
+      </div>
     </div>
   );
 };
