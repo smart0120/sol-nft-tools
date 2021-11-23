@@ -1,15 +1,11 @@
-import React, { useState } from 'react';
-import { DownloadOutlined } from '@ant-design/icons';
-import { Divider, Form, Button, Input, notification } from 'antd';
-import { jsonValidator } from '../util/validators';
-import styles from "../styles/Home.module.css";
-import { getMeta } from '../util/get-meta';
-import { download } from '../util/download';
-import jsonFormat from 'json-format';
+import React, { useState } from "react";
+import { Form, notification } from "antd";
+import { jsonValidator } from "../util/validators";
+import { getMeta } from "../util/get-meta";
+import { download } from "../util/download";
+import jsonFormat from "json-format";
 
-const { TextArea } = Input;
-
-export const GibMeta = ({endpoint}) => {
+export const GibMeta = ({ endpoint }) => {
   const [form] = Form.useForm();
   const [jsonVal, setJsonVal] = useState(undefined);
   const [loading, setLoading] = useState(false);
@@ -23,10 +19,9 @@ export const GibMeta = ({endpoint}) => {
     });
 
     setLoading(true);
-    getMeta(jsonVal, setCounter, endpoint)
-    .subscribe({
+    getMeta(jsonVal, setCounter, endpoint).subscribe({
       next: (e) => {
-        download('gib-meta.json',  jsonFormat(e, {size: 1, type: 'tab'}))
+        download("gib-meta.json", jsonFormat(e, { size: 1, type: "tab" }));
         setLoading(false);
       },
       error: (e) => {
@@ -35,57 +30,55 @@ export const GibMeta = ({endpoint}) => {
       },
       complete: () => {
         notification.close("downloading");
-      }
+      },
     });
   };
   return (
-    <>
-      <p>
-        Gib-Meta serves one purpose: To gib you metadata from Solana Mint IDs.
-        It will return an object with resolved arweave metadata as well as the
-        metadata associated with the token itself.
+    <div>
+      <div className="prose max-w-full text-center mb-3">
+        <h1 className="text-4xl">Token Metadata</h1>
+        <hr className="opacity-10 my-4" />
+      </div>
+      <p className='px-2 text-center'>
+        This tool gives you onchain an arweave/ipfs metadata from Solana Mint IDs.
       </p>
-      <Divider />
-
-      <Form
-        form={form}
-        name="mintIds"
-        initialValues={{
-          mintIds: [],
-        }}
-        scrollToFirstError
-        style={{
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <label style={{ marginBottom: "2rem" }}>
-          Please gib SOL mint IDs as JSON array to get their metadata
-        </label>
-        <Form.Item
+      <hr className="opacity-10 my-4" />
+      <div className="card bg-gray-900 max-w-full">
+        <Form
+          form={form}
           name="mintIds"
-          rules={[ jsonValidator(setJsonVal) ]}
+          initialValues={{
+            mintIds: [],
+          }}
+          scrollToFirstError
+          style={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+          }}
         >
-          <TextArea
-            rows={4}
-            className={`${styles.card} ${styles["full-width"]}`}
-          />
-        </Form.Item>
+          <div className="card-body">
+            <label style={{ marginBottom: "2rem" }}>
+              Please gib SOL mint IDs as JSON array to get their metadata
+            </label>
+            <Form.Item name="mintIds" rules={[jsonValidator(setJsonVal)]}>
+              <textarea rows={4} className={`textarea w-full`} />
+            </Form.Item>
 
-        <Button
-          type="primary"
-          loading={loading}
-          shape="round"
-          disabled={!jsonVal || !jsonVal.length}
-          icon={<DownloadOutlined />}
-          size="large"
-          style={{ margin: "0 auto", display: "block" }}
-          onClick={() => fetchMeta()}
-        >
-          {loading ? `${counter} / ${jsonVal?.length}` : "Gib Meta!"}
-        </Button>
-      </Form>
-    </>
+            <div className="text-center">
+              <button
+                className={`btn btn-primary rounded ${
+                  loading ? "loading" : ""
+                }`}
+                disabled={!jsonVal || !jsonVal.length}
+                onClick={() => fetchMeta()}
+              >
+                {loading ? `${counter} / ${jsonVal?.length}` : "Gib Meta!"}
+              </button>
+            </div>
+          </div>
+        </Form>
+      </div>
+    </div>
   );
 };
