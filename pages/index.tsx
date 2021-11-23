@@ -27,7 +27,7 @@ export default function Home() {
 
   return (
     <div className="drawer">
-      <input id="my-drawer" type="checkbox" className="drawer-toggle" />
+      <input id="my-drawer" type="checkbox" checked={menuToggled} className="drawer-toggle" />
       <div
         className="h-screen grid drawer-content"
         style={{ gridTemplateRows: "76px auto 76px" }}
@@ -209,44 +209,83 @@ export default function Home() {
             </a>
           </li>
           <li
-            onClick={() => setRoute("mints")}
+            onClick={() => {
+              setMenuToggled(!menuToggled);
+              setRoute("mints");
+            }}
             key="mints"
           >
-            <a href="#"  className={`${selectedKeys[0] === "mints" ? "bg-gray-600" : ""} py-4 inline-block`}>
+            <a
+              href="#"
+              className={`${
+                selectedKeys[0] === "mints" ? "bg-gray-600" : ""
+              } py-4 inline-block`}
+            >
               Get Mint IDs
             </a>
           </li>
           <li
-            onClick={() => setRoute("meta")}
+            onClick={() => {
+              setMenuToggled(!menuToggled);
+              setRoute("meta");
+            }}
             key="meta"
           >
-            <a href="#" className={`${selectedKeys[0] === "meta" ? "bg-gray-600" : ""} py-4 inline-block`}>
+            <a
+              href="#"
+              className={`${
+                selectedKeys[0] === "meta" ? "bg-gray-600" : ""
+              } py-4 inline-block`}
+            >
               Token Metadata
             </a>
           </li>
           <li
-            onClick={() => setRoute("holders")}
+            onClick={() => {
+              setMenuToggled(!menuToggled);
+              setRoute("holders");
+            }}
             key="holders"
           >
-            <a href="#" className={`${selectedKeys[0] === "holders" ? "bg-gray-600" : ""} py-4 inline-block`}>
-
+            <a
+              href="#"
+              className={`${
+                selectedKeys[0] === "holders" ? "bg-gray-600" : ""
+              } py-4 inline-block`}
+            >
               Holder Snapshot
             </a>
           </li>
           <li
-            onClick={() => setRoute("stuck-sol")}
+            onClick={() => {
+              setMenuToggled(!menuToggled);
+              setRoute("stuck-sol");
+            }}
             key="stuck-sol"
           >
-            <a href="#" className={`${selectedKeys[0] === "stuck-sol" ? "bg-gray-600" : ""} py-4 inline-block`}>
+            <a
+              href="#"
+              className={`${
+                selectedKeys[0] === "stuck-sol" ? "bg-gray-600" : ""
+              } py-4 inline-block`}
+            >
               Find Stuck SOL
             </a>
           </li>
           <li
-           
-            onClick={() => setRoute("ar-links")}
+            onClick={() => {
+              setMenuToggled(!menuToggled);
+              setRoute("ar-links");
+            }}
             key="ar-links"
           >
-            <a href="#"  className={(selectedKeys[0] === "ar-links" ? "bg-gray-600" : "") + ' py-4 inline-block'}>
+            <a
+              href="#"
+              className={
+                (selectedKeys[0] === "ar-links" ? "bg-gray-600" : "") +
+                " py-4 inline-block"
+              }
+            >
               Arweave Upload (Beta)
             </a>
           </li>
