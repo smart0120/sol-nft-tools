@@ -43,7 +43,7 @@ export default function Home() {
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="/pentacle-logo.svg"
+                  src="https://arweave.net/a1OuQE2NlH9lny36lmVtYg0NRV0Dxglgb_6MU4BCX4Y"
                   style={{ width: 180 }}
                   alt=""
                 />
@@ -202,7 +202,7 @@ export default function Home() {
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/pentacle-logo.svg"
+                src="https://arweave.net/a1OuQE2NlH9lny36lmVtYg0NRV0Dxglgb_6MU4BCX4Y"
                 style={{ width: 180 }}
                 alt=""
               />
