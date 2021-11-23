@@ -19,6 +19,3 @@ a {
 .ant-upload.ant-upload-drag .ant-upload {
   padding: 16px;
 }
-#__next {
-  min-height: 100vh;
-}

@@ -1,8 +1,11 @@
+import styles from "../styles/Home.module.css";
 import React, { useState } from "react";
-import { Form, notification } from "antd";
+import { DownloadOutlined } from "@ant-design/icons";
+import { Divider, Form, Button, Input, notification } from "antd";
 import { solAddressValidator } from "../util/validators";
 import { getStuckSol } from "../util/get-stuck-sol";
 
+const { TextArea } = Input;
 export const GibStuckSol = ({ endpoint }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -31,13 +34,9 @@ export const GibStuckSol = ({ endpoint }) => {
 
   return (
     <>
-      <div className="prose max-w-full text-center mb-3">
-        <h1 className="text-4xl">Find stuck SOL</h1>
-        <hr className="opacity-10 my-4" />
-      </div>
-      <p className="px-2 text-center">
-        This tool finds out how much SOL you have stuck in candy machines.{" "}
-        <br />
+      <p>
+        Gib-Stuck-Sol serves one purpose: To gib you amount of SOL stuck in
+        candy machines for a certain address. <br />
         <a
           target="_blank"
           rel="noreferrer"
@@ -48,42 +47,45 @@ export const GibStuckSol = ({ endpoint }) => {
           Made possible by this script by stacc.sol
         </a>
       </p>
-      <hr className="opacity-10 my-4" />
+      <Divider />
 
-      <div className="card bg-gray-900">
-        <Form
-          form={form}
-          name="mintIds"
-          initialValues={{
-            mintIds: "",
-          }}
-          onFieldsChange={(_, allFields) => {
-            setAddressField(allFields[0]);
-            allFields[0].errors;
-          }}
-          scrollToFirstError
+      <Form
+        form={form}
+        name="mintIds"
+        initialValues={{
+          mintIds: "",
+        }}
+        onFieldsChange={(_, allFields) => {
+          setAddressField(allFields[0]);
+          allFields[0].errors;
+        }}
+        scrollToFirstError
+        className={`${styles["full-width"]} ${styles["d-flex"]} ${styles["flex-col"]}`}
+      >
+        <label style={{ marginBottom: "2rem" }}>
+          Please gib SOL address to get amount of SOL stuck in candy machines
+        </label>
+        <Form.Item name="mintIds" rules={[solAddressValidator]}>
+          <TextArea
+            rows={1}
+            className={styles.card}
+            style={{ width: "100%" }}
+          />
+        </Form.Item>
+
+        <Button
+          type="primary"
+          loading={loading}
+          shape="round"
+          disabled={addressField?.errors?.length || !addressField}
+          icon={<DownloadOutlined />}
+          size="large"
+          style={{ margin: "0 auto", display: "block" }}
+          onClick={() => fetchStuckSol()}
         >
-          <div className="card-body">
-            <label style={{ marginBottom: "2rem" }}>
-              Please gib SOL address to get amount of SOL stuck in candy
-              machines
-            </label>
-            <Form.Item name="mintIds" rules={[solAddressValidator]}>
-              <input className={`textarea w-full`} />
-            </Form.Item>
-            <div className="text-center mt-4">
-              <button
-                className={`btn btn-primary rounded ${loading ? "loading" : ""}`}
-                disabled={addressField?.errors?.length || !addressField}
-                onClick={() => fetchStuckSol()}
-              >
-                {loading ? "Getting configs.." : "Gib Stuck SOL!"}
-              </button>
-            </div>
-          </div>
-        </Form>
-      </div>
-
+          {loading ? "Getting configs.." : "Gib Stuck SOL!"}
+        </Button>
+      </Form>
     </>
   );
 };
