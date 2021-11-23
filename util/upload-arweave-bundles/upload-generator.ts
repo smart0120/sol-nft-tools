@@ -63,11 +63,12 @@ function getBundleRange(files: GenFile[]): BundleRange {
 
     if (total + fileSize >= BUNDLE_SIZE_BYTE_LIMIT) {
       if (count === 0) {
-        throw new Error(
+        alert(
           `File (${key}) too big (${sizeMB(
             fileSize
           )}MB) for size limit of ${sizeMB(BUNDLE_SIZE_BYTE_LIMIT)}MB.`
         );
+        return;
       }
       break;
     }
@@ -198,6 +199,9 @@ export function* makeArweaveBundleUploadGenerator(
   while (files.length) {
     // compute the next range of files we can include in the next bundle.
     const range = getBundleRange(files);
+    if (range === undefined) {
+      return;
+    }
     // process the files into a bundle.
     const result = processBundleFiles(signer, files, range).then(
       ([results, dataItems]) =>

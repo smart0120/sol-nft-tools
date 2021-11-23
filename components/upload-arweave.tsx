@@ -217,7 +217,7 @@ export default function ARUpload() {
                         onCopy={clipboardNotification}
                       >
                         <span className={` cursor-pointer ml-1`}>
-                          {shortenAddress(address)}
+                          {address}
                         </span>
                       </CopyToClipboard>
                       <p>
@@ -232,12 +232,13 @@ export default function ARUpload() {
 
                     <div className="ml-auto">
                       <div className="btn-group">
-                        <button
-                          className="btn btn-circle btn-sm"
-                          onClick={downloadKey}
-                        >
-                          <i className="fa fa-download"></i>
-                        </button>
+                        <a href={`https://viewblock.io/arweave/address/${address}`} target="_blank" rel="noreferrer">
+                          <button
+                            className="btn btn-circle btn-sm"
+                          >
+                            <i className="fa fa-external-link-alt"></i>
+                          </button>
+                        </a>
                       </div>
                     </div>
                   </div>
