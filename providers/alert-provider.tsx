@@ -7,6 +7,7 @@ const initialState: AlertState = {
   severity: undefined,
 };
 
+
 const AlertContext = createContext(initialState);
 
 export function AlertProvider({ children }) {
