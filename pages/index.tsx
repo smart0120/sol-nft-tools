@@ -202,7 +202,7 @@ export default function Home() {
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="https://pentacle.ai/pentacle-logo-LH.svg"
+                src="/pentacle-logo.svg"
                 style={{ width: 180 }}
                 alt=""
               />
