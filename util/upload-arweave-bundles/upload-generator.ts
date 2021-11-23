@@ -21,7 +21,7 @@ const BASE_TAGS = [{ name: "App-Name", value: "SOL NFT Tools" }];
 // - lower the risk for OOM crashes
 // - provide feedback to the user as the files are bundled & uploaded progressively
 // Change at your own risk.
-const BUNDLE_SIZE_BYTE_LIMIT = 50 * 1000 * 1000;
+const BUNDLE_SIZE_BYTE_LIMIT = 150 * 1000 * 1000;
 
 /**
  * Simplistic helper to convert a bytes value to its MB counterpart.
