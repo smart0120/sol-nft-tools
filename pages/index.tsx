@@ -27,13 +27,24 @@ export default function Home() {
 
   return (
     <div className="drawer drawer-end">
-      <input id="my-drawer" type="checkbox" checked={menuToggled} className="drawer-toggle" />
+      <input
+        id="my-drawer"
+        type="checkbox"
+        checked={menuToggled}
+        className="drawer-toggle"
+      />
       <div
         className="h-screen grid drawer-content"
         style={{ gridTemplateRows: "76px auto 76px" }}
       >
         <div className="w-full text-center">
-          <nav style={{gridTemplateColumns: '1fr auto 1fr'}} className="grid fixed left-0 right-0 z-10 md:mx-4 mx-2 my-2 py-1 xl:py-0 bg-base-300 rounded-box items-center justify-between flex-wrap bg-blue-dark px-4">
+          <nav
+            style={{ gridTemplateColumns: "1fr auto 1fr" }}
+            className="grid fixed left-0 right-0 
+            z-10 md:mx-4 mx-2 my-2 py-1 xl:py-0 px-4 
+            bg-base-300 rounded-box items-center justify-between 
+            flex-wrap bg-blue-darkshadow-lg"
+          >
             <div className="flex items-center flex-no-shrink text-white">
               <a
                 href="https://pentacle.xyz"
@@ -45,7 +56,7 @@ export default function Home() {
                 <img
                   src="https://arweave.net/a1OuQE2NlH9lny36lmVtYg0NRV0Dxglgb_6MU4BCX4Y"
                   style={{ width: 180 }}
-                  alt=""
+                  alt="Pentacle Logo"
                 />
               </a>
             </div>
@@ -67,7 +78,7 @@ export default function Home() {
               </label>
             </div>
             <ul
-              className="menu horizontal justify-center w-full flex-grow lg:items-center lg:w-auto hidden xl:flex shadow-lg"
+              className="menu horizontal justify-center w-full flex-grow lg:items-center lg:w-auto hidden xl:flex"
               id="menu"
             >
               <li
@@ -145,7 +156,10 @@ export default function Home() {
 
         <footer
           className={`border-t-2 grid gap-8 place-content-center fixed left-0 right-0 bottom-0 px-8 py-2`}
-          style={{ gridTemplateColumns: "1fr auto 1fr", background: 'rgba(0,0,0,0.7)' }}
+          style={{
+            gridTemplateColumns: "1fr auto 1fr",
+            background: "rgba(0,0,0,0.7)",
+          }}
         >
           <div></div>
           <div className={`flex gap-6 items-center justify-center`}>

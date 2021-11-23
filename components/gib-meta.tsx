@@ -1,15 +1,17 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Form, notification } from "antd";
 import { jsonValidator } from "../util/validators";
 import { getMeta } from "../util/get-meta";
 import { download } from "../util/download";
 import jsonFormat from "json-format";
+import { ModalContext } from "../providers/modal-provider";
 
 export const GibMeta = ({ endpoint }) => {
   const [form] = Form.useForm();
   const [jsonVal, setJsonVal] = useState(undefined);
   const [loading, setLoading] = useState(false);
   const [counter, setCounter] = useState(0);
+  const { setModalState } = useContext(ModalContext);
 
   const fetchMeta = () => {
     notification.open({
@@ -25,7 +27,10 @@ export const GibMeta = ({ endpoint }) => {
         setLoading(false);
       },
       error: (e) => {
-        alert(e);
+        setModalState({
+          message: e,
+          open: true
+        });
         setLoading(false);
       },
       complete: () => {

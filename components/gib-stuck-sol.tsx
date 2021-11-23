@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Form, notification } from "antd";
 import { solAddressValidator } from "../util/validators";
 import { getStuckSol } from "../util/get-stuck-sol";
+import { ModalContext } from "../providers/modal-provider";
 
 export const GibStuckSol = ({ endpoint }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [addressField, setAddressField] = useState<any>(undefined);
+  const { setModalState } = useContext(ModalContext);
   const fetchStuckSol = () => {
     notification.open({
       message: "Grabbing Candy Machine Data...",
@@ -17,11 +19,17 @@ export const GibStuckSol = ({ endpoint }) => {
     setLoading(true);
     getStuckSol(addressField.value, endpoint)
       .then(({ total, accounts }) => {
-        alert(`${total} SOL are stuck in ${accounts} accounts`);
+        setModalState({
+          message: `${total} SOL are stuck in ${accounts} accounts`,
+          open: true
+        });
         setLoading(false);
       })
       .catch((e) => {
-        alert(e);
+        setModalState({
+          message: e,
+          open: true
+        });
         setLoading(false);
       })
       .finally(() => {

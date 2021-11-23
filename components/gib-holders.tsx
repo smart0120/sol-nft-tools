@@ -1,14 +1,16 @@
 import { Form, notification } from "antd";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { jsonValidator } from "../util/validators";
 import { getHolders } from "../util/get-holders";
 import { download } from "../util/download";
 import jsonFormat from "json-format";
+import { ModalContext } from "../providers/modal-provider";
 export const GibHolders = ({ endpoint }) => {
   const [form] = Form.useForm();
   const [counter, setCounter] = useState(0);
   const [loading, setLoading] = useState(false);
   const [jsonVal, setJsonVal] = useState(undefined);
+  const { setModalState } = useContext(ModalContext);
 
   const fetchHolders = () => {
     notification.open({
@@ -24,7 +26,10 @@ export const GibHolders = ({ endpoint }) => {
         setLoading(false);
       },
       error: (e) => {
-        alert(e);
+        setModalState({
+          open: true,
+          message: e
+        })
         setLoading(false);
       },
       complete: () => {

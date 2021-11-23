@@ -21,7 +21,7 @@ const BASE_TAGS = [{ name: "App-Name", value: "SOL NFT Tools" }];
 // - lower the risk for OOM crashes
 // - provide feedback to the user as the files are bundled & uploaded progressively
 // Change at your own risk.
-const BUNDLE_SIZE_BYTE_LIMIT = 150 * 1000 * 1000;
+const BUNDLE_SIZE_BYTE_LIMIT = 100 * 1000 * 1000;
 
 /**
  * Simplistic helper to convert a bytes value to its MB counterpart.
@@ -156,12 +156,6 @@ async function bundleAndUpload(arweave, signer, jwk, results, dataItems) {
       (endBundleTime - startBundleTime) / 1000
     }s`
   );
-  // @ts-ignore
-  // Argument of type
-  // 'import("node_modules/arweave/node/common").default'
-  // is not assignable to parameter of type
-  // 'import("node_modules/arbundles/node_modules/arweave/node/common").default'.
-  // Types of property 'api' are incompatible.
   const tx = await bundle.toTransaction(arweave, jwk);
   await arweave.transactions.sign(tx, jwk);
   console.log("Uploading bundle...");

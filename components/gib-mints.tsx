@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Form, notification } from "antd";
 import { solAddressValidator } from "../util/validators";
 import { getMints } from "../util/get-mints";
+import { ModalContext } from "../providers/modal-provider";
 
 export const GibMints = ({ endpoint }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const { setModalState } = useContext(ModalContext);
   const [addressField, setAddressField] = useState<any>(undefined);
   const fetchMints = () => {
     notification.open({
@@ -19,7 +21,10 @@ export const GibMints = ({ endpoint }) => {
         setLoading(false);
       })
       .catch((e) => {
-        alert(e);
+        setModalState({
+          message: e,
+          open: true
+        });
         setLoading(false);
       })
       .finally(() => {
