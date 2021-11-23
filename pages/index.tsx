@@ -26,15 +26,15 @@ export default function Home() {
   }, [router.query?.mode]);
 
   return (
-    <div className="drawer">
+    <div className="drawer drawer-end">
       <input id="my-drawer" type="checkbox" checked={menuToggled} className="drawer-toggle" />
       <div
         className="h-screen grid drawer-content"
         style={{ gridTemplateRows: "76px auto 76px" }}
       >
         <div className="w-full text-center">
-          <nav className="flex fixed left-0 right-0 z-10 md:mx-4 mx-2 my-2 py-1 xl:py-0 bg-base-300 rounded-box items-center justify-between flex-wrap bg-blue-dark px-4">
-            <div className="flex items-center flex-no-shrink text-white mr-6 w-1/4">
+          <nav style={{gridTemplateColumns: '1fr auto 1fr'}} className="grid fixed left-0 right-0 z-10 md:mx-4 mx-2 my-2 py-1 xl:py-0 bg-base-300 rounded-box items-center justify-between flex-wrap bg-blue-dark px-4">
+            <div className="flex items-center flex-no-shrink text-white">
               <a
                 href="https://pentacle.xyz"
                 target="_blank"
@@ -49,7 +49,7 @@ export default function Home() {
                 />
               </a>
             </div>
-            <div className="xl:hidden w-1/4 flex">
+            <div className="xl:hidden w-1/4 flex col-start-4">
               <label
                 htmlFor="my-drawer"
                 id="app"
