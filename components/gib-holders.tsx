@@ -1,13 +1,9 @@
-import { Button, Divider, Form, Input, notification } from "antd";
+import { Form, notification } from "antd";
 import React, { useState } from "react";
 import { jsonValidator } from "../util/validators";
-import styles from "../styles/Home.module.css";
-import { DownloadOutlined } from "@ant-design/icons";
 import { getHolders } from "../util/get-holders";
 import { download } from "../util/download";
 import jsonFormat from "json-format";
-const { TextArea } = Input;
-
 export const GibHolders = ({ endpoint }) => {
   const [form] = Form.useForm();
   const [counter, setCounter] = useState(0);
@@ -39,44 +35,46 @@ export const GibHolders = ({ endpoint }) => {
 
   return (
     <>
-      <p>
-        Gib-Holders serves one purpose: To gib you holders from Solana Mint IDs.
-        It will return an object with holders, mints and amounts.
+      <div className="prose max-w-full text-center mb-3">
+        <h1 className="text-4xl">Holder Snapshot</h1>
+        <hr className="opacity-10 my-4" />
+      </div>
+      <p className="px-2 text-center">
+        This tools gives you a snapshot of holders from Solana Mint IDs. It will
+        return an object with holders, mints and amounts.
       </p>
-      <Divider />
-
-      <Form
-        form={form}
-        name="holders"
-        initialValues={{
-          holders: [],
-        }}
-        scrollToFirstError
-        className={`${styles["full-width"]} ${styles["d-flex"]} ${styles["flex-col"]}`}
-      >
-        <label style={{ marginBottom: "2rem" }}>
-          Please gib SOL mint IDs as JSON array to get their holders.
-        </label>
-        <Form.Item name="holders" rules={[jsonValidator(setJsonVal)]}>
-          <TextArea
-            rows={4}
-            className={`${styles.card} ${styles["full-width"]}`}
-          />
-        </Form.Item>
-
-        <Button
-          type="primary"
-          loading={loading}
-          shape="round"
-          disabled={!jsonVal || !jsonVal.length}
-          icon={<DownloadOutlined />}
-          size="large"
-          className={`${styles["d-block"]} ${styles["m-0-auto"]}`}
-          onClick={() => fetchHolders()}
+      <hr className="my-4 opacity-10" />
+      <div className="card bg-gray-900 max-w-full">
+        <Form
+          form={form}
+          name="holders"
+          initialValues={{
+            holders: [],
+          }}
+          scrollToFirstError
+          className={`w-full flex flex-col`}
         >
-          {loading ? `${counter} / ${jsonVal?.length}` : "Gib Holders!"}
-        </Button>
-      </Form>
+          <div className="card-body">
+            <label style={{ marginBottom: "2rem" }}>
+              Please gib SOL mint IDs as JSON array to get their holders.
+            </label>
+            <Form.Item name="holders" rules={[jsonValidator(setJsonVal)]}>
+              <textarea rows={4} className={`textarea w-full`} />
+            </Form.Item>
+            <div className="text-center">
+              <button
+                disabled={!jsonVal || !jsonVal.length}
+                className={`btn btn-primary rounded ${
+                  loading ? "loading" : ""
+                }`}
+                onClick={() => fetchHolders()}
+              >
+                {loading ? `${counter} / ${jsonVal?.length}` : "Gib Holders!"}
+              </button>
+            </div>
+          </div>
+        </Form>
+      </div>
     </>
   );
 };
