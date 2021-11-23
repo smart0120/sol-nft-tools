@@ -172,7 +172,7 @@ export default function ARUpload() {
       <div>
         <p className="px-2 text-center">
           This tool lets you upload files to arweave. Currently limited to 150mb total per batch of files. <br />
-          To reset the form please reload.
+          To reset the form please reload.  
           <br />
           <strong>
             Caution: Beta Version! Often files will have a delay before showing
