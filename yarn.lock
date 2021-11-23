@@ -673,7 +673,7 @@ anymatch@~3.1.1, anymatch@~3.1.2:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
 
-arbundles@^0.3.0:
+arbundles@0.3.2:
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/arbundles/-/arbundles-0.3.2.tgz#1a522ccc85e0c2ad2c5ac6ae0fb63e2f6f6e15dd"
   integrity sha512-A50a4ahkebggY2GEyMFDJqdwAYjEMhaYjiFUlpaNm5gyZnDfmDEo0IKQoikh8a81S44w5R2d1RdzQEmME+/zKg==
