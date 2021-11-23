@@ -33,7 +33,7 @@ export default function Home() {
         style={{ gridTemplateRows: "76px auto 76px" }}
       >
         <div className="w-full text-center">
-          <nav className="flex fixed left-0 right-0 z-10 mx-8 my-4 py-1 xl:py-0 bg-base-300 rounded-box items-center justify-between flex-wrap bg-blue-dark px-4">
+          <nav className="flex fixed left-0 right-0 z-10 md:mx-4 mx-2 my-2 py-1 xl:py-0 bg-base-300 rounded-box items-center justify-between flex-wrap bg-blue-dark px-4">
             <div className="flex items-center flex-no-shrink text-white mr-6 w-1/4">
               <a
                 href="https://pentacle.xyz"
@@ -67,7 +67,7 @@ export default function Home() {
               </label>
             </div>
             <ul
-              className="menu horizontal justify-center w-full flex-grow lg:items-center lg:w-auto hidden xl:flex  shadow-lg"
+              className="menu horizontal justify-center w-full flex-grow lg:items-center lg:w-auto hidden xl:flex shadow-lg"
               id="menu"
             >
               <li
