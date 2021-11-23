@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Divider, Form, notification } from "antd";
+import { Form, notification } from "antd";
 import { jsonValidator } from "../util/validators";
 import { getMeta } from "../util/get-meta";
 import { download } from "../util/download";
