@@ -36,7 +36,7 @@ export const GibStuckSol = ({ endpoint }) => {
         <hr className="opacity-10 my-4" />
       </div>
       <p className="px-2 text-center">
-        This tool finds out how much SOL you have stuck in candy machines.{" "}
+        This tool finds out how much SOL you have stuck in candy machine rents.{" "}
         <br />
         <a
           target="_blank"
@@ -69,11 +69,11 @@ export const GibStuckSol = ({ endpoint }) => {
               machines
             </label>
             <Form.Item name="mintIds" rules={[solAddressValidator]}>
-              <input className={`textarea w-full`} />
+              <input className={`textarea w-full shadow-lg`} />
             </Form.Item>
             <div className="text-center mt-4">
               <button
-                className={`btn btn-primary rounded ${loading ? "loading" : ""}`}
+                className={`btn btn-primary rounded shadow-lg ${loading ? "loading" : ""}`}
                 disabled={addressField?.errors?.length || !addressField}
                 onClick={() => fetchStuckSol()}
               >

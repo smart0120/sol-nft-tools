@@ -193,7 +193,7 @@ export default function ARUpload() {
         <div className="card bg-gray-900 max-w-full">
           {jwk && (
             <div className="card-body">
-              <div className="card bg-primary text-white">
+              <div className="card bg-primary text-white shadow-lg">
                 <div className="card-body p-4">
                   <div className="flex flex-row gap-5 items-center">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -202,7 +202,7 @@ export default function ARUpload() {
                       className="rounded-full w-14 h-14"
                       width="56"
                       height="56"
-                      alt=""
+                      alt="Arweave Logo"
                     />
                     <div>
                       Address:
@@ -243,7 +243,7 @@ export default function ARUpload() {
 
               <div className="text-center mt-4">
                 <button
-                  className={`btn btn-primary rounded ${
+                  className={`btn btn-primary rounded shadow-lg ${
                     loading ? "loading" : ""
                   }`}
                   disabled={!files.length}
@@ -280,11 +280,11 @@ export default function ARUpload() {
                       </h3>
                       <br />
                       <Form.Item name="key">
-                        <Input.TextArea rows={10} />
+                        <textarea className="textarea shadow-lg" rows={10} />
                       </Form.Item>
                       <div className="text-center">
                         <button
-                          className={`btn btn-primary rounded`}
+                          className={`btn btn-primary rounded shadow-lg`}
                           onClick={() => importKey()}
                         >
                           Import

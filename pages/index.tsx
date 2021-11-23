@@ -67,7 +67,7 @@ export default function Home() {
               </label>
             </div>
             <ul
-              className="menu horizontal justify-center w-full flex-grow lg:items-center lg:w-auto hidden xl:flex"
+              className="menu horizontal justify-center w-full flex-grow lg:items-center lg:w-auto hidden xl:flex  shadow-lg"
               id="menu"
             >
               <li
@@ -129,7 +129,7 @@ export default function Home() {
           </nav>
         </div>
 
-        <main className={`mt-12 px-3`} style={{ maxWidth: "100vw" }}>
+        <main className={`my-12 px-3`} style={{ maxWidth: "100vw" }}>
           <div className={styles["inner-container"]}>
             {selectedKeys[0] === "meta" && <GibMeta endpoint={endpoint} />}
             {selectedKeys[0] === "holders" && (
@@ -144,8 +144,8 @@ export default function Home() {
         </main>
 
         <footer
-          className={`border-t-2 grid gap-8 place-content-center px-8`}
-          style={{ gridTemplateColumns: "1fr auto 1fr" }}
+          className={`border-t-2 grid gap-8 place-content-center fixed left-0 right-0 bottom-0 px-8 py-2`}
+          style={{ gridTemplateColumns: "1fr auto 1fr", background: 'rgba(0,0,0,0.7)' }}
         >
           <div></div>
           <div className={`flex gap-6 items-center justify-center`}>
@@ -180,7 +180,7 @@ export default function Home() {
               ></i>
             </a>
           </div>
-          <span className="ml-auto hidden md:inline-block">
+          <span className="ml-auto hidden md:inline-flex justify-center">
             <SelectNetwork
               endpoint={endpoint}
               selectedKey={selectedKeys[0]}

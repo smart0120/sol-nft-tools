@@ -59,12 +59,12 @@ export const GibHolders = ({ endpoint }) => {
               Please gib SOL mint IDs as JSON array to get their holders.
             </label>
             <Form.Item name="holders" rules={[jsonValidator(setJsonVal)]}>
-              <textarea rows={4} className={`textarea w-full`} />
+              <textarea rows={4} className={`textarea w-full shadow-lg`} />
             </Form.Item>
             <div className="text-center">
               <button
                 disabled={!jsonVal || !jsonVal.length}
-                className={`btn btn-primary rounded ${
+                className={`btn btn-primary rounded shadow-lg ${
                   loading ? "loading" : ""
                 }`}
                 onClick={() => fetchHolders()}

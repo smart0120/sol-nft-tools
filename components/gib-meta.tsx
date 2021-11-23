@@ -62,12 +62,12 @@ export const GibMeta = ({ endpoint }) => {
               Please gib SOL mint IDs as JSON array to get their metadata
             </label>
             <Form.Item name="mintIds" rules={[jsonValidator(setJsonVal)]}>
-              <textarea rows={4} className={`textarea w-full`} />
+              <textarea rows={4} className={`textarea w-full shadow-lg`} />
             </Form.Item>
 
             <div className="text-center">
               <button
-                className={`btn btn-primary rounded ${
+                className={`btn btn-primary rounded shadow-lg ${
                   loading ? "loading" : ""
                 }`}
                 disabled={!jsonVal || !jsonVal.length}

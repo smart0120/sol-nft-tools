@@ -54,11 +54,11 @@ export const GibMints = ({ endpoint }) => {
               Please gib SOL address to get all mints
             </label>
             <Form.Item name="mintIds" rules={[solAddressValidator]}>
-              <input className="input" style={{ width: "100%" }} />
+              <input className="input shadow-lg" style={{ width: "100%" }} />
             </Form.Item>
             <div className="text-center">
               <button
-                className={`btn btn-primary rounded ${
+                className={`btn btn-primary rounded shadow-lg ${
                   loading ? "loading" : ""
                 }`}
                 disabled={addressField?.errors?.length || !addressField}

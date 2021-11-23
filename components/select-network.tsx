@@ -6,13 +6,13 @@ export function SelectNetwork({selectedKey, endpoint, setEndpoint}) {
 
   return (
     selectedKey !== "ar-links" && (
-      <div className="form-control" style={{ maxWidth: 400, margin: "0 auto" }}>
+      <div className="form-control justify-center">
         <select
           ref={selectRef}
           id="rpc"
           className="select ml-8"
           defaultValue={endpoint}
-          style={{ minWidth: 200 }}
+          style={{ minWidth: 200, minHeight: '2rem', height: '2rem' }}
           onChange={(e) => setEndpoint(e.target.value)}
         >
           {ENDPOINTS.map((ep) => (
