@@ -48,6 +48,7 @@ export const Meta = () => {
         crossOrigin="anonymous"
         referrerPolicy="no-referrer"
       />
+      <html data-theme="dark"/>
     </Head>
   );
 };
