@@ -1,13 +1,14 @@
 import Arweave from "arweave";
 import { JWKInterface } from "arweave/node/lib/wallet";
-import { useCallback, useEffect, useState } from "react";
-import { notification, Spin, Input, Form } from "antd";
+import React, { useCallback, useEffect, useState } from "react";
+import { notification, Form } from "antd";
 import { FileUpload } from "./file-upload";
 import { download } from "../util/download";
 import jsonFormat from "json-format";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { makeArweaveBundleUploadGenerator } from "../util/upload-arweave-bundles/upload-generator";
 import { shortenAddress } from "../util/shorten-address";
+import { Spinner } from "./spinner";
 
 export const arweave = Arweave.init({
   host: "arweave.net",
@@ -172,16 +173,19 @@ export default function ARUpload() {
         <p className="px-2 text-center">
           This tool lets you upload files to arweave. Please make sure to use
           files <strong>smaller than 250mb</strong>.
-          
           <br />
-           <strong>Caution: Beta Version! Often files will have a delay before showing up behind the URL. </strong>
-           <strong>Make sure to check on them before using in production!</strong>
+          <strong>
+            Caution: Beta Version! Often files will have a delay before showing
+            up behind the URL.{" "}
+          </strong>
+          <strong>
+            Make sure to check on them before using in production!
+          </strong>
           <br />
           <hr className="my-3 opacity-10" />
           <br />
           Send some AR to this wallet to start uploading. You can download and
-          empty the wallet later. 
-          
+          empty the wallet later.
           <br /> You can get AR on{" "}
           <a
             href="https://binance.com"
@@ -219,7 +223,7 @@ export default function ARUpload() {
                       <p>
                         Balance:{" "}
                         {balance === "none" ? (
-                          <Spin style={{ marginLeft: "1rem" }} />
+                          <Spinner/>
                         ) : (
                           balance
                         )}
@@ -282,7 +286,10 @@ export default function ARUpload() {
                       </h3>
                       <br />
                       <Form.Item name="key">
-                        <textarea className="textarea shadow-lg w-full" rows={10} />
+                        <textarea
+                          className="textarea shadow-lg w-full"
+                          rows={10}
+                        />
                       </Form.Item>
                       <div className="text-center">
                         <button
