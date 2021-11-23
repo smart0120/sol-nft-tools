@@ -171,8 +171,13 @@ export default function ARUpload() {
       <div>
         <p className="px-2 text-center">
           This tool lets you upload files to arweave. Please make sure to use
-          files <strong>smaller than 250mb</strong>. Caution: Beta Version! It
-          is possible that some files may fail to upload without error.
+          files <strong>smaller than 250mb</strong>.
+          
+          <br />
+           <strong>Caution: Beta Version! Often files will have a delay before showing up behind the URL. </strong>
+           <strong>Make sure to check on them before using in production!</strong>
+          <br />
+          <hr className="my-3 opacity-10" />
           <br />
           Send some AR to this wallet to start uploading. You can download and
           empty the wallet later. 
