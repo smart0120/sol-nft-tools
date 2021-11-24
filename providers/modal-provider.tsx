@@ -18,6 +18,7 @@ export function ModalProvider({ children }) {
         id="my-modal-2"
         checked={modalState.open}
         className="modal-toggle"
+        readOnly
       />
       <div className="modal">
         <div className="modal-box">

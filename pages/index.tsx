@@ -9,7 +9,6 @@ import { GibStuckSol } from "../components/gib-stuck-sol";
 import { SelectNetwork } from "../components/select-network";
 
 export default function Home() {
-  const [menuToggled, setMenuToggled] = useState(false);
   const router = useRouter();
   const [selectedKeys, setSelectedKeys] = useState([
     (router.query?.mode as string) || "mints",
@@ -27,12 +26,7 @@ export default function Home() {
 
   return (
     <div className="drawer drawer-end">
-      <input
-        id="my-drawer"
-        type="checkbox"
-        checked={menuToggled}
-        className="drawer-toggle"
-      />
+      <input id="my-drawer" type="checkbox" className="drawer-toggle" />
       <div
         className="h-screen grid drawer-content"
         style={{ gridTemplateRows: "76px auto 76px" }}
@@ -40,8 +34,8 @@ export default function Home() {
         <div className="w-full text-center">
           <nav
             style={{ gridTemplateColumns: "1fr auto 1fr" }}
-            className="grid fixed left-0 right-0 
-            z-10 md:mx-4 mx-2 my-2 py-1 xl:py-0 px-4 
+            className="grid fixed left-0 right-0 max-w-6xl
+            z-10 xl:mx-auto mx-4 my-2 py-1 xl:py-0 px-4 
             bg-base-300 rounded-box items-center justify-between 
             flex-wrap bg-blue-darkshadow-lg"
           >
@@ -61,20 +55,8 @@ export default function Home() {
               </a>
             </div>
             <div className="xl:hidden w-1/4 flex col-start-4">
-              <label
-                htmlFor="my-drawer"
-                id="app"
-                onClick={() => setMenuToggled(!menuToggled)}
-                className="flex items-center ml-auto px-3 py-2 border rounded text-white focus:outline-none border-white"
-              >
-                <svg
-                  className="fill-current h-4 w-3 -mt-1 text-white"
-                  viewBox="0 0 20 15"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <title>Menu</title>
-                  <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
-                </svg>
+              <label htmlFor="my-drawer" id="app" className="btn">
+                <i className="fas fa-bars"></i>
               </label>
             </div>
             <ul
@@ -224,92 +206,100 @@ export default function Home() {
           </li>
           <li
             onClick={() => {
-              setMenuToggled(!menuToggled);
               setRoute("mints");
             }}
             key="mints"
           >
-            <a
-              href="#"
-              className={`${
-                selectedKeys[0] === "mints" ? "bg-gray-600" : ""
-              } py-4 inline-block`}
+            <label
+              htmlFor="my-drawer"
+              className={
+                (selectedKeys[0] === "mints" ? "bg-gray-600" : "") +
+                " py-4 inline-block btn btn-ghost text-left normal-case"
+              }
             >
               Get Mint IDs
-            </a>
+            </label>
           </li>
           <li
             onClick={() => {
-              setMenuToggled(!menuToggled);
               setRoute("meta");
             }}
             key="meta"
           >
-            <a
-              href="#"
-              className={`${
-                selectedKeys[0] === "meta" ? "bg-gray-600" : ""
-              } py-4 inline-block`}
+            <label
+              htmlFor="my-drawer"
+              className={
+                (selectedKeys[0] === "meta" ? "bg-gray-600" : "") +
+                " py-4 inline-block btn btn-ghost text-left normal-case"
+              }
             >
               Token Metadata
-            </a>
+            </label>
           </li>
           <li
             onClick={() => {
-              setMenuToggled(!menuToggled);
               setRoute("holders");
             }}
             key="holders"
           >
-            <a
-              href="#"
-              className={`${
-                selectedKeys[0] === "holders" ? "bg-gray-600" : ""
-              } py-4 inline-block`}
+            <label
+              htmlFor="my-drawer"
+              className={
+                (selectedKeys[0] === "holders" ? "bg-gray-600" : "") +
+                " py-4 inline-block btn btn-ghost text-left normal-case"
+              }
             >
               Holder Snapshot
-            </a>
+            </label>
           </li>
           <li
             onClick={() => {
-              setMenuToggled(!menuToggled);
               setRoute("stuck-sol");
             }}
             key="stuck-sol"
           >
-            <a
-              href="#"
-              className={`${
-                selectedKeys[0] === "stuck-sol" ? "bg-gray-600" : ""
-              } py-4 inline-block`}
+            <label
+              htmlFor="my-drawer"
+              className={
+                (selectedKeys[0] === "stuck-sol" ? "bg-gray-600" : "") +
+                " py-4 inline-block btn btn-ghost text-left normal-case"
+              }
             >
               Find Stuck SOL
-            </a>
+            </label>
           </li>
           <li
             onClick={() => {
-              setMenuToggled(!menuToggled);
               setRoute("ar-links");
             }}
             key="ar-links"
           >
-            <a
-              href="#"
+            <label
+              htmlFor="my-drawer"
               className={
                 (selectedKeys[0] === "ar-links" ? "bg-gray-600" : "") +
-                " py-4 inline-block"
+                " py-4 inline-block btn btn-ghost text-left normal-case"
               }
             >
               Arweave Upload (Beta)
-            </a>
+            </label>
           </li>
           <li key="">
             <a
               href="https://solsned.vercel.app"
               target="_blank"
               rel="noreferrer"
+              className="p-0"
             >
-              SolSned
+              <label
+                htmlFor="my-drawer"
+                className={
+                  (selectedKeys[0] === "ar-links" ? "bg-gray-600" : "") +
+                  " py-4 inline-block btn btn-ghost text-left normal-case w-full"
+                }
+              >
+                SolSned
+              </label>
             </a>
           </li>
         </ul>
