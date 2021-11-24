@@ -205,7 +205,7 @@ export default function ARUpload() {
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src="arweave-logo.jpeg"
-                      className="rounded-full w-14 h-14"
+                      className="rounded-full w-14 h-14 shadow-lg"
                       width="56"
                       height="56"
                       alt="Arweave Logo"
@@ -234,7 +234,7 @@ export default function ARUpload() {
                       <div className="btn-group">
                         <a href={`https://viewblock.io/arweave/address/${address}`} target="_blank" rel="noreferrer">
                           <button
-                            className="btn btn-circle btn-sm"
+                            className="btn btn-circle btn-sm shadow-lg"
                           >
                             <i className="fa fa-external-link-alt"></i>
                           </button>
