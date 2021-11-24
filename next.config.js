@@ -6,6 +6,9 @@ module.exports = {
     }
     return config;
   },
+  images: {
+    domains: ['arweave.net'],
+  },
   async rewrites() {
     return [
       {

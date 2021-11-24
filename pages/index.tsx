@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { GibHolders } from "../components/gib-holders";
 import { GibMints } from "../components/gib-mints";
@@ -44,12 +45,12 @@ export default function Home() {
                 href="https://pentacle.xyz"
                 target="_blank"
                 rel="noreferrer noopener"
-                className="py-2"
+                className="py-2 grid place-content-center"
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src="https://arweave.net/a1OuQE2NlH9lny36lmVtYg0NRV0Dxglgb_6MU4BCX4Y"
-                  style={{ width: 180 }}
+                  width={180}
+                  height={40}
                   alt="Pentacle Logo"
                 />
               </a>
@@ -108,7 +109,7 @@ export default function Home() {
                   Arweave Upload (Beta)
                 </a>
               </li>
-              <li key="">
+              <li>
                 <a
                   href="https://solsned.vercel.app"
                   target="_blank"
@@ -188,19 +189,19 @@ export default function Home() {
 
       <div className="drawer-side">
         <label htmlFor="my-drawer" className="drawer-overlay"></label>
-        <ul className="menu p-4 overflow-y-auto w-80 bg-base-100 text-base-content">
+        <ul className="menu p-4 overflow-y-auto w-80 bg-base-100 text-base-content gap-2">
           <li>
             <a
               href="https://pentacle.xyz"
               target="_blank"
               rel="noreferrer noopener"
-              className="py-2"
+              className="py-2 hover:bg-opacity-0 focus:bg-opacity-0"
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src="https://arweave.net/a1OuQE2NlH9lny36lmVtYg0NRV0Dxglgb_6MU4BCX4Y"
-                style={{ width: 180 }}
-                alt=""
+                width={180}
+                height={40}
+                alt="Pentacle Logo"
               />
             </a>
           </li>
@@ -291,14 +292,10 @@ export default function Home() {
               rel="noreferrer"
               className="p-0"
             >
-              <label
-                htmlFor="my-drawer"
-                className={
-                  (selectedKeys[0] === "ar-links" ? "bg-gray-600" : "") +
-                  " py-4 inline-block btn btn-ghost text-left normal-case w-full"
-                }
-              >
-                SolSned
+              <label className="py-4 btn btn-ghost text-left normal-case w-full flex flex-row justify-between">
+                <span>SolSned</span>
+
+                <i className="fas fa-external-link-square-alt"></i>
               </label>
             </a>
           </li>
