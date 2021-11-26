@@ -49,6 +49,7 @@ export const Meta = () => {
         referrerPolicy="no-referrer"
       />
       <html data-theme="dark"/>
+      <link rel="stylesheet" href="https://use.typekit.net/aqh6ylh.css"></link>
     </Head>
   );
 };
