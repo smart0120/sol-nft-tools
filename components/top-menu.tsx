@@ -3,11 +3,23 @@ import Image from "next/image";
 import React from "react";
 import { useRouter } from "next/router";
 
-export default function TopMenu () {
+export default function TopMenu() {
   const router = useRouter();
   const { asPath } = router;
-  const getClass = (path) => (asPath === `/${path}` ? "bordered" : "");
-  
+  const getClass = (path) => (asPath === path ? "border-b-2" : "");
+
+  const TopMenuLink = ({ path, children }) => {
+    return (
+      <li className={getClass(path) + " border-primary-focus"}>
+        <Link href={{ pathname: path }} passHref>
+          <a className="py-4 border-0">
+            <span className="border-0">{children}</span>
+          </a>
+        </Link>
+      </li>
+    );
+  };
+
   return (
     <div className="w-full text-center">
       <nav
@@ -42,34 +54,33 @@ export default function TopMenu () {
           className="menu horizontal justify-center w-full flex-grow lg:items-center lg:w-auto hidden xl:flex"
           id="menu"
         >
-          <li className={getClass("get-mints")} key="mints">
-            <Link href={{ pathname: "/get-mints" }}>
-              <a>Get Mint IDs</a>
-            </Link>
-          </li>
-          <li className={getClass("get-meta")}>
-            <Link href={{ pathname: "/get-meta" }}>
-              <a>Token Metadata</a>
-            </Link>
-          </li>
-          <li className={getClass("get-holders")} key="holders">
-            <Link href={{ pathname: "/get-holders" }}>Holder Snapshot</Link>
-          </li>
-          <li className={getClass("find-stuck-sol")}>
-            <Link href={{ pathname: "/find-stuck-sol" }}>Find Stuck SOL</Link>
-          </li>
-          <li className={getClass("get-ar-links")}>
-            <Link href={{ pathname: "/get-ar-links" }}>
-              Arweave Upload (Beta)
-            </Link>
-          </li>
+          <TopMenuLink path="/get-mints">
+            <span>Get Mint IDs</span>
+          </TopMenuLink>
+          <TopMenuLink path="/get-meta">
+            <span>Token Metadata</span>
+          </TopMenuLink>
+          <TopMenuLink path="/get-holders">
+            <span>Holder Snapshot</span>
+          </TopMenuLink>
+          <TopMenuLink path="/find-stuck-sol">
+            <span>Find Stuck SOL</span>
+          </TopMenuLink>
+          <TopMenuLink path="/get-ar-links">
+            <span>Arweave Upload (Beta)</span>
+          </TopMenuLink>
           <li>
             <a
               href="https://solsned.vercel.app"
               target="_blank"
               rel="noreferrer"
+              className="py-4"
             >
-              SolSned
+              <div className="text-left normal-case w-full flex flex-row justify-between">
+                <span>SnedMaster 9000</span>
+
+                <i className="fas fa-external-link-square-alt ml-6"></i>
+              </div>
             </a>
           </li>
         </ul>

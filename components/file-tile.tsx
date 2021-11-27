@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { fileToBase64 } from "../util/file-to-base64";
 import { sizeMB } from "../util/upload-arweave-bundles/upload-generator";
 
-
 interface FileTileState {
   file: File;
   remove: (name: string) => void;
@@ -27,18 +26,24 @@ export default function FileTile({ file, remove }: FileTileState) {
             : null,
         }}
       >
-        <div className="absolute inset-0 opacity-75 bg-black"></div>
+        <div className="absolute inset-0 opacity-80 bg-black"></div>
         <div className="card-body p-3 z-10">
           <div className="card-title text-base overflow-ellipsis overflow-hidden">
             {file.name}
           </div>
-          <div className="ml-auto mt-auto">
-            <span className="border px-2 inline rounded-box text-xs">
+          <div className="mt-auto flex flex-wrap gap-3 justify-between">
+            <span
+              className="bg-gray-900 text-white px-2 inline rounded-box text-xs overflow-ellipsis overflow-hidden shadow-md"
+              style={{ maxWidth: "50%", letterSpacing: 1.25 }}
+            >
               {sizeMB(file.size).toFixed(2)} MB
             </span>
 
             {!!file.type.trim() && (
-              <span className="border px-2 inline rounded-box text-xs ml-2">
+              <span
+                className="bg-gray-800 text-white px-2 inline rounded-box text-xs overflow-ellipsis overflow-hidden shadow-md"
+                style={{ maxWidth: "50%", letterSpacing: 1.25 }}
+              >
                 {file.type.split("/")[1]}
               </span>
             )}
