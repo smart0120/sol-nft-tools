@@ -1,4 +1,3 @@
-import { PublicKey } from "@solana/web3.js";
 import { toPublicKey } from "./to-publickey";
 
 export const getAddresses = (str: string): string[] => {

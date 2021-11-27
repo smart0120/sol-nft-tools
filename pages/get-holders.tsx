@@ -23,8 +23,8 @@ export default function GetHolders() {
   const { endpoint } = useEndpoint();
 
   const fetchHolders = useCallback(
-    ({ holders }: { holders: string }) => {
-      const parsed = getAddresses(holders);
+    ({ mints }: { mints: string }) => {
+      const parsed = getAddresses(mints);
       setAlertState({
         message: "Downloading your data.",
         open: true,
