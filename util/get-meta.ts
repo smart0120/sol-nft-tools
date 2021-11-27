@@ -219,7 +219,7 @@ const createJsonObject = async (
 ): Promise<unknown> => {
   const tokenMetadata = await getMetadata(new anchor.web3.PublicKey(key), url);
   if (!tokenMetadata?.data?.uri) {
-    mints.push({ mint: key, failed: true, message: "no assoiated metadata found" });
+    mints.push({ mint: key, failed: true, message: "no associated metadata found" });
     return Promise.resolve();
   }
   const arweaveData = await fetch(tokenMetadata.data.uri)
