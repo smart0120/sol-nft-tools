@@ -49,8 +49,7 @@ a {
   @apply flex;
   @apply flex-col;
   @apply items-center;
-  @apply px-4;
-  @apply py-6;
+  @apply p-4;
   @apply rounded-md;
   @apply shadow-md;
   @apply tracking-wide;
@@ -64,4 +63,5 @@ a {
   @apply ease-linear;
   @apply transition-all;
   @apply duration-150;
+  @apply min-h-full;
 }

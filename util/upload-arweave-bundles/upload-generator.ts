@@ -26,7 +26,7 @@ const BUNDLE_SIZE_BYTE_LIMIT = 100 * 1000 * 1000;
 /**
  * Simplistic helper to convert a bytes value to its MB counterpart.
  */
-function sizeMB(bytes: number): number {
+export function sizeMB(bytes: number): number {
   return bytes / (1000 * 1000);
 }
 

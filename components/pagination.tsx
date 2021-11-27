@@ -30,7 +30,7 @@ export const Pagination = ({ pageSize, total, currentPage, setPage }) => {
     );
   }
   return (
-    <div className="btn-group">
+    <div className="btn-group justify-center">
       {currentPage + 1 < 5 &&
         getRange(5, 0).map((i) => (
           <PaginationButton

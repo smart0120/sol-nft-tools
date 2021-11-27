@@ -191,8 +191,8 @@ export default function GetARLinks() {
         </p>
         <hr className="opacity-10 my-4" />
         <div
-          className="card bg-primary text-white shadow-lg max-w-full"
-          style={{ margin: "0 auto", width: 400 }}
+          className="card bg-primary text-white shadow-lg max-w-full mx-auto"
+          style={{ width: 400 }}
         >
           <div className="card-body p-4">
             <div className="flex flex-row gap-5 items-center">
