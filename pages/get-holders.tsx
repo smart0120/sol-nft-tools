@@ -1,4 +1,3 @@
-import { notification } from "antd";
 import React, { useCallback, useContext, useState } from "react";
 import { getHolders } from "../util/get-holders";
 import { download } from "../util/download";
@@ -9,7 +8,7 @@ import { getAddresses, validateSolAddressArray } from "../util/validators";
 import { useEndpoint } from "../hooks/use-endpoint";
 import { AlertContext } from "../providers/alert-provider";
 
-export default function GibHolders() {
+export default function GetHolders() {
   const {
     register,
     handleSubmit,
