@@ -3,7 +3,7 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import { FileUpload } from "../components/file-upload";
 import { download } from "../util/download";
 import jsonFormat from "json-format";
-import Image from 'next/image';
+import Image from "next/image";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { makeArweaveBundleUploadGenerator } from "../util/upload-arweave-bundles/upload-generator";
 import { Spinner } from "../components/spinner";
@@ -55,6 +55,7 @@ export default function GetARLinks() {
 
   const generate = useCallback(async () => {
     const jwk = await generateArweaveWallet();
+    debugger;
     localStorage.setItem("arweave-key", JSON.stringify(jwk));
     const _address = await getKeyForJwk(jwk);
     setAddress(_address);
@@ -63,20 +64,21 @@ export default function GetARLinks() {
   useEffect(() => {
     (async () => {
       const previousKey = localStorage.getItem("arweave-key");
+      if (!previousKey) {
+        return;
+      }
       if (!address) {
         try {
-          const parsed = JSON.parse(previousKey) || await generateArweaveWallet();
-          localStorage.setItem("arweave-key", JSON.stringify(parsed));
+          const parsed = JSON.parse(previousKey);
           setJwk(parsed);
-          const _address = await getKeyForJwk(previousKey);
+          const _address = await getKeyForJwk(parsed);
           setAddress(_address);
         } catch (e) {
           console.log(e);
-          generate();
         }
       }
     })();
-  }, [address, generate]);
+  }, [address]);
 
   const upload = useCallback(async () => {
     setLoading(true);
@@ -125,35 +127,38 @@ export default function GetARLinks() {
     return () => clearInterval(interval);
   }, [address, balance]);
 
-  const importKey = useCallback(async (key) => {
-    const arweave = getArweave();
-    try {
-      const parsed = JSON.parse(key);
-      const addr = await arweave?.wallets.jwkToAddress(parsed);
-      setJwk(parsed);
-      setAddress(addr);
-      localStorage.setItem("arweave-key", key);
-      setAlertState({
-        message: "Successfully imported key!",
-        open: true,
-        duration: 3000
-      });
-    } catch (e) {
-      setAlertState({
-        message: "Key could not be imported!",
-        open: true,
-        duration: 3000,
-        severity: 'error'
-      });
-    }
-  }, [setAlertState]);
+  const importKey = useCallback(
+    async (key) => {
+      const arweave = getArweave();
+      try {
+        const parsed = JSON.parse(key);
+        const addr = await arweave?.wallets.jwkToAddress(parsed);
+        setJwk(parsed);
+        setAddress(addr);
+        localStorage.setItem("arweave-key", key);
+        setAlertState({
+          message: "Successfully imported key!",
+          open: true,
+          duration: 3000,
+        });
+      } catch (e) {
+        setAlertState({
+          message: "Key could not be imported!",
+          open: true,
+          duration: 3000,
+          severity: "error",
+        });
+      }
+    },
+    [setAlertState]
+  );
 
   const clipboardNotification = useCallback(() => {
     setAlertState({
-      message: 'Copied to clipboard!',
+      message: "Copied to clipboard!",
       duration: 2000,
-      open: true
-    })
+      open: true,
+    });
   }, [setAlertState]);
 
   const onSubmit = handleSubmit(({ key }) => importKey(key));
@@ -191,48 +196,110 @@ export default function GetARLinks() {
           </a>
         </p>
         <hr className="opacity-10 my-4" />
-        <div
-          className="card bg-primary text-white shadow-lg max-w-full mx-auto"
-          style={{ width: 400 }}
-        >
-          <div className="card-body p-4">
-            <div className="flex flex-row gap-5 items-center">
-              <Image
-                src="https://arweave.net/eFp_2l3aNmSnMrrCLTe_7ZDkzcVEdAqMLJj9tiPhs2s"
-                className="rounded-full w-14 h-14 shadow-lg"
-                width="56"
-                height="56"
-                alt="Arweave Logo"
-              />
-              <div>
-                Address:
-                <CopyToClipboard text={address} onCopy={clipboardNotification}>
-                  <span className={`cursor-pointer ml-1`}>
-                    {shortenAddress(address)}
-                  </span>
-                </CopyToClipboard>
-                <p>
-                  Balance:{" "}
-                  {balance === "none" ? <Spinner /> : (+balance).toFixed(6)}
-                </p>
-              </div>
-
-              <div className="ml-auto">
-                <div className="btn-group">
-                  <a
-                    href={`https://viewblock.io/arweave/address/${address}`}
-                    target="_blank"
-                    rel="noreferrer"
+        {!jwk && (
+          <div className="card bg-gray-900">
+            <div className="card-body">
+              <form className="flex flex-col" onSubmit={onSubmit}>
+                <button
+                  className={`btn btn-primary rounded-box inline-block mx-auto mb-3 ${
+                    loading ? "loading" : ""
+                  }`}
+                  onClick={() => generate()}
+                >
+                  Generate Wallet
+                </button>
+                <div className="text-center">Or</div>
+                <label htmlFor="key" className="label">
+                  Import Wallet (JWK JSON)
+                </label>
+                <textarea
+                  {...register("key")}
+                  className="textarea shadow-lg w-full"
+                  rows={10}
+                  id="key"
+                />
+                <div className="text-center mt-6">
+                  <button
+                    className={`btn btn-primary rounded-box shadow-lg`}
+                    type="submit"
                   >
-                    <button className="btn btn-circle btn-sm shadow-lg">
-                      <i className="fa fa-external-link-alt"></i>
+                    Import
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+        {jwk && (
+          <div
+            className="card bg-primary text-white shadow-lg max-w-full mx-auto"
+            style={{ width: 400 }}
+          >
+            <div className="card-body p-4">
+              <div className="flex flex-row gap-5 items-center">
+                <Image
+                  src="https://arweave.net/eFp_2l3aNmSnMrrCLTe_7ZDkzcVEdAqMLJj9tiPhs2s"
+                  className="rounded-full w-14 h-14 shadow-lg"
+                  width="56"
+                  height="56"
+                  alt="Arweave Logo"
+                />
+                <div>
+                  Address:
+                  <CopyToClipboard
+                    text={address}
+                    onCopy={clipboardNotification}
+                  >
+                    <span className={`cursor-pointer ml-1`}>
+                      {shortenAddress(address)}
+                    </span>
+                  </CopyToClipboard>
+                  <p>
+                    Balance:{" "}
+                    {balance === "none" ? <Spinner /> : (+balance).toFixed(6)}
+                  </p>
+                </div>
+
+                <div className="ml-auto">
+                  <div className="btn-group">
+                    <button
+                      onClick={() => {
+                        if (
+                          !confirm(
+                            "Are you sure you want to delete this key? Make sure you have a backup!"
+                          )
+                        ) {
+                          return;
+                        }
+                        setJwk(undefined);
+                        localStorage.removeItem("arweave-key");
+                      }}
+                      className="btn btn-circle btn-sm shadow-lg"
+                    >
+                      <i className="fa fa-trash"></i>
                     </button>
-                  </a>
+                    <button
+                      onClick={() =>
+                        download(`arweave-${address}.json`, jsonFormat(jwk))
+                      }
+                      className="btn btn-circle btn-sm shadow-lg"
+                    >
+                      <i className="fa fa-download"></i>
+                    </button>
+                    <a
+                      href={`https://viewblock.io/arweave/address/${address}`}
+                      target="_blank"
+                      className="btn btn-circle btn-sm shadow-lg"
+                      rel="noreferrer"
+                    >
+                      <i className="fa fa-external-link-alt"></i>
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
         <hr className="opacity-10 my-4" />
 
         <div className="card bg-gray-900 max-w-full">
@@ -256,46 +323,6 @@ export default function GetARLinks() {
                   <br />
                 </div>
               )}
-            </div>
-          )}
-          {!jwk && (
-            <div className="card">
-              <div className="card-body">
-                <form onSubmit={onSubmit}>
-                  <h3 className="text-center">No Wallet found.</h3>
-                  <hr className="opacity-10 my-4" />
-                  <button
-                    className={`btn btn-primary rounded-box inline-block mx-auto ${
-                      loading ? "loading" : ""
-                    }`}
-                    onClick={() => generate()}
-                  >
-                    Generate Wallet
-                  </button>
-                  <div className="text-center">Or</div>
-                  <br />
-                  <div className="card">
-                    <div className="card-body">
-                      <h3 className="text-center">Import Wallet (JWK JSON)</h3>
-                      <br />
-
-                      <textarea
-                        {...register("key")}
-                        className="textarea shadow-lg w-full"
-                        rows={10}
-                      />
-                      <div className="text-center">
-                        <button
-                          className={`btn btn-primary rounded-box shadow-lg`}
-                          type="submit"
-                        >
-                          Import
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </div>
             </div>
           )}
         </div>
