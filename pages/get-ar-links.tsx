@@ -195,13 +195,12 @@ export default function GetARLinks() {
             Binance
           </a>
         </p>
-        <hr className="opacity-10 my-4" />
         {!jwk && (
-          <div className="card bg-gray-900">
+          <div className="card bg-gray-900 mt-4">
             <div className="card-body">
               <form className="flex flex-col" onSubmit={onSubmit}>
                 <button
-                  className={`btn btn-primary rounded-box inline-block mx-auto mb-3 ${
+                  className={`btn btn-primary rounded-box inline-block mx-auto mb-3 shadow-lg ${
                     loading ? "loading" : ""
                   }`}
                   onClick={() => generate()}
@@ -300,17 +299,16 @@ export default function GetARLinks() {
             </div>
           </div>
         )}
-        <hr className="opacity-10 my-4" />
 
-        <div className="card bg-gray-900 max-w-full">
-          {jwk && (
+        {jwk && (
+          <div className="card bg-gray-900 max-w-full">
             <div className="card-body">
               <div className="mt-4">
                 <FileUpload />
               </div>
 
               {!!files.length && (
-                <div className="text-center mt-4">
+                <div className="text-center mt-6">
                   <button
                     className={`btn btn-primary rounded-box shadow-lg ${
                       loading ? "loading" : ""
@@ -324,8 +322,8 @@ export default function GetARLinks() {
                 </div>
               )}
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </>
   );

@@ -92,7 +92,7 @@ export default function GibStuckSol() {
                 {errors?.address?.message}
               </label>
             )}
-            <div className="text-center mt-4">
+            <div className="text-center mt-6">
               <button
                 className={`btn btn-primary rounded-box shadow-lg ${
                   loading ? "loading" : ""
