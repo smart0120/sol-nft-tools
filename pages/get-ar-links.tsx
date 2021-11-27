@@ -198,7 +198,7 @@ export default function GetARLinks() {
           <div className="card-body p-4">
             <div className="flex flex-row gap-5 items-center">
               <Image
-                src="https://arweave.net/eFp_2l3aNmSnMrrCLTe_7ZDkzcVEdAqMLJj9tiPhs2"
+                src="https://arweave.net/eFp_2l3aNmSnMrrCLTe_7ZDkzcVEdAqMLJj9tiPhs2s"
                 className="rounded-full w-14 h-14 shadow-lg"
                 width="56"
                 height="56"
