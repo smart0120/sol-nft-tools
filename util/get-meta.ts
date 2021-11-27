@@ -1,7 +1,6 @@
 import base58 from "bs58";
 import { deserializeUnchecked, BinaryReader, BinaryWriter } from "borsh";
-import { PublicKey } from "@solana/web3.js";
-import * as anchor from "@project-serum/anchor";
+import { Connection, PublicKey } from "@solana/web3.js";
 export const METADATA_PREFIX = "metadata";
 import { from, map, mergeMap, tap, toArray } from "rxjs";
 import { programIds } from "./accounts";
@@ -202,7 +201,7 @@ async function getMetadataKey(
 }
 
 async function fetchMetadataFromPDA(pubkey: PublicKey, url: string) {
-  const connection = new anchor.web3.Connection(url);
+  const connection = new Connection(url);
   const metadataKey = await getMetadataKey(pubkey.toBase58());
   const metadataInfo = await connection.getAccountInfo(
     toPublicKey(metadataKey)
@@ -217,7 +216,7 @@ const createJsonObject = async (
   key: string,
   setCounter: Function
 ): Promise<unknown> => {
-  const tokenMetadata = await getMetadata(new anchor.web3.PublicKey(key), url);
+  const tokenMetadata = await getMetadata(toPublicKey(key), url);
   if (!tokenMetadata?.data?.uri) {
     mints.push({ mint: key, failed: true, message: "no associated metadata found" });
     return Promise.resolve();
@@ -234,7 +233,7 @@ const createJsonObject = async (
       creators: tokenMetadata.data.creators.map((d) => {
         return {
           share: d.share,
-          address: new PublicKey(d.address).toBase58(),
+          address: toPublicKey(d.address).toBase58(),
           verified: !!d.verified,
         };
       }),

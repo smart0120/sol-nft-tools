@@ -1,14 +1,13 @@
-import { PublicKey } from "@solana/web3.js";
+import { Connection, PublicKey } from "@solana/web3.js";
 import { deserializeUnchecked } from "borsh";
 import jsonFormat from "json-format";
-import * as anchor from "@project-serum/anchor";
 import { download } from "./download";
 import { METADATA_PROGRAM_ID } from "./accounts";
 import { toPublicKey } from "./to-publickey";
 import { Metadata, METADATA_SCHEMA } from "./metadata-schema";
 
 export const getMints = async (creatorId: string, url: string) => {
-  const connection = new anchor.web3.Connection(url);
+  const connection = new Connection(url);
   const a = await connection.getProgramAccounts(
     toPublicKey(METADATA_PROGRAM_ID),
     {
