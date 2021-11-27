@@ -55,7 +55,7 @@ export function FileUpload() {
               </span>
               <input
                 type="file"
-                // @ts-ignore4
+                // @ts-ignore
                 webkitdirectory="true"
                 multiple
                 onChange={listContents}
