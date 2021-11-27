@@ -3,6 +3,7 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import { FileUpload } from "../components/file-upload";
 import { download } from "../util/download";
 import jsonFormat from "json-format";
+import Image from 'next/image';
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { makeArweaveBundleUploadGenerator } from "../util/upload-arweave-bundles/upload-generator";
 import { Spinner } from "../components/spinner";
@@ -196,9 +197,8 @@ export default function GetARLinks() {
         >
           <div className="card-body p-4">
             <div className="flex flex-row gap-5 items-center">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="arweave-logo.jpeg"
+              <Image
+                src="https://arweave.net/eFp_2l3aNmSnMrrCLTe_7ZDkzcVEdAqMLJj9tiPhs2"
                 className="rounded-full w-14 h-14 shadow-lg"
                 width="56"
                 height="56"
@@ -207,7 +207,7 @@ export default function GetARLinks() {
               <div>
                 Address:
                 <CopyToClipboard text={address} onCopy={clipboardNotification}>
-                  <span className={` cursor-pointer ml-1`}>
+                  <span className={`cursor-pointer ml-1`}>
                     {shortenAddress(address)}
                   </span>
                 </CopyToClipboard>

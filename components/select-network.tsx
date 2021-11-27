@@ -6,11 +6,10 @@ import { ENDPOINTS } from "../util/endpoints";
 export function SelectNetwork() {
   const router = useRouter();
   const { endpoint, setEndpoint } = useEndpoint();
-  const selectedKey = router.pathname;
   const selectRef = useRef<HTMLSelectElement>();
 
   return (
-    selectedKey !== "ar-links" && (
+    router.pathname !== "/get-ar-links" && (
       <div className="form-control justify-center">
         <select
           ref={selectRef}
