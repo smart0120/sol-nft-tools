@@ -1,7 +1,12 @@
+import { useRouter } from "next/router";
 import { useRef } from "react";
+import { useEndpoint } from "../hooks/use-endpoint";
 import { ENDPOINTS } from "../util/endpoints";
 
-export function SelectNetwork({selectedKey, endpoint, setEndpoint}) {
+export function SelectNetwork() {
+  const router = useRouter();
+  const { endpoint, setEndpoint } = useEndpoint();
+  const selectedKey = router.pathname;
   const selectRef = useRef<HTMLSelectElement>();
 
   return (
@@ -12,7 +17,7 @@ export function SelectNetwork({selectedKey, endpoint, setEndpoint}) {
           id="rpc"
           className="select ml-8"
           defaultValue={endpoint}
-          style={{ minWidth: 200, minHeight: '2rem', height: '2rem' }}
+          style={{ minWidth: 200, minHeight: "2rem", height: "2rem" }}
           onChange={(e) => setEndpoint(e.target.value)}
         >
           {ENDPOINTS.map((ep) => (

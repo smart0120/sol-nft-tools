@@ -7,14 +7,23 @@ module.exports = {
     return config;
   },
   images: {
-    domains: ['arweave.net'],
+    domains: ["arweave.net"],
+  },
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "/get-holders",
+        permanent: true,
+      },
+    ];
   },
   async rewrites() {
     return [
       {
-        source: '/:any*',
-        destination: '/',
+        source: "/:any*",
+        destination: "/",
       },
     ];
   },
-}
+};

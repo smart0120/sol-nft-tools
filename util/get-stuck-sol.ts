@@ -1,4 +1,6 @@
-export const getStuckSol = (key, url) => {
+import { LAMPORTS_PER_SOL } from "@solana/web3.js";
+
+export const getStuckSol = (key: string, url: string) => {
   return fetch(url, {
     body: `{
         "jsonrpc":"2.0", 
@@ -28,7 +30,7 @@ export const getStuckSol = (key, url) => {
     .then(
       (res) => ({
         total: res.result.reduce((acc, curr) => acc + curr.account.lamports, 0) /
-        1000000000,
+        LAMPORTS_PER_SOL,
         accounts: res.result.length
       })
     );

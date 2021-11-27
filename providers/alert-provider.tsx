@@ -1,30 +1,63 @@
-import { useState } from "react";
-import { createContext } from "vm";
+import { createContext, Dispatch, SetStateAction, useState } from "react";
 
-const initialState: AlertState = {
-  open: false,
-  message: "",
-  severity: undefined,
+const initialState: {
+  alertState: AlertState;
+  setAlertState?: Dispatch<SetStateAction<AlertState>>;
+} = {
+  alertState: {
+    open: false,
+    message: "",
+    severity: undefined,
+  },
 };
 
-
-const AlertContext = createContext(initialState);
+export const AlertContext = createContext(initialState);
 
 export function AlertProvider({ children }) {
-  const [alertState, setAlertState] = useState<AlertState>({
+  const [alertState, _setAlertState] = useState<AlertState>({
     open: false,
     message: "",
     severity: undefined,
   });
+  const setAlertState = (state: AlertState) => {
+    _setAlertState(state);
+    if (state?.duration && !isNaN(state.duration)) {
+      const timeout = setTimeout(() => {
+        _setAlertState({
+          open: false,
+          message:'',
+          severity: null
+        })
+      }, state.duration);
+
+      return () => clearTimeout(timeout);
+    }
+  }
   return (
     <AlertContext.Provider value={{ alertState, setAlertState }}>
       {children}
+      {!!alertState?.open && (
+        <div
+          className={`
+        alert absolute right-8 top-8 w-72 text-white
+        ${alertState.severity === "error" ? "alert-error" : ""}
+        ${alertState.severity === "info" ? "alert-info" : ""}
+        ${alertState.severity === "success" ? "alert-success" : ""}
+        ${alertState.severity === "warning" ? "alert-warning" : ""}
+        `}
+        // @ts-ignore
+        style={{'--tw-bg-opacity': '0.7'}}
+        >
+          {alertState.message}
+        </div>
+      )}
     </AlertContext.Provider>
   );
 }
 
 interface AlertState {
-  open: boolean;
-  message: string;
-  severity: "success" | "info" | "warning" | "error" | undefined;
+  open?: boolean;
+  message?: string;
+  severity?: "success" | "info" | "warning" | "error" | undefined;
+  duration?: number
 }

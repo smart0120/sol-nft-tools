@@ -1,29 +1,71 @@
-export const keyValidator = (setJsonVal) => ({
-  validator(_, value) {
-    if (value?.length !== 44) {
-      return Promise.reject(new Error(`Invalid key length! Is ${value?.length}, should be 44.`));
-    }
-    setJsonVal(value);
-    return Promise.resolve(value);
-  },
-});
+import { PublicKey } from "@solana/web3.js";
+import { toPublicKey } from "./to-publickey";
 
-export const jsonValidator = (setJsonVal) => () => ({
-  validator(_, value) {
-    try {
-      const val = JSON.parse(value);
-      if (!val.length) {
-        return Promise.reject(
-          new Error("Must have at least one item!")
-        );
-      }
-      setJsonVal(val);
-      Promise.resolve(val);
-    } catch {
-      return Promise.reject(new Error("Invalid JSON!"));
+export const getAddresses = (str: string): string[] => {
+  try {
+    return JSON.parse(str);
+  } catch {
+    if (str.includes(",")) {
+      return str
+        .split(",")
+        .map((t) => t.trim())
+        .filter((a) => a);
     }
-  },
-});
+    if (/\n/.exec(str)?.length) {
+      return str
+        .split("\n")
+        .map((t) => t.trim())
+        .filter((a) => a);
+    }
+    if (/\r/.exec(str)?.length) {
+      return str
+        .split("\r")
+        .map((t) => t.trim())
+        .filter((a) => a);
+    }
+    return [str];
+  }
+};
+
+export const validateSolAddressArray = (str: string) => {
+  let val;
+  try {
+    val = JSON.parse(str);
+    val.forEach(k => toPublicKey(k));
+    return true;
+  } catch {
+    try {
+      if (str.includes(",")) {
+        const split = str
+          .split(",")
+          .map((t) => t.trim())
+          .filter((a) => a);
+          split.forEach(k => toPublicKey(k));
+          return true;
+      }
+      if (/\n/.exec(str)?.length) {
+        const split = str
+          .split("\n")
+          .map((t) => t.trim())
+          .filter((a) => a);
+          split.forEach(k => toPublicKey(k));
+          return true;
+      }
+      if (/\r/.exec(str)?.length) {
+        const split = str
+          .split("\r")
+          .map((t) => t.trim())
+          .filter((a) => a);
+          split.forEach(k => toPublicKey(k));
+          return true;
+      }
+      toPublicKey(str);
+      return true;
+    } catch {
+      return 'Invalid format or keys, must be list of SOL base58 keys.';
+    }
+  }
+}
 
 export const SOL_ADDRESS_REGEXP = /[1-9A-HJ-NP-Za-km-z]{32,44}/;
 

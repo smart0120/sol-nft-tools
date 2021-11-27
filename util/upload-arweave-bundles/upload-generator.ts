@@ -1,10 +1,10 @@
-import Arweave from "arweave";
 import {
   ArweaveSigner,
   bundleAndSignData,
   createData,
   DataItem,
 } from "arbundles";
+import { getArweave } from "./reference";
 
 type UIFile = { file: File; buffer: ArrayBuffer };
 type GenFile = UIFile & { key: string };
@@ -30,20 +30,6 @@ function sizeMB(bytes: number): number {
   return bytes / (1000 * 1000);
 }
 
-/**
- * Create an Arweave instance with sane defaults.
- */
-function getArweave(): Arweave {
-  return new Arweave({
-    host: "arweave.net",
-    port: 443,
-    protocol: "https",
-    timeout: 20000,
-    logging: false,
-    logger: console.log,
-  });
-}
-
 type BundleRange = {
   count: number;
   size: number;
@@ -63,7 +49,7 @@ function getBundleRange(files: GenFile[]): BundleRange {
 
     if (total + fileSize >= BUNDLE_SIZE_BYTE_LIMIT) {
       if (count === 0) {
-        alert(
+        console.log(
           `File (${key}) too big (${sizeMB(
             fileSize
           )}MB) for size limit of ${sizeMB(BUNDLE_SIZE_BYTE_LIMIT)}MB.`

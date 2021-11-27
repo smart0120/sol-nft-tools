@@ -85,17 +85,21 @@ const contentTypeTags = {
 };
 
 /**
- * Create an Arweave instance with sane defaults.
- */
-function getArweave(): Arweave {
-  return new Arweave({
-    host: 'arweave.net',
-    port: 443,
-    protocol: 'https',
-    timeout: 20000,
-    logging: false,
-    logger: console.log,
-  });
+ * Create an Arweave instance with sane defaults and caching.
+*/
+let _arweave: Arweave;
+export function getArweave(): Arweave {
+  if (!_arweave) {
+   _arweave = new Arweave({
+     host: 'arweave.net',
+     port: 443,
+     protocol: 'https',
+     timeout: 20000,
+     logging: false,
+     logger: console.log,
+   });
+  }
+  return _arweave;
 }
 
 /**
@@ -285,7 +289,6 @@ export function* makeArweaveBundleUploadGenerator(
   jwk: any,
 ): Generator<Promise<UploadGeneratorResult>> {
   const signer = new ArweaveSigner(jwk);
-  const arweave = getArweave();
 
   const filePairs = assets.map(asset => ({
     key: asset,
@@ -391,9 +394,9 @@ export function* makeArweaveBundleUploadGenerator(
       // 'import("node_modules/arbundles/node_modules/arweave/node/common").default'.
       // Types of property 'api' are incompatible.
       const tx = await bundle.toTransaction(arweave, jwk);
-      await arweave.transactions.sign(tx, jwk);
+      await getArweave().transactions.sign(tx, jwk);
       console.log('Uploading bundle...');
-      await arweave.transactions.post(tx);
+      await getArweave().transactions.post(tx);
       console.log('Bundle uploaded!', tx.id);
 
       return { cacheKeys, arweavePathManifestLinks, updatedManifests };
