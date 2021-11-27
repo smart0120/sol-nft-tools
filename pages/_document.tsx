@@ -11,7 +11,6 @@ export default class MyDocument extends Document {
       <Html>
         <Head>
           {/* eslint-disable-next-line @next/next/no-title-in-document-head */}
-          <title>Solana NFT Tools</title>
           <meta name="description" content="Solana NFT Tools" />
           <link
             rel="icon"

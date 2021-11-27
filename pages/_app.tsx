@@ -6,18 +6,18 @@ import { AlertProvider } from "../providers/alert-provider";
 import TopMenu from "../components/top-menu";
 import SideMenu from "../components/side-menu";
 import Footer from "../components/footer";
+import Head from "next/head";
 
 function MyApp({ Component, pageProps }) {
   return (
     <AlertProvider>
       <ModalProvider>
         <FileContextProvider>
+          <Head>
+            <title>Solana NFT Tools</title>
+          </Head>
           <div className="drawer drawer-end">
-            <input
-              id="my-drawer"
-              type="checkbox"
-              className="drawer-toggle"
-            />
+            <input id="my-drawer" type="checkbox" className="drawer-toggle" />
             <div
               className="h-screen grid drawer-content"
               style={{ gridTemplateRows: "76px auto 76px" }}
