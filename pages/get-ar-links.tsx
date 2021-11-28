@@ -13,6 +13,7 @@ import { FileContext } from "../providers/file-context-provider";
 import { shortenAddress } from "../util/shorten-address";
 import { AlertContext } from "../providers/alert-provider";
 import { ArweaveURI } from "../util/arweave-uri";
+import { title } from "process";
 
 export const generateArweaveWallet = async () => {
   const arweave = getArweave();
@@ -272,6 +273,7 @@ export default function GetARLinks() {
                         setJwk(undefined);
                         localStorage.removeItem("arweave-key");
                       }}
+                      title="Delete"
                       className="btn btn-circle btn-sm shadow-lg"
                     >
                       <i className="fa fa-trash"></i>
@@ -281,6 +283,7 @@ export default function GetARLinks() {
                         download(`arweave-${address}.json`, jsonFormat(jwk))
                       }
                       className="btn btn-circle btn-sm shadow-lg"
+                      title="Download"
                     >
                       <i className="fa fa-download"></i>
                     </button>
@@ -289,6 +292,7 @@ export default function GetARLinks() {
                       target="_blank"
                       className="btn btn-circle btn-sm shadow-lg"
                       rel="noreferrer"
+                      title="View on explorer"
                     >
                       <i className="fa fa-external-link-alt"></i>
                     </a>

@@ -10,21 +10,23 @@ interface FileTileState {
 export default function FileTile({ file, remove }: FileTileState) {
   const [base64, setBase64] = useState("");
   useEffect(() => {
-    (async () => {
-      // TODO: Context for caching these
-      setBase64(await fileToBase64(file));
-    })();
+    if (file.type.startsWith('image') || file.type.startsWith('video')) {
+      const b64 = URL.createObjectURL(file)
+      setBase64(b64);
+      
+      return () => URL.revokeObjectURL(b64);
+    }
   }, [file]);
   return (
-    <div className="relative col-span-3 ">
+    <article className="relative">
       <div
-        key={file.name}
         className="card bg-base-100 h-36 bg-cover bg-center relative"
         style={{
           backgroundImage: (file.type || "").startsWith("image")
             ? `url(${base64})`
             : null,
         }}
+        tabIndex={0}
       >
         <div className="absolute inset-0 opacity-80 bg-black"></div>
         <div className="card-body p-3 z-10">
@@ -50,13 +52,14 @@ export default function FileTile({ file, remove }: FileTileState) {
           </div>
         </div>
       </div>
-      <div
+      <button
         className="badge badge-primary absolute z-30 cursor-pointer shadow-md"
         style={{ right: -8, top: -8 }}
         onClick={() => remove(file.name)}
+        title="Delete Item"
       >
         <i className="fa fa-times"></i>
-      </div>
-    </div>
+      </button>
+    </article>
   );
 }

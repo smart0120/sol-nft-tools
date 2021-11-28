@@ -24,7 +24,10 @@ export default function PaginatedFiles({ addMore }) {
         </div>
         <div className="grid grid-cols-6 md:grid-cols-9 lg:grid-cols-12 gap-3 my-3">
           <div className="relative col-span-3">
-            <div className="card bg-base-100 h-36 bg-cover bg-center relative shadow-md">
+            <div
+              className="card bg-base-100 h-36 bg-cover bg-center relative shadow-md"
+              tabIndex={0}
+            >
               <div className="absolute inset-0 opacity-75 bg-black"></div>
               <div className="card-body p-3 z-10">
                 <label className="file-upload w-full">
@@ -41,13 +44,14 @@ export default function PaginatedFiles({ addMore }) {
             </div>
           </div>
           {files.slice(startIndex, endIndex + 1).map((f) => (
-            <FileTile
-              key={f.name}
-              file={f}
-              remove={(file) =>
-                setFiles({ files: files.filter((ff) => ff.name !== file) })
-              }
-            />
+            <div key={f.name} className="col-span-3">
+              <FileTile
+                file={f}
+                remove={(file) =>
+                  setFiles({ files: files.filter((ff) => ff.name !== file) })
+                }
+              />
+            </div>
           ))}
         </div>
         <Pagination
