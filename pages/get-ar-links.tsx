@@ -57,7 +57,7 @@ export default function GetARLinks() {
 
   const generate = useCallback(async () => {
     const jwk = await generateArweaveWallet();
-    debugger;
+
     localStorage.setItem("arweave-key", JSON.stringify(jwk));
     const _address = await getKeyForJwk(jwk);
     setAddress(_address);
