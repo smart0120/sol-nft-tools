@@ -3,7 +3,7 @@ import { usePagination } from "react-use-pagination";
 import FileTile from "./file-tile";
 import { Pagination } from "./pagination";
 
-export default function PaginatedFiles({ addMore, files, setFiles }) {
+export default function PaginatedFiles({ addMore, files, handleClear, handleRemoveFile }) {
   const { currentPage, totalPages, startIndex, endIndex, setPage, pageSize } =
     usePagination({ totalItems: files.length, initialPageSize: 15 });
   return (
@@ -13,7 +13,7 @@ export default function PaginatedFiles({ addMore, files, setFiles }) {
           <h2 className="m-0">File List ({files.length})</h2>
 
           <button
-            onClick={() => setFiles([])}
+            onClick={handleClear}
             className="btn btn-sm btn-outline btn-error "
           >
             <i className="fas fa-trash mr-2"></i>
@@ -45,9 +45,7 @@ export default function PaginatedFiles({ addMore, files, setFiles }) {
             <div key={f.name} className="col-span-3">
               <FileTile
                 file={f}
-                remove={(file) =>
-                  setFiles(files.filter((f) => f.name !== file))
-                }
+                remove={handleRemoveFile}
               />
             </div>
           ))}
