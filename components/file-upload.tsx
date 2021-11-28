@@ -6,13 +6,14 @@ export function FileUpload() {
   const { setFiles, files } = useFiles();
 
   const handleAddFiles = async (e) => {
-    setFiles(
-      [...files, ...(e.target as HTMLInputElement).files]
-    );
+    setFiles([...files, ...(e.target as HTMLInputElement).files]);
   };
   const handleSelectFiles = async (e) => {
     setFiles([...(e.target as HTMLInputElement).files]);
   };
+  const handleClearFiles = () => setFiles([]);
+  const handleRemoveFile = (name: string) =>
+    setFiles(files.filter((f) => f.name !== name));
 
   return (
     <>
@@ -60,7 +61,12 @@ export function FileUpload() {
           </div>
         </>
       )}
-      <PaginatedFiles addMore={handleAddFiles} files={files} setFiles={setFiles} />
+      <PaginatedFiles
+        addMore={handleAddFiles}
+        files={files}
+        handleClear={handleClearFiles}
+        handleRemoveFile={handleRemoveFile}
+      />
     </>
   );
 }

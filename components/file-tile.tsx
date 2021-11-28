@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { fileToBase64 } from "../util/file-to-base64";
 import { sizeMB } from "../util/upload-arweave-bundles/upload-generator";
 
 interface FileTileState {
