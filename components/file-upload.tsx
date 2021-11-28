@@ -1,22 +1,23 @@
-import React, { useContext } from "react";
-import { FileContext } from "../providers/file-context-provider";
+import React from "react";
+import { useFiles } from "../hooks/use-files";
 import PaginatedFiles from "./paginated-files";
 
 export function FileUpload() {
-  const { setFiles, ...fileContext } = useContext(FileContext);
+  const { setFiles, files } = useFiles();
 
   const handleAddFiles = async (e) => {
-    const f = [...fileContext.files, ...(e.target as HTMLInputElement).files];
-    setFiles({ files: f });
+    setFiles(
+      [...files, ...(e.target as HTMLInputElement).files]
+    );
   };
   const handleSelectFiles = async (e) => {
-    const f = [...(e.target as HTMLInputElement).files];
-    setFiles({ files: f });
+    setFiles([...(e.target as HTMLInputElement).files]);
   };
 
   return (
     <>
-      {!fileContext?.files?.length && (
+      {files?.length}
+      {!files?.length && (
         <>
           <div className="prose max-w-full">
             <h2 className="text-center mb-6">Upload</h2>
@@ -60,7 +61,7 @@ export function FileUpload() {
           </div>
         </>
       )}
-      <PaginatedFiles addMore={handleAddFiles} />
+      <PaginatedFiles addMore={handleAddFiles} files={files} setFiles={setFiles} />
     </>
   );
 }

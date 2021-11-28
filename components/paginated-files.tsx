@@ -1,11 +1,9 @@
-import React, { useContext } from "react";
+import React from "react";
 import { usePagination } from "react-use-pagination";
-import { FileContext } from "../providers/file-context-provider";
 import FileTile from "./file-tile";
 import { Pagination } from "./pagination";
 
-export default function PaginatedFiles({ addMore }) {
-  const { files, setFiles } = useContext(FileContext);
+export default function PaginatedFiles({ addMore, files, setFiles }) {
   const { currentPage, totalPages, startIndex, endIndex, setPage, pageSize } =
     usePagination({ totalItems: files.length, initialPageSize: 15 });
   return (
@@ -15,7 +13,7 @@ export default function PaginatedFiles({ addMore }) {
           <h2 className="m-0">File List ({files.length})</h2>
 
           <button
-            onClick={() => setFiles({ files: [] })}
+            onClick={() => setFiles([])}
             className="btn btn-sm btn-outline btn-error "
           >
             <i className="fas fa-trash mr-2"></i>
@@ -48,7 +46,7 @@ export default function PaginatedFiles({ addMore }) {
               <FileTile
                 file={f}
                 remove={(file) =>
-                  setFiles({ files: files.filter((ff) => ff.name !== file) })
+                  setFiles(files.filter((f) => f.name !== file))
                 }
               />
             </div>

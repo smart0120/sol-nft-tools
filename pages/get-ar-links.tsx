@@ -9,11 +9,10 @@ import { makeArweaveBundleUploadGenerator } from "../util/upload-arweave-bundles
 import { Spinner } from "../components/spinner";
 import { useForm } from "react-hook-form";
 import { getArweave } from "../util/upload-arweave-bundles/reference";
-import { FileContext } from "../providers/file-context-provider";
 import { shortenAddress } from "../util/shorten-address";
 import { AlertContext } from "../providers/alert-provider";
 import { ArweaveURI } from "../util/arweave-uri";
-import { title } from "process";
+import { useFiles } from "../hooks/use-files";
 
 export const generateArweaveWallet = async () => {
   const arweave = getArweave();
@@ -50,7 +49,7 @@ export default function GetARLinks() {
   const [jwk, setJwk] = useState<JWKInterface>();
   const [address, setAddress] = useState<string>();
   const [balance, setBalance] = useState("none");
-  const { files } = useContext(FileContext);
+  const { files } = useFiles();
   const [loading, setLoading] = useState(false);
   const { register, handleSubmit } = useForm();
   const { setAlertState } = useContext(AlertContext);
