@@ -169,7 +169,7 @@ export default function GetARLinks() {
         <hr className="opacity-10 my-4" />
       </div>
       <div className="flex flex-col">
-        <p className="px-2 text-center">
+        <div className="px-2 text-center mb-4">
           This tool lets you upload files to arweave. Currently limited to 150mb
           total per batch of files. <br />
           To reset the form please reload.
@@ -193,7 +193,7 @@ export default function GetARLinks() {
           >
             Binance
           </a>
-        </p>
+        </div>
         {!jwk && (
           <div className="card bg-gray-900">
             <div className="card-body">
