@@ -60,6 +60,7 @@ export default function GetARLinks() {
     localStorage.setItem("arweave-key", JSON.stringify(jwk));
     const _address = await getKeyForJwk(jwk);
     setAddress(_address);
+    setJwk(jwk);
   }, []);
 
   useEffect(() => {
@@ -141,6 +142,7 @@ export default function GetARLinks() {
           duration: 3000,
         });
       } catch (e) {
+        console.log(e)
         setAlertState({
           message: "Key could not be imported!",
           open: true,
@@ -197,15 +199,15 @@ export default function GetARLinks() {
         {!jwk && (
           <div className="card bg-gray-900">
             <div className="card-body">
+              <button
+                className={`btn btn-primary rounded-box inline-block mx-auto mb-3 shadow-lg ${
+                  loading ? "loading" : ""
+                }`}
+                onClick={generate}
+              >
+                Generate Wallet
+              </button>
               <form className="flex flex-col" onSubmit={onSubmit}>
-                <button
-                  className={`btn btn-primary rounded-box inline-block mx-auto mb-3 shadow-lg ${
-                    loading ? "loading" : ""
-                  }`}
-                  onClick={generate}
-                >
-                  Generate Wallet
-                </button>
                 <div className="text-center">Or</div>
                 <label htmlFor="key" className="label">
                   Import Wallet (JWK JSON)
@@ -270,6 +272,7 @@ export default function GetARLinks() {
                           return;
                         }
                         setJwk(undefined);
+                        setAddress(undefined);
                         localStorage.removeItem("arweave-key");
                       }}
                       title="Delete"
