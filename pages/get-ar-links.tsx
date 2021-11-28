@@ -12,6 +12,7 @@ import { getArweave } from "../util/upload-arweave-bundles/reference";
 import { FileContext } from "../providers/file-context-provider";
 import { shortenAddress } from "../util/shorten-address";
 import { AlertContext } from "../providers/alert-provider";
+import { ArweaveURI } from "../util/arweave-uri";
 
 export const generateArweaveWallet = async () => {
   const arweave = getArweave();
@@ -116,11 +117,10 @@ export default function GetARLinks() {
   }, [files, jwk]);
 
   useEffect(() => {
-    const arweave = getArweave();
     const interval = setInterval(async () => {
-      if (address && arweave) {
-        const balance = await arweave?.wallets.getBalance(address);
-        setBalance(arweave?.ar.winstonToAr(balance));
+      if (address) {
+        const balance = await getArweave().wallets.getBalance(address);
+        setBalance( getArweave().ar.winstonToAr(balance));
       }
     }, 5000);
 
@@ -129,10 +129,9 @@ export default function GetARLinks() {
 
   const importKey = useCallback(
     async (key) => {
-      const arweave = getArweave();
       try {
         const parsed = JSON.parse(key);
-        const addr = await arweave?.wallets.jwkToAddress(parsed);
+        const addr = await getArweave()?.wallets.jwkToAddress(parsed);
         setJwk(parsed);
         setAddress(addr);
         localStorage.setItem("arweave-key", key);
@@ -203,7 +202,7 @@ export default function GetARLinks() {
                   className={`btn btn-primary rounded-box inline-block mx-auto mb-3 shadow-lg ${
                     loading ? "loading" : ""
                   }`}
-                  onClick={() => generate()}
+                  onClick={generate}
                 >
                   Generate Wallet
                 </button>
@@ -237,7 +236,7 @@ export default function GetARLinks() {
             <div className="card-body p-4">
               <div className="flex flex-row gap-5 items-center">
                 <Image
-                  src="https://arweave.net/eFp_2l3aNmSnMrrCLTe_7ZDkzcVEdAqMLJj9tiPhs2s"
+                  src={ArweaveURI.ArweaveLogo}
                   className="rounded-full w-14 h-14 shadow-lg"
                   width="56"
                   height="56"

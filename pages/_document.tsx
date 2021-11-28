@@ -1,4 +1,5 @@
 import Document, { Html, Head, Main, NextScript } from "next/document";
+import { ArweaveURI } from "../util/arweave-uri";
 
 export default class MyDocument extends Document {
   static async getInitialProps(ctx) {
@@ -20,10 +21,7 @@ export default class MyDocument extends Document {
           <meta name="twitter:site" content="@pentaclexyz" />
           <meta name="twitter:creator" content="@pentaclexyz" />
           <meta property="og:site_name" content="Solana NFT Tools" />
-          <meta
-            name="twitter:image"
-            content="https://arweave.net/wEL_2xrc-tZRKvnd2I8DvFdL3q_Yw69ORZ4CeRfxwtk"
-          />
+          <meta name="twitter:image" content={ArweaveURI.PentacleBanner} />
           <meta
             name="twitter:image:alt"
             content="Solana NFT Tools, made by @pentaclexyz"
@@ -35,10 +33,7 @@ export default class MyDocument extends Document {
           />
           <meta name="og:url" content="https://sol-nft.tools" />
           <meta name="og:title" content="Solana NFT Tools" />
-          <meta
-            name="og:image"
-            content="https://arweave.net/wEL_2xrc-tZRKvnd2I8DvFdL3q_Yw69ORZ4CeRfxwtk"
-          />
+          <meta name="og:image" content={ArweaveURI.PentacleBanner} />
           <meta
             property="og:description"
             content="Solana NFT Tools, made by @pentaclexyz"

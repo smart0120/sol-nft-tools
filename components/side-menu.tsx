@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import Image from "next/image";
+import { ArweaveURI } from "../util/arweave-uri";
 
 const MenuLink = ({ href, children }) => {
   const router = useRouter();
@@ -35,7 +36,7 @@ export default function SideMenu() {
             className="py-2 hover:bg-opacity-0 focus:bg-opacity-0"
           >
             <Image
-              src="https://arweave.net/a1OuQE2NlH9lny36lmVtYg0NRV0Dxglgb_6MU4BCX4Y"
+              src={ArweaveURI.PentacleLogo}
               width={180}
               height={40}
               alt="Pentacle Logo"

@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import React from "react";
 import { useRouter } from "next/router";
+import { ArweaveURI } from "../util/arweave-uri";
 
 export default function TopMenu() {
   const router = useRouter();
@@ -38,7 +39,7 @@ export default function TopMenu() {
             className="py-2 grid place-content-center"
           >
             <Image
-              src="https://arweave.net/a1OuQE2NlH9lny36lmVtYg0NRV0Dxglgb_6MU4BCX4Y"
+              src={ArweaveURI.ArweaveLogo}
               width={180}
               height={40}
               alt="Pentacle Logo"
