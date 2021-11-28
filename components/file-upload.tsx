@@ -16,7 +16,6 @@ export function FileUpload() {
 
   return (
     <>
-      {files?.length}
       {!files?.length && (
         <>
           <div className="prose max-w-full">
