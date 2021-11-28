@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.4",
     "@solana/web3.js": "^1.29.2",
     "@tailwindcss/typography": "^0.4.1",
     "arbundles": "0.3.3",

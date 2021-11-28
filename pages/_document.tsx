@@ -38,17 +38,6 @@ export default class MyDocument extends Document {
             property="og:description"
             content="Solana NFT Tools, made by @pentaclexyz"
           />
-          <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/brands.min.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css"
-            integrity="sha512-YWzhKL2whUzgiheMoBFwW8CKV4qpHQAEuvilg9FAn5VJUDwKZZxkJNuGM4XkWuk94WCrrwslk8yWNGmY1EduTA=="
-            crossOrigin="anonymous"
-            referrerPolicy="no-referrer"
-          />
           <html data-theme="dark" />
           <link
             rel="stylesheet"

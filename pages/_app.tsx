@@ -1,4 +1,5 @@
 import "../styles/globals.css";
+import '@fortawesome/fontawesome-free/css/all.css';
 import { ModalProvider } from "../providers/modal-provider";
 import React from "react";
 import { AlertProvider } from "../providers/alert-provider";

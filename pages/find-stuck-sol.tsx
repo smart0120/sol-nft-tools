@@ -32,16 +32,15 @@ export default function GibStuckSol() {
               : `${total} SOL are in ${accounts} accounts`,
           open: true,
         });
-        setLoading(false);
       })
       .catch((e) => {
         setModalState({
           message: e,
           open: true,
         });
-        setLoading(false);
       })
       .finally(() => {
+        setLoading(false);
         setAlertState({ open: false });
       });
   };

@@ -3,7 +3,12 @@ import { usePagination } from "react-use-pagination";
 import FileTile from "./file-tile";
 import { Pagination } from "./pagination";
 
-export default function PaginatedFiles({ addMore, files, handleClear, handleRemoveFile }) {
+export default function PaginatedFiles({
+  addMore,
+  files,
+  handleClear,
+  handleRemoveFile,
+}) {
   const { currentPage, totalPages, startIndex, endIndex, setPage, pageSize } =
     usePagination({ totalItems: files.length, initialPageSize: 15 });
   return (
@@ -22,12 +27,9 @@ export default function PaginatedFiles({ addMore, files, handleClear, handleRemo
         </div>
         <div className="grid grid-cols-6 md:grid-cols-9 lg:grid-cols-12 gap-3 my-3">
           <div className="relative col-span-3">
-            <div
-              className="card bg-base-100 h-36 bg-cover bg-center relative shadow-md"
-              tabIndex={0}
-            >
+            <button className="card bg-base-100 h-36 bg-cover bg-center relative shadow-md w-full">
               <div className="absolute inset-0 opacity-75 bg-black"></div>
-              <div className="card-body p-3 z-10">
+              <div className="card-body p-3 z-10  w-full">
                 <label className="file-upload w-full">
                   <i className="fas fa-cloud-upload-alt fa-3x"></i>
                   <span className="mt-2 text-base leading-normal">Add</span>
@@ -39,14 +41,11 @@ export default function PaginatedFiles({ addMore, files, handleClear, handleRemo
                   />
                 </label>
               </div>
-            </div>
+            </button>
           </div>
           {files.slice(startIndex, endIndex + 1).map((f) => (
             <div key={f.name} className="col-span-3">
-              <FileTile
-                file={f}
-                remove={handleRemoveFile}
-              />
+              <FileTile file={f} remove={handleRemoveFile} />
             </div>
           ))}
         </div>

@@ -5,11 +5,8 @@ import { ArweaveURI } from "../util/arweave-uri";
 const MenuLink = ({ href, children }) => {
   const router = useRouter();
   const { pathname } = router;
-  const setRoute = (route) => {
-    router.push(route);
-  };
   return (
-    <li onClick={() => setRoute(href)}>
+    <li onClick={() =>router.push(href)}>
       <label
         htmlFor="my-drawer"
         className={
@@ -39,7 +36,7 @@ export default function SideMenu() {
               src={ArweaveURI.PentacleLogo}
               width={180}
               height={40}
-              alt="Pentacle Logo"
+              alt="Pentacle"
             />
           </a>
         </li>

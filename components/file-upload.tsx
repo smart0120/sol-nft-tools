@@ -5,10 +5,10 @@ import PaginatedFiles from "./paginated-files";
 export function FileUpload() {
   const { setFiles, files } = useFiles();
 
-  const handleAddFiles = async (e) => {
+  const handleAddFiles = (e) => {
     setFiles([...files, ...(e.target as HTMLInputElement).files]);
   };
-  const handleSelectFiles = async (e) => {
+  const handleSelectFiles = (e) => {
     setFiles([...(e.target as HTMLInputElement).files]);
   };
   const handleClearFiles = () => setFiles([]);

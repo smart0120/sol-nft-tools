@@ -12,7 +12,7 @@ const PaginationButton = ({ currentPage, i, setPage }) => (
 
 export const Pagination = ({ pageSize, total, currentPage, setPage }) => {
   if (total <= 1) {
-    return <> </>
+    return null;
   }
   // Show all buttons for 10 or less pages
   if (total * pageSize < pageSize * 10) {
