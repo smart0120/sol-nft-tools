@@ -13,7 +13,7 @@ module.exports = {
     return [
       {
         source: "/",
-        destination: "/get-holders",
+        destination: "/get-nints",
         permanent: true,
       },
     ];
