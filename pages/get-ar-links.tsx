@@ -168,7 +168,7 @@ export default function GetARLinks() {
         <h1 className="text-4xl">Arweave Upload</h1>
         <hr className="opacity-10 my-4" />
       </div>
-      <div>
+      <div className="flex flex-col">
         <p className="px-2 text-center">
           This tool lets you upload files to arweave. Currently limited to 150mb
           total per batch of files. <br />
@@ -195,7 +195,7 @@ export default function GetARLinks() {
           </a>
         </p>
         {!jwk && (
-          <div className="card bg-gray-900 mt-4">
+          <div className="card bg-gray-900">
             <div className="card-body">
               <form className="flex flex-col" onSubmit={onSubmit}>
                 <button
@@ -230,7 +230,7 @@ export default function GetARLinks() {
         )}
         {jwk && (
           <div
-            className="card bg-primary text-white shadow-lg max-w-full mx-auto"
+            className="card bg-primary text-white shadow-lg max-w-full mx-auto my-4"
             style={{ width: 400 }}
           >
             <div className="card-body p-4">

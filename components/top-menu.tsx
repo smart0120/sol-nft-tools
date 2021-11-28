@@ -39,7 +39,7 @@ export default function TopMenu() {
             className="py-2 grid place-content-center"
           >
             <Image
-              src={ArweaveURI.ArweaveLogo}
+              src={ArweaveURI.PentacleLogo}
               width={180}
               height={40}
               alt="Pentacle Logo"
