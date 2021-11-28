@@ -56,7 +56,8 @@ export default function SideMenu() {
             className="p-0"
           >
             <label className="py-4 btn btn-ghost text-left normal-case w-full flex flex-row justify-between">
-              <span>SnedMaster 9000</span>
+              <span>
+                SnedMaster 9000</span>
 
               <i className="fas fa-external-link-square-alt"></i>
             </label>
