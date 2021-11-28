@@ -1,0 +1,107 @@
+import React, { useCallback, useContext, useState } from "react";
+import { getHolders } from "../util/get-holders";
+import { download } from "../util/download";
+import jsonFormat from "json-format";
+import { ModalContext } from "../providers/modal-provider";
+import { useForm } from "react-hook-form";
+import { getAddresses, validateSolAddressArray } from "../util/validators";
+import { useEndpoint } from "../hooks/use-endpoint";
+import { AlertContext } from "../providers/alert-provider";
+
+export default function GetHolders() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const [counter, setCounter] = useState(0);
+  const [len, setLen] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const { setModalState } = useContext(ModalContext);
+  const { setAlertState } = useContext(AlertContext);
+  const { endpoint } = useEndpoint();
+
+  const fetchHolders = useCallback(
+    ({ mints }: { mints: string }) => {
+      const parsed = getAddresses(mints);
+      setAlertState({
+        message: "Downloading your data.",
+        open: true,
+      });
+      setLen(parsed.length);
+      setLoading(true);
+      getHolders(parsed, setCounter, endpoint).subscribe({
+        next: (e) => {
+          download("gib-holders.json", jsonFormat(e, { size: 1, type: "tab" }));
+          setLoading(false);
+        },
+        error: (e) => {
+          setModalState({
+            open: true,
+            message: e,
+          });
+          setLoading(false);
+        },
+        complete: () => {
+          setAlertState({
+            message: "",
+            open: false,
+          });
+        },
+      });
+    },
+    [endpoint, setAlertState, setModalState]
+  );
+
+  return (
+    <>
+      <div className="prose max-w-full text-center mb-3">
+        <h1 className="text-4xl">Holder Snapshot</h1>
+        <hr className="opacity-10 my-4" />
+      </div>
+      <p className="px-2 text-center">
+        This tools gives you a snapshot of holders from Solana Mint IDs. It will
+        return an object with holders, mints and amounts.
+      </p>
+      <hr className="my-4 opacity-10" />
+      <div className="card bg-gray-900 max-w-full">
+        <form
+          onSubmit={handleSubmit(fetchHolders)}
+          className={`w-full flex flex-col`}
+        >
+          <div className="card-body">
+            <label className="mb-4">
+              Please enter SOL mint IDs as JSON array to get their holders.
+            </label>
+
+            <textarea
+              {...register("mints", {
+                validate: validateSolAddressArray,
+                required: "Field is required",
+              })}
+              rows={4}
+              className={`textarea w-full shadow-lg`}
+            />
+            {!!errors?.mints?.message && (
+              <label className="label text-error">
+                {errors?.mints?.message}
+              </label>
+            )}
+            <div className="text-center mt-6">
+              <button
+                type="submit"
+                disabled={!!errors?.mints}
+                className={`btn btn-primary rounded-box shadow-lg ${
+                  loading ? "loading" : ""
+                }`}
+              >
+                {loading ? `${counter} / ${len}` : "Get Holders"}
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </>
+  );
+}

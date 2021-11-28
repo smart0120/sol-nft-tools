@@ -1,5 +1,5 @@
 {
-  "name": "gib-meta",
+  "name": "sol-nft-tools",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,11 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@ant-design/icons": "^4.7.0",
-    "@project-serum/anchor": "^0.17.1-beta.1",
+    "@fortawesome/fontawesome-free": "^5.15.4",
     "@solana/web3.js": "^1.29.2",
     "@tailwindcss/typography": "^0.4.1",
-    "antd": "^4.16.13",
     "arbundles": "0.3.3",
     "arweave": "^1.10.17",
     "borsh": "^0.6.0",
@@ -21,11 +19,11 @@
     "daisyui": "^1.16.2",
     "json-format": "^1.0.1",
     "next": "11.1.2",
-    "node-fetch": "^3.0.0",
     "react": "17.0.2",
     "react-copy-to-clipboard": "^5.0.4",
     "react-dom": "17.0.2",
     "react-hook-form": "^7.20.2",
+    "react-use-pagination": "^2.0.1",
     "rxjs": "^7.4.0",
     "web-file-polyfill": "^1.0.4"
   },

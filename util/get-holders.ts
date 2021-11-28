@@ -1,5 +1,6 @@
 import { from } from "rxjs";
 import { mergeMap, toArray, map, tap } from "rxjs/operators";
+import { TOKEN_PROGRAM_ID } from "./accounts";
 let holders = {};
 let i = 0;
 const getTokenHolder = (url, key, setCounter) => {
@@ -9,7 +10,7 @@ const getTokenHolder = (url, key, setCounter) => {
         "id":1, 
         "method":"getProgramAccounts", 
         "params":[
-          "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+          "${TOKEN_PROGRAM_ID}",
           {
             "encoding": "jsonParsed",
             "filters": [
