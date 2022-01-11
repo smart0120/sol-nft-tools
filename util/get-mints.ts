@@ -19,6 +19,12 @@ export const getMints = async (creatorId: string, url: string) => {
             bytes: creatorId,
           },
         },
+        {
+          memcmp: {
+            offset: 358, // first creator verified position
+            bytes: "2", // 1 as base58 string
+          },
+        },
       ],
     }
   );
