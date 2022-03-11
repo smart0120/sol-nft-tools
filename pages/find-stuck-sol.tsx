@@ -1,12 +1,15 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { SOL_ADDRESS_REGEXP } from "../util/validators";
 import { getStuckSol } from "../util/get-stuck-sol";
 import { ModalContext } from "../providers/modal-provider";
 import { useEndpoint } from "../hooks/use-endpoint";
 import { useForm } from "react-hook-form";
 import { AlertContext } from "../providers/alert-provider";
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 export default function GibStuckSol() {
+  const { publicKey } = useWallet();
   const {
     register,
     handleSubmit,
@@ -16,10 +19,11 @@ export default function GibStuckSol() {
   const { setModalState } = useContext(ModalContext);
   const { endpoint } = useEndpoint();
   const { setAlertState } = useContext(AlertContext);
+
   const fetchStuckSol = ({ address }) => {
     setAlertState({
       message: "Grabbing Candy Machine Data...",
-      open: true
+      open: true,
     });
 
     setLoading(true);
@@ -45,6 +49,12 @@ export default function GibStuckSol() {
       });
   };
 
+  useEffect(() => {
+    if (publicKey) {
+      fetchStuckSol({ address: publicKey.toBase58() });
+    }
+  }, [publicKey]);
+
   return (
     <>
       <div className="prose max-w-full text-center mb-3">
@@ -69,23 +79,34 @@ export default function GibStuckSol() {
       <div className="card bg-gray-900">
         <form onSubmit={handleSubmit(fetchStuckSol)}>
           <div className="card-body">
-            <label className="mb-4">
+            <label className="mb-4 text-center">
               Please enter SOL address to get amount of SOL stuck in candy
               machines
             </label>
 
-            <input
-              {...register("address", {
-                required: "Field is required",
-                pattern: {
-                  value: SOL_ADDRESS_REGEXP,
-                  message: "Invalid address",
-                },
-              })}
-              className={`input shadow-lg w-full ${
-                !!errors?.address?.message && "input-error"
-              }`}
-            />
+           <div className="w-full text-center">
+           <WalletMultiButton style={{margin: '0 auto'}} />
+           </div>
+
+            {!publicKey && (
+              <>
+                <div className="w-full text-center text-xl my-2">
+                  Or
+                </div>
+                <input
+                  {...register("address", {
+                    required: "Field is required",
+                    pattern: {
+                      value: SOL_ADDRESS_REGEXP,
+                      message: "Invalid address",
+                    },
+                  })}
+                  className={`input shadow-lg w-full ${
+                    !!errors?.address?.message && "input-error"
+                  }`}
+                />
+              </>
+            )}
             {!!errors?.address?.message && (
               <label className="label text-error">
                 {errors?.address?.message}
