@@ -57,7 +57,7 @@ export default function GibMints() {
           className={`w-full flex flex-col`}
         >
           <div className="card-body">
-            <label className="label" htmlFor="address-field">
+            <label className="label justify-center" htmlFor="address-field">
               Please gib SOL address to get all mints
             </label>
             <input

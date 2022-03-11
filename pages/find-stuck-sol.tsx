@@ -79,7 +79,7 @@ export default function GibStuckSol() {
       <div className="card bg-gray-900">
         <form onSubmit={handleSubmit(fetchStuckSol)}>
           <div className="card-body">
-            <label className="mb-4 text-center">
+            <label className="mb-4 justify-center label">
               Please enter SOL address to get amount of SOL stuck in candy
               machines
             </label>
