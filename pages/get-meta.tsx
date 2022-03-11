@@ -69,7 +69,7 @@ export default function GetMeta() {
           className="w-full flex flex-col"
         >
           <div className="card-body">
-            <label htmlFor="mints" className="mb-4">
+            <label htmlFor="mints" className="label mb-4 justify-center">
               Please enter SOL mint IDs to get their metadata
             </label>
             <textarea

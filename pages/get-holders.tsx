@@ -71,7 +71,7 @@ export default function GetHolders() {
           className={`w-full flex flex-col`}
         >
           <div className="card-body">
-            <label className="mb-4">
+            <label className="mb-4 justify-center label">
               Please enter SOL mint IDs as JSON array to get their holders.
             </label>
 

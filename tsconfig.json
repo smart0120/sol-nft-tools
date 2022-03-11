@@ -18,7 +18,8 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "downlevelIteration": true,
-    "removeComments": true
+    "removeComments": true,
+    "incremental": true
   },
   "include": [
     "next-env.d.ts",
