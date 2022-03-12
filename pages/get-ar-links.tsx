@@ -167,7 +167,7 @@ export default function GetARLinks() {
   return (
     <>
       <div className="prose max-w-full text-center mb-3">
-        <h1 className="text-4xl">Arweave Upload</h1>
+        <h1 className="text-4xl text-white">Arweave Upload</h1>
         <hr className="opacity-10 my-4" />
       </div>
       <div className="flex flex-col">
