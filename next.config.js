@@ -20,8 +20,8 @@ const withTM = require("next-transpile-modules")([
   // "@solana/wallet-adapter-ant-design",
 ]);
 
-
 module.exports = withTM({
+  images: { dangerouslyAllowSVG: true },
   reactStrictMode: true,
   webpack: (config, { isServer }) => {
     if (!isServer) {
