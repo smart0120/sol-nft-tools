@@ -75,7 +75,7 @@ export default function GetHolders() {
         .subscribe(() => {
           download(
             `minters-${Date.now()}.json`,
-            jsonFormat({ owners: [...[...new Set(owners)]], errors })
+            jsonFormat({ owners: [...new Set(owners)], errors })
           );
         });
     },
