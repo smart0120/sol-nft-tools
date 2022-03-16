@@ -56,41 +56,6 @@ export default function GetHolders() {
           debugger;
         }
       };
-
-      let i = 0;
-      const owners = [];
-      from(parsed)
-        .pipe(
-          mergeMap(
-            (addy) =>
-              from(fetchOwner(addy)).pipe(
-                tap((res) => {
-                  owners.push(res);
-                  i++;
-                  setCounter(i);
-                })
-              ),
-            20
-          ),
-          toArray()
-        )
-        .subscribe(() => {
-          download("cs-holders.json", jsonFormat(owners));
-        });
-
-      // for (const addy of parsed) {
-      //   const tx = await connection.getSignaturesForAddress(
-      //     new PublicKey(addy)
-      //   );
-      //   const firstSig = tx.sort((a, b) => a.blockTime - b.blockTime)[0];
-      //   const txContent = await connection.getTransaction(firstSig.signature);
-      //   const owner = txContent.meta.postTokenBalances[0].owner;
-      //   owners.push(owner);
-      //   i++;
-      //   setCounter(i);
-      // }
-      return;
-
       getHolders(parsed, setCounter, endpoint).subscribe({
         next: (e) => {
           download("gib-holders.json", jsonFormat(e, { size: 1, type: "tab" }));
