@@ -26,7 +26,7 @@ export default function GetHolders() {
   const { endpoint } = useEndpoint();
   const { connection } = useConnection();
 
-  const fetchHolders = useCallback(
+  const fetchMinters = useCallback(
     async ({ mints }: { mints: string }) => {
       const parsed = getAddresses(mints);
       setAlertState({
@@ -96,7 +96,7 @@ export default function GetHolders() {
       <hr className="my-4 opacity-10" />
       <div className="card bg-gray-900 max-w-full">
         <form
-          onSubmit={handleSubmit(fetchHolders)}
+          onSubmit={handleSubmit(fetchMinters)}
           className={`w-full flex flex-col`}
         >
           <div className="card-body">
@@ -125,7 +125,7 @@ export default function GetHolders() {
                   loading ? "loading" : ""
                 }`}
               >
-                {loading ? `${counter} / ${len}` : "Get Holders"}
+                {loading ? `${counter} / ${len}` : "Get Minters"}
               </button>
             </div>
           </div>
