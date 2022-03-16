@@ -42,18 +42,25 @@ export default function GetHolders() {
         let tx;
         let firstSig;
         let txContent;
-        try {
-          tx = await connection.getConfirmedSignaturesForAddress2(
-            new PublicKey(addy)
-          );
-          firstSig = tx.sort((a, b) => a.blockTime - b.blockTime)[0];
-          txContent = await connection.getTransaction(firstSig.signature);
-          const owner = txContent.meta.postTokenBalances[0].ownesr;
-          return owner;
-        } catch (e) {
-          console.error(e);
-          errors.push(addy);
-          console.log({ tx, firstSig, txContent });
+        let owner;
+        while (!owner) {
+          try {
+            tx = await connection.getConfirmedSignaturesForAddress2(
+              new PublicKey(addy)
+            );
+            firstSig = tx.sort((a, b) => a.blockTime - b.blockTime)[0];
+            if (firstSig?.signature) {
+              txContent = await connection.getTransaction(firstSig?.signature);
+  
+              owner = txContent?.meta?.postTokenBalances[0]?.owner;
+              if (owner) {
+                owners.push(owner);
+              }
+            }
+          } catch (e) {
+            console.error(e?.message || e);
+            errors.push({ address: addy, error: e?.message || e });
+          }
         }
       };
 
@@ -63,19 +70,18 @@ export default function GetHolders() {
             (addy) =>
               from(fetchOwner(addy)).pipe(
                 tap((res) => {
-                  owners.push(res);
                   i++;
                   setCounter(i);
                 })
               ),
-            20
+            12
           ),
           toArray()
         )
         .subscribe(() => {
           download(
             `minters-${Date.now()}.json`,
-            jsonFormat({ owners: [...new Set(owners)], errors })
+            jsonFormat({ owners: [...owners], errors })
           );
         });
     },
