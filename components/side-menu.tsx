@@ -43,6 +43,7 @@ export default function SideMenu() {
         <MenuLink href="/get-mints">Get Mint IDs</MenuLink>
         <MenuLink href="/get-meta">Token Metadata</MenuLink>
         <MenuLink href="/get-holders">Holder Snapshot</MenuLink>
+        <MenuLink href="/get-minters">Minter Snapshot</MenuLink>
         <MenuLink href="/find-stuck-sol">Find Stuck SOL</MenuLink>
         <MenuLink href="/get-ar-links">Arweave Upload (Beta)</MenuLink>
         <li>

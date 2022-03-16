@@ -35,7 +35,9 @@ export default function GetHolders() {
       });
       setLen(parsed.length);
       setLoading(true);
-
+      let i = 0;
+      const owners = [];
+      const errors = [];
       const fetchOwner = async (addy: string) => {
         let tx;
         let firstSig;
@@ -45,20 +47,16 @@ export default function GetHolders() {
             new PublicKey(addy)
           );
           firstSig = tx.sort((a, b) => a.blockTime - b.blockTime)[0];
-          if (!firstSig?.signature) {
-            debugger;
-          }
           txContent = await connection.getTransaction(firstSig.signature);
-          const owner = txContent.meta.postTokenBalances[0].owner;
+          const owner = txContent.meta.postTokenBalances[0].ownesr;
           return owner;
         } catch (e) {
+          console.error(e);
+          errors.push(addy);
           console.log({ tx, firstSig, txContent });
-          debugger;
         }
       };
 
-      let i = 0;
-      const owners = [];
       from(parsed)
         .pipe(
           mergeMap(
@@ -75,41 +73,11 @@ export default function GetHolders() {
           toArray()
         )
         .subscribe(() => {
-          download("cs-holders.json", jsonFormat(owners));
+          download(
+            `minters-${Date.now()}.json`,
+            jsonFormat({ owners: [...[...new Set(owners)]], errors })
+          );
         });
-
-      // for (const addy of parsed) {
-      //   const tx = await connection.getSignaturesForAddress(
-      //     new PublicKey(addy)
-      //   );
-      //   const firstSig = tx.sort((a, b) => a.blockTime - b.blockTime)[0];
-      //   const txContent = await connection.getTransaction(firstSig.signature);
-      //   const owner = txContent.meta.postTokenBalances[0].owner;
-      //   owners.push(owner);
-      //   i++;
-      //   setCounter(i);
-      // }
-      return;
-
-      getHolders(parsed, setCounter, endpoint).subscribe({
-        next: (e) => {
-          download("gib-holders.json", jsonFormat(e, { size: 1, type: "tab" }));
-          setLoading(false);
-        },
-        error: (e) => {
-          setModalState({
-            open: true,
-            message: e,
-          });
-          setLoading(false);
-        },
-        complete: () => {
-          setAlertState({
-            message: "",
-            open: false,
-          });
-        },
-      });
     },
     [endpoint, setAlertState, setModalState]
   );
@@ -117,12 +85,13 @@ export default function GetHolders() {
   return (
     <>
       <div className="prose max-w-full text-center mb-3">
-        <h1 className="text-4xl  text-white">Holder Snapshot</h1>
+        <h1 className="text-4xl  text-white">NFT Minters</h1>
         <hr className="opacity-10 my-4" />
       </div>
       <p className="px-2 text-center">
-        This tools gives you a snapshot of holders from Solana Mint IDs. It will
-        return an object with holders, mints and amounts.
+        This tools gives you a list of first minters for a list of Solana NFTs.
+        This helps you e.g. for airdrops to those who initially minted your NFT
+        collection.
       </p>
       <hr className="my-4 opacity-10" />
       <div className="card bg-gray-900 max-w-full">
@@ -132,7 +101,7 @@ export default function GetHolders() {
         >
           <div className="card-body">
             <label className="mb-4 justify-center label">
-              Please enter SOL mint IDs as JSON array to get their holders.
+              Please enter SOL mint IDs as JSON array to get their minters.
             </label>
 
             <textarea

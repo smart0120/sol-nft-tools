@@ -64,6 +64,9 @@ export default function TopMenu() {
           <TopMenuLink path="/get-holders">
             <span>Holder Snapshot</span>
           </TopMenuLink>
+          <TopMenuLink path="/get-minters">
+            <span>Minter Snapshot</span>
+          </TopMenuLink>
           <TopMenuLink path="/find-stuck-sol">
             <span>Find Stuck SOL</span>
           </TopMenuLink>

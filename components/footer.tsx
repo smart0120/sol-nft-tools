@@ -44,7 +44,7 @@ export default function Footer() {
         </a>
       </div>
       <span className="ml-auto hidden md:inline-flex justify-center">
-        <SelectNetwork />
+        {/* <SelectNetwork /> */}
       </span>
     </footer>
   );
