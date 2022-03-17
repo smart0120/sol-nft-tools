@@ -3,7 +3,7 @@ import { clusterApiUrl } from "@solana/web3.js";
 export const ENDPOINTS = [
   {
     name: "GenesysGo",
-    endpoint: "https://pentacle.genesysgo.net",
+    endpoint: "https://alice.genesysgo.net",
   },
   {
     name: "Metaplex",
