@@ -9,8 +9,6 @@ import { useEndpoint } from "../hooks/use-endpoint";
 import { AlertContext } from "../providers/alert-provider";
 import { useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
-import { from, mergeMap, tap, toArray } from "rxjs";
-
 export default function GetHolders() {
   const {
     register,
@@ -25,6 +23,7 @@ export default function GetHolders() {
   const { setAlertState } = useContext(AlertContext);
   const { endpoint } = useEndpoint();
   const { connection } = useConnection();
+  const [isSpl, setIsSpl] = useState(false);
 
   const fetchHolders = useCallback(
     async ({ mints }: { mints: string }) => {
@@ -36,26 +35,6 @@ export default function GetHolders() {
       setLen(parsed.length);
       setLoading(true);
 
-      const fetchOwner = async (addy: string) => {
-        let tx;
-        let firstSig;
-        let txContent;
-        try {
-          tx = await connection.getConfirmedSignaturesForAddress2(
-            new PublicKey(addy)
-          );
-          firstSig = tx.sort((a, b) => a.blockTime - b.blockTime)[0];
-          if (!firstSig?.signature) {
-            debugger;
-          }
-          txContent = await connection.getTransaction(firstSig.signature);
-          const owner = txContent.meta.postTokenBalances[0].owner;
-          return owner;
-        } catch (e) {
-          console.log({ tx, firstSig, txContent });
-          debugger;
-        }
-      };
       getHolders(parsed, setCounter, endpoint).subscribe({
         next: (e) => {
           download("gib-holders.json", jsonFormat(e, { size: 1, type: "tab" }));
@@ -88,6 +67,9 @@ export default function GetHolders() {
       <p className="px-2 text-center">
         This tools gives you a snapshot of holders from Solana Mint IDs. It will
         return an object with holders, mints and amounts.
+
+<br />
+        <strong>Works with SPLs as well as NFTs</strong>
       </p>
       <hr className="my-4 opacity-10" />
       <div className="card bg-gray-900 max-w-full">
