@@ -21,7 +21,10 @@ const withTM = require("next-transpile-modules")([
 ]);
 
 module.exports = withTM({
-  images: { dangerouslyAllowSVG: true },
+  images: { dangerouslyAllowSVG: true,
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+
+  },
   reactStrictMode: true,
   webpack: (config, { isServer }) => {
     if (!isServer) {
