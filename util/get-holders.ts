@@ -40,11 +40,11 @@ const getTokenHolder = (url, key, setCounter) => {
         if (r.account.data.parsed.info.tokenAmount.uiAmount > 0) {
           if (!holders[r.account.data.parsed.info.owner]) {
             holders[r.account.data.parsed.info.owner] = {
-              amount: 1,
+              amount: +r.account.data.parsed.info.tokenAmount.uiAmount,
               mints: [key],
             };
           } else {
-            holders[r.account.data.parsed.info.owner].amount += 1;
+            holders[r.account.data.parsed.info.owner].amount += +r.account.data.parsed.info.tokenAmount.uiAmount;
             holders[r.account.data.parsed.info.owner].mints.push(key);
           }
         }
