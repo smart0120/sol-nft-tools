@@ -31,14 +31,14 @@ export default function TopMenu() {
             bg-base-300 rounded-box items-center justify-between 
             flex-wrap bg-blue-darkshadow-lg"
       >
-        <div className="flex items-center flex-no-shrink text-white">
+        <div className="flex items-center flex-no-shrink text-white mr-4" style={{width: 128}}>
           <a
             href="https://pentacle.xyz"
             target="_blank"
             rel="noreferrer noopener"
             className="py-2 grid place-content-center"
           >
-            <Image
+            <img
               src={ArweaveURI.PentacleLogo}
               width={180}
               height={40}
