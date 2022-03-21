@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useMemo,
 } from "react";
+import { createPortal } from "react-dom";
 import {
   WalletDisconnectButton,
   WalletMultiButton,
@@ -24,6 +25,35 @@ import { useEndpoint } from "../hooks/use-endpoint";
 import { AlertContext } from "../providers/alert-provider";
 import { getMints } from "../util/get-mints";
 
+function NFTPreview({ nft }) {
+  return (
+    <>
+      <div className="w-full bg-black flex items-center justify-center">
+        {nft.image ? (
+          <>
+            {nft.image.includes("arweave") ? (
+              <Image alt="" src={nft.image} width="100%" height="100%" />
+            ) : (
+              // eslint-disable-next-line
+              <img
+                src={nft.image}
+                alt=""
+                className="w-full block h-24 object-contain"
+              />
+            )}
+          </>
+        ) : null}
+        {nft.video ? (
+          <video width={100} height={300} autoPlay loop>
+            <source src={nft.video.uri} type={nft.video.type} />
+          </video>
+        ) : null}
+      </div>
+      <strong className="mt-2 text-center">{nft.data.name}</strong>
+    </>
+  );
+}
+
 export default function BurnNFTs() {
   const { setModalState } = useContext(ModalContext);
   const { setAlertState } = useContext(AlertContext);
@@ -38,11 +68,15 @@ export default function BurnNFTs() {
     status: string;
     publicAddress: null | string;
     itemsPerPage: 4 | 10 | 20 | 100;
+    isModalOpen: boolean;
+    selectedNFT: any;
   } = {
     nfts: [],
     publicAddress: null,
     status: "idle",
     itemsPerPage: 4,
+    isModalOpen: false,
+    selectedNFT: null,
   };
   const [state, dispatch] = useReducer(
     (
@@ -50,13 +84,18 @@ export default function BurnNFTs() {
       action:
         | { type: "started"; payload?: null }
         | { type: "error"; payload?: null }
+        | { type: "reinit"; payload?: null }
+        | { type: "unselect"; payload?: null }
         | { type: "success"; payload: { nfts: any[] } }
         | { type: "publicAddress"; payload: { publicAddress: string } }
         | { type: "itemsPerPage"; payload: { itemsPerPage: number } }
+        | { type: "selectedNFT"; payload: { selectedNFT: any } }
     ) => {
       switch (action.type) {
         case "started":
           return { ...state, status: "pending" };
+        case "reinit":
+          return { ...state, ...initState };
         case "error":
           return { ...state, status: "rejected" };
         case "itemsPerPage":
@@ -65,6 +104,14 @@ export default function BurnNFTs() {
           return { ...state, publicAddress: action.payload.publicAddress };
         case "success":
           return { ...state, status: "resolved", nfts: action.payload.nfts };
+        case "unselect":
+          return { ...state, selectedNFT: null, isModalOpen: false };
+        case "selectedNFT":
+          return {
+            ...state,
+            isModalOpen: true,
+            selectedNFT: action.payload.selectedNFT,
+          };
         default:
           throw new Error("unsupported action type given on BurnNFTs reducer");
       }
@@ -123,14 +170,14 @@ export default function BurnNFTs() {
 
     const nftsCopy = [...state.nfts];
     const chunkedNFTs = [];
-    const firstChunk = nftsCopy.splice(0, state.itemsPerPage);
+    const firstChunk = nftsCopy.splice(0, itemsPerPage);
     chunkedNFTs.push(firstChunk);
     while (nftsCopy.length) {
-      const chunk = nftsCopy.splice(0, state.itemsPerPage);
+      const chunk = nftsCopy.splice(0, itemsPerPage);
       chunkedNFTs.push(chunk);
     }
     return chunkedNFTs[page - 1];
-  }, [state, page]);
+  }, [state, page, itemsPerPage]);
 
   const handleNextPage = useCallback(() => {
     router.replace({
@@ -160,11 +207,53 @@ export default function BurnNFTs() {
     [dispatch]
   );
 
-  useEffect(() => {
-    if (publicKey && state.status === "idle") {
-      handleNFTs();
-    }
-  }, [publicKey, state, handleNFTs]);
+  const handleNFTSelect = useCallback((selectedNFT: any) => {
+    dispatch({ type: "selectedNFT", payload: { selectedNFT } });
+  }, []);
+
+  const handleNFTUnselect = useCallback(() => {
+    dispatch({ type: "unselect" });
+  }, []);
+
+  const handleReinitialization = useCallback(() => {
+    dispatch({ type: "reinit" });
+  }, []);
+
+  const confirmationModal = useMemo(() => {
+    return state.isModalOpen && document.body
+      ? createPortal(
+          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center">
+            <div className="bg-gray-800 rounded-lg shadow-lg p-4 max-w-sm w-full">
+              <p className="text-2xl text-white text-center">
+                Are you sure you want to permanently destroy this NFT?
+              </p>
+
+              <div className="flex items-center flex-col w-1/2 m-auto mt-8 justify-center">
+                <NFTPreview nft={state.selectedNFT} />
+              </div>
+
+              <div className="flex items-center justify-center p-4 w-full mt-8">
+                <button
+                  type="button"
+                  onClick={handleNFTUnselect}
+                  className="btn mr-4"
+                >
+                  nope
+                </button>
+                <button
+                  type="button"
+                  onClick={handleNFTUnselect}
+                  className="btn btn-primary"
+                >
+                  yup
+                </button>
+              </div>
+            </div>
+          </div>,
+          document.querySelector("body")
+        )
+      : null;
+  }, [state, handleNFTUnselect]);
 
   const itemsPerPageSelectionDisplay = useMemo(() => {
     const options = [4, 10, 20, 50];
@@ -178,8 +267,8 @@ export default function BurnNFTs() {
               <button
                 type="button"
                 onClick={() => handleItemsPerPageSelection(opt)}
-                disabled={opt === state.itemsPerPage}
-                className={opt === state.itemsPerPage ? "" : "underline"}
+                disabled={opt === itemsPerPage}
+                className={opt === itemsPerPage ? "" : "underline"}
               >
                 {opt}
               </button>
@@ -191,10 +280,10 @@ export default function BurnNFTs() {
         </div>
       </div>
     );
-  }, [state.itemsPerPage, handleItemsPerPageSelection]);
+  }, [itemsPerPage, handleItemsPerPageSelection]);
 
   const paginationDisplay = useMemo(() => {
-    return state.nfts.length > state.itemsPerPage ? (
+    return state.nfts.length > itemsPerPage ? (
       <div className="flex m-auto items-center justify-between w-full max-w-md mt-8">
         <button
           type="button"
@@ -209,13 +298,19 @@ export default function BurnNFTs() {
           type="button"
           className="btn"
           onClick={handleNextPage}
-          disabled={state.nfts.length < page * state.itemsPerPage}
+          disabled={state.nfts.length < page * itemsPerPage}
         >
           Next
         </button>
       </div>
     ) : null;
-  }, [state, page, handlePrevPage, handleNextPage]);
+  }, [state.nfts, itemsPerPage, page, handlePrevPage, handleNextPage]);
+
+  useEffect(() => {
+    if (publicKey && state.status === "idle") {
+      handleNFTs();
+    }
+  }, [publicKey, state, handleNFTs]);
 
   const nftDisplay = useMemo(() => {
     if (["idle", "pending"].includes(state.status)) {
@@ -238,38 +333,11 @@ export default function BurnNFTs() {
               {nftsToRender.map((nft) => (
                 <div className="w-full md:w-1/4 p-4" key={nft.mint}>
                   <div className="flex flex-col items-center rounded-md bg-gray-800 object-contain h-60 justify-between p-4">
-                    <div className="w-full bg-black flex items-center justify-center">
-                      {nft.image ? (
-                        <>
-                          {nft.image.includes("arweave") ? (
-                            <Image
-                              alt=""
-                              src={nft.image}
-                              width="100%"
-                              height="100%"
-                            />
-                          ) : (
-                            // eslint-disable-next-line
-                            <img
-                              src={nft.image}
-                              alt=""
-                              className="w-full block h-24 object-contain"
-                            />
-                          )}
-                        </>
-                      ) : null}
-                      {nft.video ? (
-                        <video width={100} height={300} autoPlay loop>
-                          <source src={nft.video.uri} type={nft.video.type} />
-                        </video>
-                      ) : null}
-                    </div>
-                    <strong className="mt-2 text-center">
-                      {nft.data.name}
-                    </strong>
+                    <NFTPreview nft={nft} />
                     <button
                       type="button"
                       className="btn btn-primary mt-2 w-full"
+                      onClick={() => handleNFTSelect(nft)}
                     >
                       burn
                     </button>
@@ -283,7 +351,13 @@ export default function BurnNFTs() {
         {itemsPerPageSelectionDisplay}
       </>
     );
-  }, [state, itemsPerPageSelectionDisplay, paginationDisplay, nftsToRender]);
+  }, [
+    state,
+    itemsPerPageSelectionDisplay,
+    paginationDisplay,
+    nftsToRender,
+    handleNFTSelect,
+  ]);
 
   return (
     <>
@@ -322,7 +396,10 @@ export default function BurnNFTs() {
       </div>
       <hr className="opacity-10 my-4" />
       {publicKey ? (
-        <div className="card bg-gray-900 p-4">{nftDisplay}</div>
+        <div className="card bg-gray-900 p-4">
+          {nftDisplay}
+          {confirmationModal}
+        </div>
       ) : null}
     </>
   );
