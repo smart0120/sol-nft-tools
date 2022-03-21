@@ -143,7 +143,8 @@ export default function BurnNFTs() {
     if (page - 1 === 1) {
       const newQuery = { ...router.query };
       delete newQuery.page;
-      router.replace({ pathname: router.pathname, query: newQuery });
+      router.replace({ pathname: router.pathname, query: { ...newQuery } });
+      return;
     }
 
     router.replace({
@@ -166,7 +167,7 @@ export default function BurnNFTs() {
   }, [publicKey, state, handleNFTs]);
 
   const itemsPerPageSelectionDisplay = useMemo(() => {
-    const options = [4, 10, 20, 100];
+    const options = [4, 10, 20, 50];
 
     return (
       <div className="w-full mt-8 flex items-center justify-center">
