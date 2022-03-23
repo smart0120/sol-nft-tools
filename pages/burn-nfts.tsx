@@ -18,6 +18,8 @@ import {
 import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { PublicKey } from "@solana/web3.js";
+import * as spl from "@solana/spl-token";
 
 import { SOL_ADDRESS_REGEXP } from "../util/validators";
 import { ModalContext } from "../providers/modal-provider";
@@ -179,6 +181,30 @@ export default function BurnNFTs() {
     return chunkedNFTs[page - 1];
   }, [state, page, itemsPerPage]);
 
+  const handleBurn = useCallback(async () => {
+    if (!publicKey || !state.selectedNFT) {
+      return;
+    }
+
+    // TODO figure out this actual logic
+    // the below is scratch code i was using to figure out some shit
+    /* try {
+      const { value } = await connection.getTokenAccountsByOwner(publicKey, {
+        programId: spl.TOKEN_PROGRAM_ID,
+      });
+      const tokenAccounts = value.map((tokenAcc) =>
+        spl.AccountLayout.decode(tokenAcc.account.data)
+      );
+      const match = tokenAccounts.find((acc) => {
+        const mint = new PublicKey(acc.mint).toBase58()
+        return mint === state.selectedNFT.mint
+      })
+      console.log(match)
+    } catch (err) {
+      console.log(err);
+      } */
+  }, [publicKey, state, /* connection */]);
+
   const handleNextPage = useCallback(() => {
     router.replace({
       pathname: router.pathname,
@@ -215,14 +241,10 @@ export default function BurnNFTs() {
     dispatch({ type: "unselect" });
   }, []);
 
-  const handleReinitialization = useCallback(() => {
-    dispatch({ type: "reinit" });
-  }, []);
-
   const confirmationModal = useMemo(() => {
     return state.isModalOpen && document.body
       ? createPortal(
-          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center">
+          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4">
             <div className="bg-gray-800 rounded-lg shadow-lg p-4 max-w-sm w-full">
               <p className="text-2xl text-white text-center">
                 Are you sure you want to permanently destroy this NFT?
@@ -242,7 +264,7 @@ export default function BurnNFTs() {
                 </button>
                 <button
                   type="button"
-                  onClick={handleNFTUnselect}
+                  onClick={handleBurn}
                   className="btn btn-primary"
                 >
                   yup
@@ -253,7 +275,7 @@ export default function BurnNFTs() {
           document.querySelector("body")
         )
       : null;
-  }, [state, handleNFTUnselect]);
+  }, [state, handleNFTUnselect, handleBurn]);
 
   const itemsPerPageSelectionDisplay = useMemo(() => {
     const options = [4, 10, 20, 50];
@@ -359,6 +381,9 @@ export default function BurnNFTs() {
     handleNFTSelect,
   ]);
 
+  console.log(spl);
+  console.log(spl.Token.createBurnInstruction);
+  console.log(state.nfts);
   return (
     <>
       <div className="prose max-w-full text-center mb-3">
@@ -396,11 +421,9 @@ export default function BurnNFTs() {
       </div>
       <hr className="opacity-10 my-4" />
       {publicKey ? (
-        <div className="card bg-gray-900 p-4">
-          {nftDisplay}
-          {confirmationModal}
-        </div>
+        <div className="card bg-gray-900 p-4">{nftDisplay}</div>
       ) : null}
+      {confirmationModal}
     </>
   );
 }
