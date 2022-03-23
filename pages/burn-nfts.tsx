@@ -18,7 +18,7 @@ import {
 import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { PublicKey } from "@solana/web3.js";
+import { PublicKey, Transaction } from "@solana/web3.js";
 import * as spl from "@solana/spl-token";
 
 import { SOL_ADDRESS_REGEXP } from "../util/validators";
@@ -61,8 +61,7 @@ export default function BurnNFTs() {
   const { setAlertState } = useContext(AlertContext);
 
   const { connection } = useConnection();
-  const { publicKey } = useWallet();
-
+  const { publicKey, sendTransaction, wallet } = useWallet();
   const router = useRouter();
 
   const initState: {
@@ -71,6 +70,7 @@ export default function BurnNFTs() {
     publicAddress: null | string;
     itemsPerPage: 4 | 10 | 20 | 100;
     isModalOpen: boolean;
+    isBurning: boolean;
     selectedNFT: any;
   } = {
     nfts: [],
@@ -78,6 +78,7 @@ export default function BurnNFTs() {
     status: "idle",
     itemsPerPage: 4,
     isModalOpen: false,
+    isBurning: false,
     selectedNFT: null,
   };
   const [state, dispatch] = useReducer(
@@ -86,9 +87,11 @@ export default function BurnNFTs() {
       action:
         | { type: "started"; payload?: null }
         | { type: "error"; payload?: null }
-        | { type: "reinit"; payload?: null }
         | { type: "unselect"; payload?: null }
+        | { type: "burning"; payload?: null }
+        | { type: "burned"; payload?: null }
         | { type: "success"; payload: { nfts: any[] } }
+        | { type: "nfts"; payload: { nfts: any[] } }
         | { type: "publicAddress"; payload: { publicAddress: string } }
         | { type: "itemsPerPage"; payload: { itemsPerPage: number } }
         | { type: "selectedNFT"; payload: { selectedNFT: any } }
@@ -96,8 +99,12 @@ export default function BurnNFTs() {
       switch (action.type) {
         case "started":
           return { ...state, status: "pending" };
-        case "reinit":
-          return { ...state, ...initState };
+        case "nfts":
+          return { ...state, nfts: action.payload.nfts };
+        case "burning":
+          return { ...state, isBurning: true };
+        case "burned":
+          return { ...state, isBurning: false };
         case "error":
           return { ...state, status: "rejected" };
         case "itemsPerPage":
@@ -181,30 +188,6 @@ export default function BurnNFTs() {
     return chunkedNFTs[page - 1];
   }, [state, page, itemsPerPage]);
 
-  const handleBurn = useCallback(async () => {
-    if (!publicKey || !state.selectedNFT) {
-      return;
-    }
-
-    // TODO figure out this actual logic
-    // the below is scratch code i was using to figure out some shit
-    /* try {
-      const { value } = await connection.getTokenAccountsByOwner(publicKey, {
-        programId: spl.TOKEN_PROGRAM_ID,
-      });
-      const tokenAccounts = value.map((tokenAcc) =>
-        spl.AccountLayout.decode(tokenAcc.account.data)
-      );
-      const match = tokenAccounts.find((acc) => {
-        const mint = new PublicKey(acc.mint).toBase58()
-        return mint === state.selectedNFT.mint
-      })
-      console.log(match)
-    } catch (err) {
-      console.log(err);
-      } */
-  }, [publicKey, state, /* connection */]);
-
   const handleNextPage = useCallback(() => {
     router.replace({
       pathname: router.pathname,
@@ -241,6 +224,67 @@ export default function BurnNFTs() {
     dispatch({ type: "unselect" });
   }, []);
 
+  const removeNFT = useCallback(
+    (nft: any) => {
+      dispatch({
+        type: "nfts",
+        payload: { nfts: state.nfts.filter((i) => i.mint !== nft.mint) },
+      });
+    },
+    [state.nfts]
+  );
+
+  const handleBurn = useCallback(async () => {
+    if (!publicKey || !state.selectedNFT) {
+      return;
+    }
+
+    try {
+      dispatch({ type: "burning" });
+      const mint = new PublicKey(state.selectedNFT.mint);
+      const mintAssociatedAccountAddress = await spl.getAssociatedTokenAddress(
+        mint,
+        publicKey,
+        false,
+        spl.TOKEN_PROGRAM_ID,
+        spl.ASSOCIATED_TOKEN_PROGRAM_ID
+      );
+      const mintTokenAccount = new PublicKey(mintAssociatedAccountAddress);
+      const instruction = await spl.createBurnInstruction(
+        new PublicKey(mintTokenAccount),
+        mint,
+        publicKey,
+        1,
+        []
+      );
+
+      const transaction = new Transaction().add(instruction);
+      const signature = await sendTransaction(transaction, connection);
+      await connection.confirmTransaction(signature, "processed");
+      setAlertState({ message: "Successfully burned your NFT!", open: true });
+    } catch (err) {
+      setModalState({
+        message: err.message,
+        open: true,
+      });
+    } finally {
+      dispatch({ type: "burned" });
+
+      setAlertState({ message: "", open: false });
+      removeNFT(state.selectedNFT);
+      handleNFTUnselect();
+    }
+  }, [
+    publicKey,
+    state,
+    removeNFT,
+    handleNFTUnselect,
+    connection,
+    sendTransaction,
+    setAlertState,
+    setModalState,
+  ]);
+
   const confirmationModal = useMemo(() => {
     return state.isModalOpen && document.body
       ? createPortal(
@@ -265,9 +309,11 @@ export default function BurnNFTs() {
                 <button
                   type="button"
                   onClick={handleBurn}
-                  className="btn btn-primary"
+                  className={`btn btn-primary ${
+                    state.isBurning ? "loading" : ""
+                  }`}
                 >
-                  yup
+                  {state.isBurning ? "burning!!" : "yup"}
                 </button>
               </div>
             </div>
@@ -381,9 +427,6 @@ export default function BurnNFTs() {
     handleNFTSelect,
   ]);
 
-  console.log(spl);
-  console.log(spl.Token.createBurnInstruction);
-  console.log(state.nfts);
   return (
     <>
       <div className="prose max-w-full text-center mb-3">
