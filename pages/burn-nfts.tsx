@@ -292,6 +292,7 @@ export default function BurnNFTs() {
           setAlertState({
             message: "Successfully burned your NFT!",
             open: true,
+            duration: 2000
           });
           dispatch({ type: "burned" });
           removeNFT(state.selectedNFT);
