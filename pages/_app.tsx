@@ -64,9 +64,9 @@ function MyApp({ Component, pageProps }) {
                   <MenuLink activatesDrawer={false} href="/burn-nfts">
                     Burn NFTs
                   </MenuLink>
-                  <MenuLink activatesDrawer={false} href="/find-stuck-sol">
+                  {/* <MenuLink activatesDrawer={false} href="/find-stuck-sol">
                     Find Stuck SOL
-                  </MenuLink>
+                  </MenuLink> */}
                   <MenuLink activatesDrawer={false} href="/get-ar-links">
                     Arweave Upload (Beta)
                   </MenuLink>

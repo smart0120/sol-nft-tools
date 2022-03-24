@@ -49,12 +49,6 @@ export default function GibStuckSol() {
       });
   };
 
-  useEffect(() => {
-    if (publicKey) {
-      fetchStuckSol({ address: publicKey.toBase58() });
-    }
-  }, [publicKey]);
-
   return (
     <>
       <div className="prose max-w-full text-center mb-3">
@@ -88,25 +82,24 @@ export default function GibStuckSol() {
            <WalletMultiButton style={{margin: '0 auto'}} />
            </div>
 
-            {!publicKey && (
-              <>
-                <div className="w-full text-center text-xl my-2">
-                  Or
-                </div>
-                <input
-                  {...register("address", {
-                    required: "Field is required",
-                    pattern: {
-                      value: SOL_ADDRESS_REGEXP,
-                      message: "Invalid address",
-                    },
-                  })}
-                  className={`input shadow-lg w-full ${
-                    !!errors?.address?.message && "input-error"
-                  }`}
-                />
-              </>
-            )}
+
+            <>
+              <div className="w-full text-center text-xl my-2">
+                Or
+              </div>
+              <input
+                {...register("address", {
+                  required: "Field is required",
+                  pattern: {
+                    value: SOL_ADDRESS_REGEXP,
+                    message: "Invalid address",
+                  },
+                })}
+                className={`input shadow-lg w-full ${
+                  !!errors?.address?.message && "input-error"
+                }`}
+              />
+            </>
             {!!errors?.address?.message && (
               <label className="label text-error">
                 {errors?.address?.message}
@@ -118,7 +111,7 @@ export default function GibStuckSol() {
                   loading ? "loading" : ""
                 }`}
                 disabled={errors?.address}
-                type="submit"
+                onClick={() => fetchStuckSol({ address: publicKey.toBase58() })}
               >
                 {loading ? "Getting configs.." : "Find Stuck SOL"}
               </button>

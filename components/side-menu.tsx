@@ -45,7 +45,7 @@ export default function SideMenu() {
         <MenuLink href="/get-holders">Holder Snapshot</MenuLink>
         <MenuLink href="/get-minters">Minter Snapshot</MenuLink>
         <MenuLink href="/burn-nfts">Burn NFTs</MenuLink>
-        <MenuLink href="/find-stuck-sol">Find Stuck SOL</MenuLink>
+        {/* <MenuLink href="/find-stuck-sol">Find Stuck SOL</MenuLink> */}
         <MenuLink href="/get-ar-links">Arweave Upload (Beta)</MenuLink>
         <li>
           <a
