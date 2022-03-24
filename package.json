@@ -38,6 +38,7 @@
     "react-hook-form": "^7.20.2",
     "react-use-pagination": "^2.0.1",
     "rxjs": "^7.4.0",
+    "uuid": "^8.3.2",
     "web-file-polyfill": "^1.0.4"
   },
   "devDependencies": {

@@ -43,7 +43,6 @@ export default function SideMenu() {
         </li>
         <MenuLink href="/get-mints">
           <div>
-            {" "}
             <i className="fa-solid fa-fingerprint mr-3"></i>
             Get Mint IDs
           </div>
@@ -60,43 +59,26 @@ export default function SideMenu() {
           </div>
         </MenuLink>
         <MenuLink href="/get-holders">
-          <div>
-            <i className="fa-solid fa-camera mr-3"></i>
-            Holder Snapshot
-          </div>
+          <i className="fa-solid fa-camera mr-3"></i>
+          <span> Holder Snapshot</span>
         </MenuLink>
         <MenuLink href="/get-minters">
-          {" "}
           <i className="fa-solid fa-coins mr-3"></i>
-          NFT Minters
+          <span> NFT Minters</span>
         </MenuLink>
         <MenuLink href="/burn-nfts">
-          {" "}
           <i className="fa-solid fa-fire mr-3"></i>
-          Burn NFTs
+          <span>Burn NFTs</span>
         </MenuLink>
         {/* <MenuLink href="/find-stuck-sol">Find Stuck SOL</MenuLink> */}
         <MenuLink href="/get-ar-links">
           <i className="fa-solid fa-file-arrow-up mr-3"></i>
-          Arweave Upload
+          <span>Arweave Upload</span>
         </MenuLink>
-        <li>
-          <a
-            href="https://solsned.com"
-            target="_blank"
-            rel="noreferrer"
-            className="p-0"
-          >
-            <label className="py-4 btn btn-ghost text-left normal-case w-full flex flex-row justify-between">
-              <span>
-                <i className="fa-solid fa-hand-holding-dollar mr-3"></i>
-                <span>SnedMaster 9000</span>
-              </span>
-
-              <i className="fas fa-external-link-square-alt"></i>
-            </label>
-          </a>
-        </li>
+        <MenuLink href="/snedmaster">
+          <i className="fa-solid fa-hand-holding-dollar mr-3"></i>
+          <span>SnedMaster</span>
+        </MenuLink>
         <li>
           <WalletMultiButton className="w-full" />
         </li>
@@ -114,7 +96,9 @@ export default function SideMenu() {
               ></i>
             </a>
             <div className="text-center flex items-center justify-center flex-col">
-              <span> Made with <i className="fa-solid fa-heart ml-1"></i></span>
+              <span>
+                Made with <i className="fa-solid fa-heart ml-1"></i>
+              </span>
               <a
                 href="https://twitter.com/0xAlice_"
                 target="_blank"

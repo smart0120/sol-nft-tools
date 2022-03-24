@@ -29,7 +29,7 @@ function MyApp({ Component, pageProps }) {
         <AlertProvider>
           <ModalProvider>
             <Head>
-              <title>Solana NFT Tools</title>
+              <title>🛠️ Pentacle Tools</title>
             </Head>
             <div className="drawer drawer-end">
               <input id="my-drawer" type="checkbox" className="drawer-toggle" />
@@ -92,23 +92,10 @@ function MyApp({ Component, pageProps }) {
                     <i className="fa-solid fa-file-arrow-up mr-3"></i>
                     Arweave Upload
                   </MenuLink>
-                  <li>
-                    <a
-                      href="https://solsned.com"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="p-0"
-                    >
-                      <label className="py-4 btn btn-ghost text-left normal-case w-full flex flex-row justify-between">
-                        <span>
+                  <MenuLink activatesDrawer={false} href="/snedmaster">
                           <i className="fa-solid fa-hand-holding-dollar mr-3"></i>
                           <span>SnedMaster 9000</span>
-                        </span>
-
-                        <i className="fas fa-external-link-square-alt"></i>
-                      </label>
-                    </a>
-                  </li>
+                  </MenuLink>
 
                   <li className="absolute bottom-4 left-0 w-full">
                     <div className={`flex gap-6 items-center justify-center`}>
@@ -123,7 +110,9 @@ function MyApp({ Component, pageProps }) {
                         ></i>
                       </a>
                       <div className="text-center flex items-center justify-center flex-col">
-                        <span> Made with <i className="fa-solid fa-heart ml-1"></i></span>
+                        <span>
+                          Made with <i className="fa-solid fa-heart ml-1"></i>
+                        </span>
                         <a
                           href="https://twitter.com/0xAlice_"
                           target="_blank"
