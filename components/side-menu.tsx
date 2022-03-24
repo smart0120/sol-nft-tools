@@ -82,7 +82,7 @@ export default function SideMenu() {
         </MenuLink>
         <li>
           <a
-            href="https://solsned.vercel.app"
+            href="https://solsned.com"
             target="_blank"
             rel="noreferrer"
             className="p-0"
