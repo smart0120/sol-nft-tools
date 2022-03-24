@@ -59,12 +59,13 @@ export default function BurnNFTs() {
   const { setModalState } = useContext(ModalContext);
   const { setAlertState } = useContext(AlertContext);
   const { endpoint } = useEndpoint();
-  const [connection, setConnection] = useState<Connection>(new Connection(endpoint, {
-    confirmTransactionInitialTimeout: 120000,
-  }));
-  const { publicKey, sendTransaction, wallet } = useWallet();
+  const [connection, setConnection] = useState<Connection>(
+    new Connection(endpoint, {
+      confirmTransactionInitialTimeout: 120000,
+    })
+  );
+  const { publicKey, signTransaction } = useWallet();
   const router = useRouter();
-
 
   const initState: {
     nfts: any[];
@@ -251,7 +252,7 @@ export default function BurnNFTs() {
         spl.TOKEN_PROGRAM_ID,
         spl.ASSOCIATED_TOKEN_PROGRAM_ID
       );
-      const instruction = await spl.createBurnInstruction(
+      const instruction = spl.createBurnInstruction(
         mintAssociatedAccountAddress,
         mint,
         publicKey,
@@ -263,30 +264,65 @@ export default function BurnNFTs() {
         mintAssociatedAccountAddress,
         publicKey,
         publicKey,
-        [],
+        []
       );
 
+      const getBlockhashWithRetries = async () => {
+        while (true) {
+          try {
+            return (await connection.getRecentBlockhash()).blockhash;
+          } catch (e) {
+            console.error(e);
+          }
+        }
+      };
       const transaction = new Transaction().add(instruction, closeIx);
-      const signature = await sendTransaction(transaction, connection);
-      await connection.confirmTransaction(signature, "processed");
-      setAlertState({ message: "Successfully burned your NFT!", open: true });
-      dispatch({ type: "burned" });
-      removeNFT(state.selectedNFT);
-      handleNFTUnselect();
+      transaction.recentBlockhash = await getBlockhashWithRetries();
+      transaction.feePayer = publicKey;
+      await signTransaction(transaction);
+
+      let tries = 0;
+      let completed = false;
+      while (!completed) {
+        try {
+          const signature = await connection.sendRawTransaction(
+            transaction.serialize()
+          );
+          await connection.confirmTransaction(signature, "processed");
+          setAlertState({
+            message: "Successfully burned your NFT!",
+            open: true,
+          });
+          dispatch({ type: "burned" });
+          removeNFT(state.selectedNFT);
+          handleNFTUnselect();
+          completed = true;
+        } catch (e) {
+          console.error(e);
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          tries += 1;
+          if (tries >= 6) {
+            completed = true;
+            setModalState({
+              open: true,
+              message: "Error trying to send transaction!",
+            });
+          }
+        }
+      }
     } catch (err) {
       setModalState({
         message: err.message,
         open: true,
       });
       dispatch({ type: "burned" });
-    } 
+    }
   }, [
     publicKey,
     state,
     removeNFT,
     handleNFTUnselect,
     connection,
-    sendTransaction,
     setAlertState,
     setModalState,
   ]);
@@ -387,10 +423,12 @@ export default function BurnNFTs() {
   }, [publicKey, state, handleNFTs]);
 
   useEffect(() => {
-    setConnection(new Connection(endpoint, {
-      confirmTransactionInitialTimeout: 120000,
-    }));
-  }, [endpoint])
+    setConnection(
+      new Connection(endpoint, {
+        confirmTransactionInitialTimeout: 120000,
+      })
+    );
+  }, [endpoint]);
 
   const nftDisplay = useMemo(() => {
     if (["idle", "pending"].includes(state.status)) {
