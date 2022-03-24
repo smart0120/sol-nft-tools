@@ -16,7 +16,6 @@ import {
   getParsedNftAccountsByOwner,
 } from "@nfteyez/sol-rayz";
 import axios from "axios";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import { PublicKey, Transaction } from "@solana/web3.js";
 import * as spl from "@solana/spl-token";
@@ -27,20 +26,15 @@ import { AlertContext } from "../providers/alert-provider";
 function NFTPreview({ nft }) {
   return (
     <>
-      <div className="w-full bg-black flex items-center justify-center">
+      <strong className="text-center">{nft.data.name}</strong>
+      <div className="w-full bg-black flex items-center justify-center rounded">
         {nft.image ? (
-          <>
-            {nft.image.includes("arweave") ? (
-              <Image alt="" src={nft.image} width="100%" height="100%" />
-            ) : (
-              // eslint-disable-next-line
-              <img
-                src={nft.image}
-                alt=""
-                className="w-full block h-24 object-contain"
-              />
-            )}
-          </>
+          // eslint-disable-next-line
+          <img
+            src={nft.image}
+            alt=""
+            className="w-full block h-24 object-contain"
+          />
         ) : null}
         {nft.video ? (
           <video width={100} height={300} autoPlay loop>
@@ -48,7 +42,6 @@ function NFTPreview({ nft }) {
           </video>
         ) : null}
       </div>
-      <strong className="mt-2 text-center">{nft.data.name}</strong>
     </>
   );
 }
@@ -56,7 +49,7 @@ function NFTPreview({ nft }) {
 export default function BurnNFTs() {
   const { setModalState } = useContext(ModalContext);
   const { setAlertState } = useContext(AlertContext);
-  const {connection} = useConnection();
+  const { connection } = useConnection();
   const { publicKey, signTransaction } = useWallet();
   const router = useRouter();
 
@@ -285,7 +278,7 @@ export default function BurnNFTs() {
           setAlertState({
             message: "Successfully burned your NFT!",
             open: true,
-            duration: 2000
+            duration: 2000,
           });
           dispatch({ type: "burned" });
           removeNFT(state.selectedNFT);
@@ -392,20 +385,26 @@ export default function BurnNFTs() {
       <div className="flex m-auto items-center justify-between w-full max-w-md mt-8">
         <button
           type="button"
-          className="btn rounded-box"
+          className="btn shadow rounded-box"
           onClick={handlePrevPage}
           disabled={page < 2}
         >
-          Previous
+          <i className="fa-solid fa-angle-left"></i>
         </button>
-        <div className="text-xl text-white text-center">{page}</div>
+        <div className="text-xl text-white text-center">
+          {page} /{" "}
+          {/* trying maffs */}
+          {state.nfts?.length % itemsPerPage === 0
+            ? state.nfts?.length / itemsPerPage
+            : Math.floor(state.nfts?.length / itemsPerPage) + 1}
+        </div>
         <button
           type="button"
-          className="btn rounded-box"
+          className="btn shadow rounded-box"
           onClick={handleNextPage}
           disabled={state.nfts.length < page * itemsPerPage}
         >
-          Next
+          <i className="fa-solid fa-angle-right"></i>
         </button>
       </div>
     ) : null;
@@ -437,14 +436,14 @@ export default function BurnNFTs() {
             <div className="flex items-center flex-wrap">
               {nftsToRender?.map((nft) => (
                 <div className="w-full md:w-1/4 p-4" key={nft.mint}>
-                  <div className="flex flex-col items-center rounded-md bg-gray-800 object-contain h-60 justify-between p-4">
+                  <div className="flex flex-col items-center rounded-md bg-gray-800 object-contain h-60 justify-between p-4 shadow">
                     <NFTPreview nft={nft} />
                     <button
                       type="button"
-                      className="btn btn-primary mt-2 w-full rounded-box"
+                      className="btn btn-primary mt-2 rounded-full shadow"
                       onClick={() => handleNFTSelect(nft)}
                     >
-                      burn
+                      burn <i className="fa-solid fa-fire ml-3"></i>
                     </button>
                   </div>
                 </div>
@@ -501,7 +500,7 @@ export default function BurnNFTs() {
       </div>
       <hr className="opacity-10 my-4" />
       {publicKey ? (
-        <div className="card bg-gray-900 p-4">{nftDisplay}</div>
+        <div className="card bg-gray-900 p-4 shadow">{nftDisplay}</div>
       ) : null}
       {confirmationModal}
     </>
