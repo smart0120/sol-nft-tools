@@ -2,13 +2,13 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import { ArweaveURI } from "../util/arweave-uri";
 
-const MenuLink = ({ href, children }) => {
+export const MenuLink = ({ href, children, activatesDrawer = true }) => {
   const router = useRouter();
   const { pathname } = router;
   return (
-    <li onClick={() =>router.push(href)}>
+    <li onClick={() => router.push(href)}>
       <label
-        htmlFor="my-drawer"
+        htmlFor={activatesDrawer && "my-drawer"}
         className={
           (pathname.includes(href) ? "bg-gray-600" : "") +
           " py-4 inline-block btn btn-ghost text-left normal-case"
@@ -44,6 +44,7 @@ export default function SideMenu() {
         <MenuLink href="/get-meta">Token Metadata</MenuLink>
         <MenuLink href="/get-holders">Holder Snapshot</MenuLink>
         <MenuLink href="/get-minters">Minter Snapshot</MenuLink>
+        <MenuLink href="/burn-nfts">Burn NFTs</MenuLink>
         <MenuLink href="/find-stuck-sol">Find Stuck SOL</MenuLink>
         <MenuLink href="/get-ar-links">Arweave Upload (Beta)</MenuLink>
         <li>
@@ -54,8 +55,7 @@ export default function SideMenu() {
             className="p-0"
           >
             <label className="py-4 btn btn-ghost text-left normal-case w-full flex flex-row justify-between">
-              <span>
-                SnedMaster 9000</span>
+              <span>SnedMaster 9000</span>
 
               <i className="fas fa-external-link-square-alt"></i>
             </label>

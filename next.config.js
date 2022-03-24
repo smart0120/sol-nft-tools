@@ -33,7 +33,7 @@ module.exports = withTM({
     return config;
   },
   images: {
-    domains: ["arweave.net"],
+    domains: ["arweave.net", "www.arweave.net"],
   },
   async redirects() {
     return [
