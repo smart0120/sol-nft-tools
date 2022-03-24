@@ -63,7 +63,7 @@ function MyApp({ Component, pageProps }) {
                       Get NFT Mints
                     </div>
                   </MenuLink>
-                  <MenuLink activatesDrawer={false} href="/get-meta">
+                  <MenuLink activatesDrawer={false} href="/token-metadata">
                     <div>
                       <div
                         style={{ width: 14 }}

@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { getMeta } from "../util/get-meta";
+import { getMeta } from "../util/token-metadata";
 import { download } from "../util/download";
 import jsonFormat from "json-format";
 import { ModalContext } from "../providers/modal-provider";

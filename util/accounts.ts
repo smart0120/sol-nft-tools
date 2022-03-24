@@ -1,5 +1,5 @@
 import { PublicKey } from "@solana/web3.js";
-import { StringPublicKey } from "./get-meta";
+import { StringPublicKey } from "./token-metadata";
 
 export const TOKEN_PROGRAM_ID = new PublicKey(
   "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"

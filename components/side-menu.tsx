@@ -32,7 +32,7 @@ export default function SideMenu() {
             Get NFT Mints
           </div>
         </MenuLink>
-        <MenuLink href="/get-meta">
+        <MenuLink href="/token-metadata">
           <div>
             <div
               style={{ width: 14 }}

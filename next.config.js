@@ -40,6 +40,21 @@ module.exports = withTM({
       {
         source: "/",
         destination: "/get-nft-mints",
+        permanent: false,
+      },
+      {
+        source: "/get-mints",
+        destination: "/get-nft-mints",
+        permanent: true,
+      },
+      {
+        source: "/get-meta",
+        destination: "/token-metadata",
+        permanent: true,
+      },
+      {
+        source: "/get-ar-links",
+        destination: "/arweave-upload",
         permanent: true,
       },
     ];
