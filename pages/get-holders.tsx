@@ -7,8 +7,6 @@ import { useForm } from "react-hook-form";
 import { getAddresses, validateSolAddressArray } from "../util/validators";
 import { useEndpoint } from "../hooks/use-endpoint";
 import { AlertContext } from "../providers/alert-provider";
-import { useConnection } from "@solana/wallet-adapter-react";
-import { PublicKey } from "@solana/web3.js";
 export default function GetHolders() {
   const {
     register,
@@ -22,9 +20,6 @@ export default function GetHolders() {
   const { setModalState } = useContext(ModalContext);
   const { setAlertState } = useContext(AlertContext);
   const { endpoint } = useEndpoint();
-  const { connection } = useConnection();
-  const [isSpl, setIsSpl] = useState(false);
-
   const fetchHolders = useCallback(
     async ({ mints }: { mints: string }) => {
       const parsed = getAddresses(mints);
@@ -67,8 +62,7 @@ export default function GetHolders() {
       <p className="px-2 text-center">
         This tools gives you a snapshot of holders from Solana Mint IDs. It will
         return an object with holders, mints and amounts.
-
-<br />
+        <br />
         <strong>Works with SPLs as well as NFTs</strong>
       </p>
       <hr className="my-4 opacity-10" />
