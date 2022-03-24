@@ -13,6 +13,12 @@ import { shortenAddress } from "../util/shorten-address";
 import { AlertContext } from "../providers/alert-provider";
 import { ArweaveURI } from "../util/arweave-uri";
 import { useFiles } from "../hooks/use-files";
+import { WebBundlr } from "@bundlr-network/client";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import {
+  getPhantomWallet,
+  getSolflareWallet,
+} from "@solana/wallet-adapter-wallets";
 
 export const generateArweaveWallet = async () => {
   const arweave = getArweave();
@@ -53,6 +59,7 @@ export default function GetARLinks() {
   const [loading, setLoading] = useState(false);
   const { register, handleSubmit } = useForm();
   const { setAlertState } = useContext(AlertContext);
+  const wallet = useWallet();
 
   const generate = useCallback(async () => {
     const jwk = await generateArweaveWallet();
@@ -62,6 +69,26 @@ export default function GetARLinks() {
     setAddress(_address);
     setJwk(jwk);
   }, []);
+
+  const initialiseBundlr = async () => {
+    const selector = document.querySelector(
+      ".wallet-adapter-button-start-icon img"
+    );
+    const provName = selector?.attributes
+      .getNamedItem("alt")
+      .value.split(" ")[0];
+    const getProvider = async (name) => {
+      wallet;
+    };
+
+    const bundlr = new WebBundlr(
+      "https://node1.bundlr.network",
+      "solana",
+      await getProvider(provName)
+    );
+    await bundlr.ready();
+    return bundlr; // done!
+  };
 
   useEffect(() => {
     (async () => {
@@ -81,6 +108,14 @@ export default function GetARLinks() {
       }
     })();
   }, [address]);
+  useEffect(() => {
+    (async () => {
+      if (wallet.connected) {
+        const bundlr = await initialiseBundlr();
+        console.log(bundlr)
+      }
+    })();
+  }, [wallet.connected]);
 
   const upload = useCallback(async () => {
     setLoading(true);
@@ -121,7 +156,7 @@ export default function GetARLinks() {
     const interval = setInterval(async () => {
       if (address) {
         const balance = await getArweave().wallets.getBalance(address);
-        setBalance( getArweave().ar.winstonToAr(balance));
+        setBalance(getArweave().ar.winstonToAr(balance));
       }
     }, 5000);
 
@@ -142,7 +177,7 @@ export default function GetARLinks() {
           duration: 3000,
         });
       } catch (e) {
-        console.log(e)
+        console.log(e);
         setAlertState({
           message: "Key could not be imported!",
           open: true,

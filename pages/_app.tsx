@@ -10,6 +10,7 @@ import { ConnectionProvider } from "@solana/wallet-adapter-react";
 import dynamic from "next/dynamic";
 import { useEndpoint } from "../hooks/use-endpoint";
 import TopMenu from "../components/top-menu";
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 
 const WalletProvider = dynamic(
   () => import("../contexts/ClientWalletProvider"),
@@ -20,7 +21,10 @@ const WalletProvider = dynamic(
 function MyApp({ Component, pageProps }) {
   const { endpoint } = useEndpoint();
   return (
-    <ConnectionProvider endpoint={endpoint}>
+    <ConnectionProvider
+      endpoint={endpoint}
+      config={{ confirmTransactionInitialTimeout: 120000 }}
+    >
       <WalletProvider>
         <AlertProvider>
           <ModalProvider>
@@ -29,7 +33,10 @@ function MyApp({ Component, pageProps }) {
             </Head>
             <div className="drawer drawer-end">
               <input id="my-drawer" type="checkbox" className="drawer-toggle" />
-              <div className="h-screen drawer-content lg:ml-64">
+              <div className="h-screen drawer-content lg:ml-64 relative">
+                <div className="hidden lg:inline-block p-4 absolute right-6 top-4">
+                  <WalletMultiButton className="w-full" />
+                </div>
                 <div className="lg:hidden">
                   <TopMenu />
                 </div>
@@ -39,7 +46,7 @@ function MyApp({ Component, pageProps }) {
                       href="https://pentacle.xyz"
                       target="_blank"
                       rel="noreferrer noopener"
-                      className="py-2 hover:bg-opacity-0 focus:bg-opacity-0"
+                      className="hover:bg-opacity-0 focus:bg-opacity-0"
                     >
                       <Image
                         src="/pentacle-logo.svg"
@@ -50,25 +57,40 @@ function MyApp({ Component, pageProps }) {
                     </a>
                   </li>
                   <MenuLink activatesDrawer={false} href="/get-mints">
-                    Get Mint IDs
+                    <div>
+                      {" "}
+                      <i className="fa-solid fa-fingerprint mr-3"></i>
+                      Get Mint IDs
+                    </div>
                   </MenuLink>
                   <MenuLink activatesDrawer={false} href="/get-meta">
-                    Token Metadata
+                    <div>
+                      <div
+                        style={{ width: 14 }}
+                        className="inline-flex items-center justify-center mr-3"
+                      >
+                        <i className="fa-solid fa-info"></i>
+                      </div>
+                      Token Metadata
+                    </div>
                   </MenuLink>
                   <MenuLink activatesDrawer={false} href="/get-holders">
-                    Holder Snapshot
+                    <div>
+                      <i className="fa-solid fa-camera mr-3"></i>
+                      Holder Snapshot
+                    </div>
                   </MenuLink>
                   <MenuLink activatesDrawer={false} href="/get-minters">
+                    <i className="fa-solid fa-coins mr-3"></i>
                     Minter Snapshot
                   </MenuLink>
                   <MenuLink activatesDrawer={false} href="/burn-nfts">
+                    <i className="fa-solid fa-fire mr-3"></i>
                     Burn NFTs
                   </MenuLink>
-                  {/* <MenuLink activatesDrawer={false} href="/find-stuck-sol">
-                    Find Stuck SOL
-                  </MenuLink> */}
                   <MenuLink activatesDrawer={false} href="/get-ar-links">
-                    Arweave Upload (Beta)
+                    <i className="fa-solid fa-file-arrow-up mr-3"></i>
+                    Arweave Upload
                   </MenuLink>
                   <li>
                     <a
@@ -78,7 +100,10 @@ function MyApp({ Component, pageProps }) {
                       className="p-0"
                     >
                       <label className="py-4 btn btn-ghost text-left normal-case w-full flex flex-row justify-between">
-                        <span>SnedMaster 9000</span>
+                        <span>
+                          <i className="fa-solid fa-hand-holding-dollar mr-3"></i>
+                          <span>SnedMaster 9000</span>
+                        </span>
 
                         <i className="fas fa-external-link-square-alt"></i>
                       </label>

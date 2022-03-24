@@ -4,14 +4,13 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
-  useState,
 } from "react";
 import { createPortal } from "react-dom";
 import {
   WalletDisconnectButton,
   WalletMultiButton,
 } from "@solana/wallet-adapter-react-ui";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import {
   resolveToWalletAddress,
   getParsedNftAccountsByOwner,
@@ -19,11 +18,10 @@ import {
 import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { Connection, PublicKey, Transaction } from "@solana/web3.js";
+import { PublicKey, Transaction } from "@solana/web3.js";
 import * as spl from "@solana/spl-token";
 
 import { ModalContext } from "../providers/modal-provider";
-import { useEndpoint } from "../hooks/use-endpoint";
 import { AlertContext } from "../providers/alert-provider";
 
 function NFTPreview({ nft }) {
@@ -58,12 +56,7 @@ function NFTPreview({ nft }) {
 export default function BurnNFTs() {
   const { setModalState } = useContext(ModalContext);
   const { setAlertState } = useContext(AlertContext);
-  const { endpoint } = useEndpoint();
-  const [connection, setConnection] = useState<Connection>(
-    new Connection(endpoint, {
-      confirmTransactionInitialTimeout: 120000,
-    })
-  );
+  const {connection} = useConnection();
   const { publicKey, signTransaction } = useWallet();
   const router = useRouter();
 
@@ -423,14 +416,6 @@ export default function BurnNFTs() {
       handleNFTs();
     }
   }, [publicKey, state, handleNFTs]);
-
-  useEffect(() => {
-    setConnection(
-      new Connection(endpoint, {
-        confirmTransactionInitialTimeout: 120000,
-      })
-    );
-  }, [endpoint]);
 
   const nftDisplay = useMemo(() => {
     if (["idle", "pending"].includes(state.status)) {
