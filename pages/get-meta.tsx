@@ -25,7 +25,7 @@ export default function GetMeta() {
     const parsed = getAddresses(mints);
 
     setAlertState({
-      message: "Downloading your data.",
+      message:  <button className="btn btn-disabled btn-ghost loading">Downloading your data.</button>,
       open: true
     });
 

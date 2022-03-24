@@ -5,21 +5,25 @@ import { ModalContext } from "../providers/modal-provider";
 import { useEndpoint } from "../hooks/use-endpoint";
 import { AlertContext } from "../providers/alert-provider";
 import { getMints } from "../util/get-mints";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 
 export default function GibMints() {
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm();
   const [loading, setLoading] = useState(false);
   const { setModalState } = useContext(ModalContext);
   const { endpoint } = useEndpoint();
   const { setAlertState } = useContext(AlertContext);
+  const { connected, publicKey } = useWallet();
   const fetchMints = async (val = "") => {
     setAlertState({
-      message: "Downloading your data.",
-      open: true
+      message:  <button className="btn btn-disabled btn-ghost loading">Downloading your data.</button>,
+      open: true,
     });
     setLoading(true);
     getMints(val, endpoint)
@@ -36,10 +40,13 @@ export default function GibMints() {
       .finally(() => {
         setAlertState({
           message: "",
-          open: false
+          open: false,
         });
+        setLoading(false);
       });
   };
+
+  const pubkeyString = publicKey?.toBase58();
 
   return (
     <>
@@ -91,6 +98,29 @@ export default function GibMints() {
               >
                 {loading ? "Getting Mints.." : "Get Mints!"}
               </button>
+            </div>
+            <hr className="opacity-10 my-4" />
+            <div className="flex items-center justify-center">
+              {connected ? (
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setValue("address", pubkeyString);
+                    fetchMints(pubkeyString);
+                  }}
+                  className="btn btn-primary"
+                >
+                  {" "}
+                  Use Wallet <br />
+                  {pubkeyString.slice(0, 3)}...
+                  {pubkeyString.slice(
+                    pubkeyString.length - 3,
+                    pubkeyString.length
+                  )}
+                </button>
+              ) : (
+                <WalletMultiButton />
+              )}
             </div>
           </div>
         </form>

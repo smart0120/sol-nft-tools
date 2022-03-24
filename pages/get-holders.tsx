@@ -24,7 +24,7 @@ export default function GetHolders() {
     async ({ mints }: { mints: string }) => {
       const parsed = getAddresses(mints);
       setAlertState({
-        message: "Downloading your data.",
+        message:  <button className="btn btn-disabled btn-ghost loading">Downloading your data.</button>,
         open: true,
       });
       setLen(parsed.length);
