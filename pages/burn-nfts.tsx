@@ -142,22 +142,22 @@ export default function BurnNFTs() {
       });
       dispatch({ type: "publicAddress", payload: { publicAddress } });
       const nfts = await getParsedNftAccountsByOwner({ publicAddress });
-      const promises = nfts.map(({ data }) => axios(data.uri));
+      const promises = nfts.map(({ data }) => axios(data?.uri));
       const nftsWithImagesData = await Promise.all(promises);
 
       const nftsWithImages = nfts.map((nft) => {
         const match = nftsWithImagesData.find(
-          ({ data }) => data.name === nft.data.name
+          ({ data }) => data?.name === nft?.data?.name
         );
 
         if (match) {
-          if (match.data.image) {
-            return { ...nft, image: match.data.image };
-          } else if (match.data.properties.category === "video") {
+          if (match.data?.image) {
+            return { ...nft, image: match.data?.image };
+          } else if (match.data?.properties?.category === "video") {
             return {
               ...nft,
               image: null,
-              video: { ...match.data.properties?.files[0] },
+              video: { ...match?.data?.properties?.files[0] },
             };
           } else return { ...nft, image: null, video: null };
         } else return { ...nft, image: null, video: null };
