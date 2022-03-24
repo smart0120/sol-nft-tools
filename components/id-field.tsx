@@ -1,4 +1,3 @@
-
 import { LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
 import { useForm } from "react-hook-form";
 
@@ -19,13 +18,22 @@ export default function IdField({ sned, loading }) {
           return JSON.parse(value);
         } catch {
           if (value.includes(",")) {
-            return value.split(",").map((t) => t.trim()).filter(a => a);
+            return value
+              .split(",")
+              .map((t) => t.trim())
+              .filter((a) => a);
           }
           if (/\n/.exec(value)?.length) {
-            return value.split("\n").map((t) => t.trim()).filter(a => a);
+            return value
+              .split("\n")
+              .map((t) => t.trim())
+              .filter((a) => a);
           }
           if (/\r/.exec(value)?.length) {
-            return value.split("\r").map((t) => t.trim()).filter(a => a);
+            return value
+              .split("\r")
+              .map((t) => t.trim())
+              .filter((a) => a);
           }
           return value;
         }
@@ -34,7 +42,9 @@ export default function IdField({ sned, loading }) {
       if (!val.length) {
         return false;
       }
-      typeof val === 'string' ? new PublicKey(val)  : val.forEach((v) => new PublicKey(v));
+      typeof val === "string"
+        ? new PublicKey(val)
+        : val.forEach((v) => new PublicKey(v));
       return true;
     } catch {
       return "Could not get addresses";
@@ -71,11 +81,13 @@ export default function IdField({ sned, loading }) {
         {errors?.ids?.type === "validate" && "Invalid address"}
       </div>
 
-      <input
-        type="submit"
-        value="Sned!"
-        className={`btn btn-primary w-full ${loading ? "loading" : ""}`}
-      />
+      <div className="w-full text-center">
+        <input
+          type="submit"
+          value="Sned!"
+          className={`btn btn-primary rounded-box ${loading ? "loading" : ""}`}
+        />
+      </div>
     </form>
   );
 }
