@@ -84,7 +84,15 @@ export default function GibAirdrop() {
         amount: number;
         destination: string;
       }) => {
-        const { blockhash } = await connection.getRecentBlockhash();
+        let blockhash;
+        while (!blockhash) {
+          try {
+            blockhash = await (await connection.getRecentBlockhash()).blockhash;
+          } catch (e) {
+            console.log(e);
+            await new Promise(resolve => setTimeout(resolve, 1000));
+          }
+        }
         const tx = new Transaction({
           recentBlockhash: blockhash,
           feePayer: wallet?.publicKey,
