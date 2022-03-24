@@ -126,6 +126,7 @@ export default function BurnNFTs() {
       dispatch({ type: "started" });
       const publicAddress = await resolveToWalletAddress({
         text: publicKey.toBase58(),
+        connection
       });
       dispatch({ type: "publicAddress", payload: { publicAddress } });
       const nfts = await getParsedNftAccountsByOwner({ publicAddress });
