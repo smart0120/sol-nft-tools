@@ -55,38 +55,6 @@ export default function TopMenu() {
           className="menu horizontal justify-center w-full flex-grow lg:items-center lg:w-auto hidden xl:flex"
           id="menu"
         >
-          <TopMenuLink path="/get-mints">
-            <span>Get Mint IDs</span>
-          </TopMenuLink>
-          <TopMenuLink path="/get-meta">
-            <span>Token Metadata</span>
-          </TopMenuLink>
-          <TopMenuLink path="/get-holders">
-            <span>Holder Snapshot</span>
-          </TopMenuLink>
-          <TopMenuLink path="/get-minters">
-            <span>Minter Snapshot</span>
-          </TopMenuLink>
-          <TopMenuLink path="/find-stuck-sol">
-            <span>Find Stuck SOL</span>
-          </TopMenuLink>
-          <TopMenuLink path="/get-ar-links">
-            <span>Arweave Upload (Beta)</span>
-          </TopMenuLink>
-          <li>
-            <a
-              href="https://solsned.vercel.app"
-              target="_blank"
-              rel="noreferrer"
-              className="py-4"
-            >
-              <div className="text-left normal-case w-full flex flex-row justify-between">
-                <span>SnedMaster 9000</span>
-
-                <i className="fas fa-external-link-square-alt ml-6"></i>
-              </div>
-            </a>
-          </li>
         </ul>
         <div className="w-1/4 hidden xl:block"></div>
       </nav>
