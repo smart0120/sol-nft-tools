@@ -19,6 +19,7 @@ import {
   getPhantomWallet,
   getSolflareWallet,
 } from "@solana/wallet-adapter-wallets";
+import Head from "next/head";
 
 export const generateArweaveWallet = async () => {
   const arweave = getArweave();
@@ -201,6 +202,9 @@ export default function GetARLinks() {
 
   return (
     <>
+         <Head>
+        <title>🛠️ Pentacle Tools - ⬆️ Arweave Upload</title>
+      </Head>
       <div className="prose max-w-full text-center mb-3">
         <h1 className="text-4xl text-white">Arweave Upload</h1>
         <hr className="opacity-10 my-4" />

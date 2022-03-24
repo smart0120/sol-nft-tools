@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { getAddresses, validateSolAddressArray } from "../util/validators";
 import { useEndpoint } from "../hooks/use-endpoint";
 import { AlertContext } from "../providers/alert-provider";
+import Head from "next/head";
 
 export default function GetMeta() {
   const {
@@ -25,8 +26,12 @@ export default function GetMeta() {
     const parsed = getAddresses(mints);
 
     setAlertState({
-      message:  <button className="btn btn-disabled btn-ghost loading">Downloading your data.</button>,
-      open: true
+      message: (
+        <button className="btn btn-disabled btn-ghost loading">
+          Downloading your data.
+        </button>
+      ),
+      open: true,
     });
 
     setLen(parsed.length);
@@ -46,7 +51,7 @@ export default function GetMeta() {
       complete: () => {
         setAlertState({
           message: "",
-          open: false
+          open: false,
         });
       },
     });
@@ -54,6 +59,9 @@ export default function GetMeta() {
 
   return (
     <div>
+      <Head>
+        <title>🛠️ Pentacle Tools - ℹ️ NFT Metadata</title>
+      </Head>
       <div className="prose max-w-full text-center mb-3">
         <h1 className="text-4xl text-white">Token Metadata</h1>
         <hr className="opacity-10 my-4" />
@@ -73,7 +81,10 @@ export default function GetMeta() {
               Please enter SOL mint IDs to get their metadata
             </label>
             <textarea
-              {...register("mints", { validate: validateSolAddressArray, required: 'Field is required' })}
+              {...register("mints", {
+                validate: validateSolAddressArray,
+                required: "Field is required",
+              })}
               rows={4}
               className={`textarea w-full shadow-lg ${
                 !!errors?.mints && "input-error"
@@ -93,7 +104,7 @@ export default function GetMeta() {
                 }`}
                 type="submit"
               >
-                {loading ? `${counter} / ${len}` : 'Get Meta'}
+                {loading ? `${counter} / ${len}` : "Get Meta"}
               </button>
             </div>
           </div>

@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { getAddresses, validateSolAddressArray } from "../util/validators";
 import { useEndpoint } from "../hooks/use-endpoint";
 import { AlertContext } from "../providers/alert-provider";
+import Head from "next/head";
 export default function GetHolders() {
   const {
     register,
@@ -55,6 +56,9 @@ export default function GetHolders() {
 
   return (
     <>
+          <Head>
+        <title>🛠️ Pentacle Tools - 📷 NFT Holders</title>
+      </Head>
       <div className="prose max-w-full text-center mb-3">
         <h1 className="text-4xl  text-white">Holder Snapshot</h1>
         <hr className="opacity-10 my-4" />

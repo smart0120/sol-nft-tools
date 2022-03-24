@@ -26,7 +26,7 @@ export default function SideMenu() {
             />
           </a>
         </li>
-        <MenuLink href="/get-mints">
+        <MenuLink href="/get-nft-mints">
           <div>
             <i className="fa-solid fa-fingerprint mr-3"></i>
             Get Mint IDs
@@ -56,7 +56,7 @@ export default function SideMenu() {
           <span>Burn NFTs</span>
         </MenuLink>
         {/* <MenuLink href="/find-stuck-sol">Find Stuck SOL</MenuLink> */}
-        <MenuLink href="/get-ar-links">
+        <MenuLink href="/arweave-upload">
           <i className="fa-solid fa-file-arrow-up mr-3"></i>
           <span>Arweave Upload</span>
         </MenuLink>

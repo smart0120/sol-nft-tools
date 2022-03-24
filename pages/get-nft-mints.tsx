@@ -4,9 +4,9 @@ import { SOL_ADDRESS_REGEXP } from "../util/validators";
 import { ModalContext } from "../providers/modal-provider";
 import { useEndpoint } from "../hooks/use-endpoint";
 import { AlertContext } from "../providers/alert-provider";
-import { getMints } from "../util/get-mints";
+import { getMints } from "../util/get-nft-mints";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import Head from "next/head";
 
 export default function GibMints() {
   const {
@@ -22,7 +22,11 @@ export default function GibMints() {
   const { connected, publicKey } = useWallet();
   const fetchMints = async (val = "") => {
     setAlertState({
-      message:  <button className="btn btn-disabled btn-ghost loading">Downloading your data.</button>,
+      message: (
+        <button className="btn btn-disabled btn-ghost loading">
+          Downloading your data.
+        </button>
+      ),
       open: true,
     });
     setLoading(true);
@@ -50,6 +54,9 @@ export default function GibMints() {
 
   return (
     <>
+      <Head>
+        <title>🛠️ Pentacle Tools - 🆔 NFT Minters</title>
+      </Head>
       <div className="prose max-w-full text-center mb-3">
         <h1 className="text-4xl text-white">Get Mint IDs</h1>
         <hr className="opacity-10 my-4" />

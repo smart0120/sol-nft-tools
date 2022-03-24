@@ -1,5 +1,4 @@
 import React, { useCallback, useContext, useState } from "react";
-import { getHolders } from "../util/get-holders";
 import { download } from "../util/download";
 import jsonFormat from "json-format";
 import { ModalContext } from "../providers/modal-provider";
@@ -10,6 +9,7 @@ import { AlertContext } from "../providers/alert-provider";
 import { useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { from, mergeMap, tap, toArray } from "rxjs";
+import Head from "next/head";
 
 export default function GetHolders() {
   const {
@@ -30,7 +30,11 @@ export default function GetHolders() {
     async ({ mints }: { mints: string }) => {
       const parsed = getAddresses(mints);
       setAlertState({
-        message:  <button className="btn btn-disabled btn-ghost loading">Downloading your data.</button>,
+        message: (
+          <button className="btn btn-disabled btn-ghost loading">
+            Downloading your data.
+          </button>
+        ),
         open: true,
       });
       setLen(parsed.length);
@@ -51,7 +55,7 @@ export default function GetHolders() {
             firstSig = tx.sort((a, b) => a.blockTime - b.blockTime)[0];
             if (firstSig?.signature) {
               txContent = await connection.getTransaction(firstSig?.signature);
-  
+
               owner = txContent?.meta?.postTokenBalances[0]?.owner;
               if (owner) {
                 owners.push(owner);
@@ -90,6 +94,9 @@ export default function GetHolders() {
 
   return (
     <>
+      <Head>
+        <title>🛠️ Pentacle Tools - 👛 NFT Minters</title>
+      </Head>
       <div className="prose max-w-full text-center mb-3">
         <h1 className="text-4xl  text-white">NFT Minters</h1>
         <hr className="opacity-10 my-4" />

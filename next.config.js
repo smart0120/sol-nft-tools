@@ -39,7 +39,7 @@ module.exports = withTM({
     return [
       {
         source: "/",
-        destination: "/get-mints",
+        destination: "/get-nft-mints",
         permanent: true,
       },
     ];

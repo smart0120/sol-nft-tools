@@ -22,6 +22,7 @@ import * as spl from "@solana/spl-token";
 
 import { ModalContext } from "../providers/modal-provider";
 import { AlertContext } from "../providers/alert-provider";
+import Head from "next/head";
 
 function NFTPreview({ nft }) {
   return (
@@ -126,7 +127,7 @@ export default function BurnNFTs() {
       dispatch({ type: "started" });
       const publicAddress = await resolveToWalletAddress({
         text: publicKey.toBase58(),
-        connection
+        connection,
       });
       dispatch({ type: "publicAddress", payload: { publicAddress } });
       const nfts = await getParsedNftAccountsByOwner({ publicAddress });
@@ -393,8 +394,7 @@ export default function BurnNFTs() {
           <i className="fa-solid fa-angle-left"></i>
         </button>
         <div className="text-xl text-white text-center">
-          {page} /{" "}
-          {/* trying maffs */}
+          {page} / {/* trying maffs */}
           {state.nfts?.length % itemsPerPage === 0
             ? state.nfts?.length / itemsPerPage
             : Math.floor(state.nfts?.length / itemsPerPage) + 1}
@@ -466,8 +466,11 @@ export default function BurnNFTs() {
 
   return (
     <>
+      <Head>
+        <title>🛠️ Pentacle Tools - 🔥 Burn NFTs</title>
+      </Head>
       <div className="prose max-w-full text-center mb-3">
-        <h1 className="text-4xl text-white">Burn These NFTs</h1>
+        <h1 className="text-4xl text-white">Burn NFTs</h1>
         <hr className="opacity-10 my-4" />
       </div>
       <p className="px-2 text-center">

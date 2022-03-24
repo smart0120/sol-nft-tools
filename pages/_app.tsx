@@ -57,9 +57,8 @@ function MyApp({ Component, pageProps }) {
                       />
                     </a>
                   </li>
-                  <MenuLink activatesDrawer={false} href="/get-mints">
+                  <MenuLink activatesDrawer={false} href="/get-nft-mints">
                     <div>
-                      {" "}
                       <i className="fa-solid fa-fingerprint mr-3"></i>
                       Get Mint IDs
                     </div>
@@ -89,7 +88,7 @@ function MyApp({ Component, pageProps }) {
                     <i className="fa-solid fa-fire mr-3"></i>
                     Burn NFTs
                   </MenuLink>
-                  <MenuLink activatesDrawer={false} href="/get-ar-links">
+                  <MenuLink activatesDrawer={false} href="/arweave-upload">
                     <i className="fa-solid fa-file-arrow-up mr-3"></i>
                     Arweave Upload
                   </MenuLink>
