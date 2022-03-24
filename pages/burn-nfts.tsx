@@ -302,6 +302,7 @@ export default function BurnNFTs() {
           await new Promise((resolve) => setTimeout(resolve, 500));
           tries += 1;
           if (tries >= 6) {
+            dispatch({ type: "burned" });
             completed = true;
             setModalState({
               open: true,
