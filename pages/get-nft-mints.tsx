@@ -58,7 +58,7 @@ export default function GibMints() {
         <title>🛠️ Pentacle Tools - 🆔 NFT Minters</title>
       </Head>
       <div className="prose max-w-full text-center mb-3">
-        <h1 className="text-4xl text-white">Get Mint IDs</h1>
+        <h1 className="text-4xl text-white">Get NFT Mints</h1>
         <hr className="opacity-10 my-4" />
       </div>
       <p className="px-2 text-center">

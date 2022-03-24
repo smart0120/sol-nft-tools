@@ -60,7 +60,7 @@ function MyApp({ Component, pageProps }) {
                   <MenuLink activatesDrawer={false} href="/get-nft-mints">
                     <div>
                       <i className="fa-solid fa-fingerprint mr-3"></i>
-                      Get Mint IDs
+                      Get NFT Mints
                     </div>
                   </MenuLink>
                   <MenuLink activatesDrawer={false} href="/get-meta">

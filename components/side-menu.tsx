@@ -29,7 +29,7 @@ export default function SideMenu() {
         <MenuLink href="/get-nft-mints">
           <div>
             <i className="fa-solid fa-fingerprint mr-3"></i>
-            Get Mint IDs
+            Get NFT Mints
           </div>
         </MenuLink>
         <MenuLink href="/get-meta">
