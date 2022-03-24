@@ -28,7 +28,7 @@ export function ClientWalletProvider(
   );
 
   return (
-    <WalletProvider autoConnect wallets={wallets} {...props}>
+    <WalletProvider wallets={wallets} {...props}>
       <WalletModalProvider {...props} />
     </WalletProvider>
   );
