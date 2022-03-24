@@ -4,13 +4,14 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
+  useState,
 } from "react";
 import { createPortal } from "react-dom";
 import {
   WalletDisconnectButton,
   WalletMultiButton,
 } from "@solana/wallet-adapter-react-ui";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { useWallet } from "@solana/wallet-adapter-react";
 import {
   resolveToWalletAddress,
   getParsedNftAccountsByOwner,
@@ -18,14 +19,12 @@ import {
 import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { PublicKey, Transaction } from "@solana/web3.js";
+import { Connection, PublicKey, Transaction } from "@solana/web3.js";
 import * as spl from "@solana/spl-token";
 
-import { SOL_ADDRESS_REGEXP } from "../util/validators";
 import { ModalContext } from "../providers/modal-provider";
 import { useEndpoint } from "../hooks/use-endpoint";
 import { AlertContext } from "../providers/alert-provider";
-import { getMints } from "../util/get-mints";
 
 function NFTPreview({ nft }) {
   return (
@@ -59,10 +58,13 @@ function NFTPreview({ nft }) {
 export default function BurnNFTs() {
   const { setModalState } = useContext(ModalContext);
   const { setAlertState } = useContext(AlertContext);
-
-  const { connection } = useConnection();
+  const { endpoint } = useEndpoint();
+  const [connection, setConnection] = useState<Connection>(new Connection(endpoint, {
+    confirmTransactionInitialTimeout: 120000,
+  }));
   const { publicKey, sendTransaction, wallet } = useWallet();
   const router = useRouter();
+
 
   const initState: {
     nfts: any[];
@@ -262,18 +264,15 @@ export default function BurnNFTs() {
       const signature = await sendTransaction(transaction, connection);
       await connection.confirmTransaction(signature, "processed");
       setAlertState({ message: "Successfully burned your NFT!", open: true });
+      dispatch({ type: "burned" });
+      removeNFT(state.selectedNFT);
+      handleNFTUnselect();
     } catch (err) {
       setModalState({
         message: err.message,
         open: true,
       });
-    } finally {
-      dispatch({ type: "burned" });
-
-      setAlertState({ message: "", open: false });
-      removeNFT(state.selectedNFT);
-      handleNFTUnselect();
-    }
+    } 
   }, [
     publicKey,
     state,
@@ -380,6 +379,12 @@ export default function BurnNFTs() {
     }
   }, [publicKey, state, handleNFTs]);
 
+  useEffect(() => {
+    setConnection(new Connection(endpoint, {
+      confirmTransactionInitialTimeout: 120000,
+    }));
+  }, [endpoint])
+
   const nftDisplay = useMemo(() => {
     if (["idle", "pending"].includes(state.status)) {
       return <p className="text-center text-lg text-white">fetching NFTs...</p>;
@@ -398,7 +403,7 @@ export default function BurnNFTs() {
             </p>
           ) : (
             <div className="flex items-center flex-wrap">
-              {nftsToRender.map((nft) => (
+              {nftsToRender?.map((nft) => (
                 <div className="w-full md:w-1/4 p-4" key={nft.mint}>
                   <div className="flex flex-col items-center rounded-md bg-gray-800 object-contain h-60 justify-between p-4">
                     <NFTPreview nft={nft} />
