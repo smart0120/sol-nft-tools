@@ -82,7 +82,7 @@ function MyApp({ Component, pageProps }) {
                   </MenuLink>
                   <MenuLink activatesDrawer={false} href="/get-minters">
                     <i className="fa-solid fa-coins mr-3"></i>
-                    Minter Snapshot
+                    NFT Minters
                   </MenuLink>
                   <MenuLink activatesDrawer={false} href="/burn-nfts">
                     <i className="fa-solid fa-fire mr-3"></i>

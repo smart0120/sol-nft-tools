@@ -68,7 +68,7 @@ export default function SideMenu() {
         <MenuLink href="/get-minters">
           {" "}
           <i className="fa-solid fa-coins mr-3"></i>
-          Minter Snapshott
+          NFT Minters
         </MenuLink>
         <MenuLink href="/burn-nfts">
           {" "}
