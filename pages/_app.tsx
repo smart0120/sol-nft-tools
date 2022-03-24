@@ -4,13 +4,14 @@ import { ModalProvider } from "../providers/modal-provider";
 import React from "react";
 import { AlertProvider } from "../providers/alert-provider";
 import Image from "next/image";
-import SideMenu, { MenuLink } from "../components/side-menu";
+import SideMenu from "../components/side-menu";
 import Head from "next/head";
 import { ConnectionProvider } from "@solana/wallet-adapter-react";
 import dynamic from "next/dynamic";
 import { useEndpoint } from "../hooks/use-endpoint";
 import TopMenu from "../components/top-menu";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { MenuLink } from "../components/menu-link";
 
 const WalletProvider = dynamic(
   () => import("../contexts/ClientWalletProvider"),
