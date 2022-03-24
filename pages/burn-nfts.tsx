@@ -251,16 +251,22 @@ export default function BurnNFTs() {
         spl.TOKEN_PROGRAM_ID,
         spl.ASSOCIATED_TOKEN_PROGRAM_ID
       );
-      const mintTokenAccount = new PublicKey(mintAssociatedAccountAddress);
       const instruction = await spl.createBurnInstruction(
-        new PublicKey(mintTokenAccount),
+        mintAssociatedAccountAddress,
         mint,
         publicKey,
         1,
         []
       );
 
-      const transaction = new Transaction().add(instruction);
+      const closeIx = spl.createCloseAccountInstruction(
+        mintAssociatedAccountAddress,
+        publicKey,
+        publicKey,
+        [],
+      );
+
+      const transaction = new Transaction().add(instruction, closeIx);
       const signature = await sendTransaction(transaction, connection);
       await connection.confirmTransaction(signature, "processed");
       setAlertState({ message: "Successfully burned your NFT!", open: true });
@@ -272,6 +278,7 @@ export default function BurnNFTs() {
         message: err.message,
         open: true,
       });
+      dispatch({ type: "burned" });
     } 
   }, [
     publicKey,
