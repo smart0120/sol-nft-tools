@@ -116,7 +116,7 @@ export default function GibMints() {
                   )}
                 </button>
               ) : (
-                <WalletMultiButton />
+                <></>
               )}
             </div>
           </div>
