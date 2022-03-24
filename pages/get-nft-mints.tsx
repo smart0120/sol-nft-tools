@@ -71,8 +71,9 @@ export default function GibMints() {
           className={`w-full flex flex-col`}
         >
           <div className="card-body">
-            <label className="label justify-center" htmlFor="address-field">
-              Please gib SOL address to get all mints
+          <label className="mb-4 justify-center label">
+              Please enter SOL address to get amount of SOL stuck in candy
+              machines
             </label>
             <input
               {...register("address", {
