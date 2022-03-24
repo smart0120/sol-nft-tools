@@ -114,7 +114,7 @@ export default function SideMenu() {
               ></i>
             </a>
             <div className="text-center flex items-center justify-center flex-col">
-              <span> Made with {"❤️"}</span>
+              <span> Made with <i className="fa-solid fa-heart ml-1"></i></span>
               <a
                 href="https://twitter.com/0xAlice_"
                 target="_blank"
