@@ -88,7 +88,7 @@ export default function GibMints() {
                 {errors?.address?.message}
               </label>
             )}
-            <div className="text-center mt-6">
+            <div className="flex items-center justify-center gap-4 mt-6">
               <button
                 className={`btn btn-primary rounded-box shadow-lg ${
                   loading ? "loading" : ""
@@ -98,9 +98,6 @@ export default function GibMints() {
               >
                 {loading ? "Getting Mints.." : "Get Mints!"}
               </button>
-            </div>
-            <hr className="opacity-10 my-4" />
-            <div className="flex items-center justify-center">
               {connected ? (
                 <button
                   onClick={(e) => {

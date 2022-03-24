@@ -40,8 +40,8 @@ export default function TopMenu() {
           >
             <img
               src={ArweaveURI.PentacleLogo}
-              width={180}
-              height={40}
+              width={221}
+              height={65}
               alt="Pentacle"
             />
           </a>

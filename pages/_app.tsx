@@ -40,7 +40,7 @@ function MyApp({ Component, pageProps }) {
                 <div className="lg:hidden">
                   <TopMenu />
                 </div>
-                <ul className="hidden lg:inline-block lg:fixed left-0 top-0 bottom-0 menu p-4 overflow-y-auto w-64 bg-base-300 text-base-content gap-2 relative">
+                <ul className="hidden lg:inline-block lg:fixed left-0 top-0 bottom-0 menu p-4 overflow-y-auto w-64 bg-base-300 text-base-content space-y-2 relative">
                   <li>
                     <a
                       href="https://pentacle.xyz"
@@ -49,9 +49,9 @@ function MyApp({ Component, pageProps }) {
                       className="hover:bg-opacity-0 focus:bg-opacity-0"
                     >
                       <Image
-                        src="/pentacle-logo.svg"
-                        width={180}
-                        height={40}
+                        src="/pentacle.svg"
+                        width={221}
+                        height={65}
                         alt="Pentacle"
                       />
                     </a>

@@ -25,7 +25,7 @@ export default function SideMenu() {
   return (
     <div className="drawer-side lg:hidden">
       <label htmlFor="my-drawer" className="drawer-overlay"></label>
-      <ul className="menu p-4 overflow-y-auto w-80 bg-base-100 text-base-content gap-2">
+      <ul className="menu p-4 overflow-y-auto w-80 bg-base-300 border-l border-gray-700 shadow text-base-content gap-2">
         <li>
           <a
             href="https://pentacle.xyz"
@@ -35,8 +35,8 @@ export default function SideMenu() {
           >
             <Image
               src={ArweaveURI.PentacleLogo}
-              width={180}
-              height={40}
+              width={221}
+              height={64}
               alt="Pentacle"
             />
           </a>
@@ -98,8 +98,42 @@ export default function SideMenu() {
           </a>
         </li>
         <li>
-        <WalletMultiButton className="w-full" />
+          <WalletMultiButton className="w-full" />
+        </li>
 
+        <li className="absolute bottom-4 left-0 w-full">
+          <div className={`flex gap-6 items-center justify-center`}>
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://github.com/penta-fun/sol-nft-tools/"
+            >
+              <i
+                className="fab fa-github"
+                style={{ fontStyle: "normal", fontSize: 24 }}
+              ></i>
+            </a>
+            <div className="text-center flex items-center justify-center flex-col">
+              <span> Made with {"❤️"}</span>
+              <a
+                href="https://twitter.com/0xAlice_"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                by 0xAlice
+              </a>
+            </div>
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://twitter.com/pentaclexyz"
+            >
+              <i
+                className="fab fa-twitter"
+                style={{ fontStyle: "normal", fontSize: 24 }}
+              ></i>
+            </a>
+          </div>
         </li>
       </ul>
     </div>
