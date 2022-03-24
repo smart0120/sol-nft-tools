@@ -132,7 +132,7 @@ export default function GibAirdrop() {
   }, [connection, wallet?.publicKey]);
   return (
     <>
-       <div className="prose max-w-full text-center mb-3">
+      <div className="prose max-w-full text-center mb-3">
         <h1 className="text-4xl text-white">Snedmaster 9000</h1>
         <hr className="opacity-10 my-4" />
       </div>
@@ -156,27 +156,36 @@ export default function GibAirdrop() {
                   height="56"
                   alt=""
                 />
-                {wallet?.connected ? <div>
-                  Address:
-                  <CopyToClipboard
-                    text={wallet?.publicKey?.toBase58()}
-                    onCopy={clipboardNotification}
-                  >
-                    <span className={`cursor-pointer ml-1`}>
-                      {wallet?.publicKey?.toBase58()}
-                    </span>
-                  </CopyToClipboard>
-                  <p>
-                    Balance:{" "}
-                    {solBalance === "none" ? (
-                      <span style={{ marginLeft: "1rem" }}>
-                        <button className="btn btn-ghost loading btn-disabled"></button>
+                {wallet?.connected ? (
+                  <div>
+                    Address:
+                    <CopyToClipboard
+                      text={wallet?.publicKey?.toBase58()}
+                      onCopy={clipboardNotification}
+                    >
+                      <span className={`cursor-pointer ml-1`}>
+                        {wallet?.publicKey?.toBase58()}
                       </span>
-                    ) : (
-                      solBalance / LAMPORTS_PER_SOL
+                    </CopyToClipboard>
+                    <p>
+                      Balance:{" "}
+                      {solBalance === "none" ? (
+                        <span style={{ marginLeft: "1rem" }}>
+                          <button className="btn btn-ghost loading btn-disabled"></button>
+                        </span>
+                      ) : (
+                        solBalance / LAMPORTS_PER_SOL
+                      )}
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    <WalletMultiButton />
+                    {!wallet?.connected && (
+                      <h2 className="text-2xl">Please log into wallet!</h2>
                     )}
-                  </p>
-                </div> : <WalletMultiButton/>}
+                  </>
+                )}
 
                 <div className="ml-auto">
                   <div className="btn-group">
@@ -197,7 +206,7 @@ export default function GibAirdrop() {
       </div>
 
       <hr className="my-4 opacity-10" />
-      <IdField sned={(e) => mint(e)} loading={loading} />
+      {wallet?.connected && <IdField sned={(e) => mint(e)} loading={loading} />}
     </>
   );
 }
