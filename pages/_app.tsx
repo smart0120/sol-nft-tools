@@ -93,8 +93,8 @@ function MyApp({ Component, pageProps }) {
                     Arweave Upload
                   </MenuLink>
                   <MenuLink activatesDrawer={false} href="/snedmaster">
-                          <i className="fa-solid fa-hand-holding-dollar mr-3"></i>
-                          <span>SnedMaster 9000</span>
+                    <i className="fa-solid fa-hand-holding-dollar mr-3"></i>
+                    <span>SnedMaster 9000</span>
                   </MenuLink>
 
                   <li className="absolute bottom-4 left-0 w-full">
