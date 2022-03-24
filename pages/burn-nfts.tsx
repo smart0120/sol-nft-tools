@@ -339,14 +339,14 @@ export default function BurnNFTs() {
                 <button
                   type="button"
                   onClick={handleNFTUnselect}
-                  className="btn mr-4"
+                  className="btn rounded-box mr-4"
                 >
                   nope
                 </button>
                 <button
                   type="button"
                   onClick={handleBurn}
-                  className={`btn btn-primary ${
+                  className={`btn rounded-box btn-primary ${
                     state.isBurning ? "loading" : ""
                   }`}
                 >
@@ -392,7 +392,7 @@ export default function BurnNFTs() {
       <div className="flex m-auto items-center justify-between w-full max-w-md mt-8">
         <button
           type="button"
-          className="btn"
+          className="btn rounded-box"
           onClick={handlePrevPage}
           disabled={page < 2}
         >
@@ -401,7 +401,7 @@ export default function BurnNFTs() {
         <div className="text-xl text-white text-center">{page}</div>
         <button
           type="button"
-          className="btn"
+          className="btn rounded-box"
           onClick={handleNextPage}
           disabled={state.nfts.length < page * itemsPerPage}
         >
@@ -441,7 +441,7 @@ export default function BurnNFTs() {
                     <NFTPreview nft={nft} />
                     <button
                       type="button"
-                      className="btn btn-primary mt-2 w-full"
+                      className="btn btn-primary mt-2 w-full rounded-box"
                       onClick={() => handleNFTSelect(nft)}
                     >
                       burn
