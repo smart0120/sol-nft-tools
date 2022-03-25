@@ -4,7 +4,7 @@ import { SOL_ADDRESS_REGEXP } from "../util/validators";
 import { ModalContext } from "../providers/modal-provider";
 import { useEndpoint } from "../hooks/use-endpoint";
 import { AlertContext } from "../providers/alert-provider";
-import { getMints } from "../util/nft-mints";
+import { getMints } from "../util/get-nft-mints";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Head from "next/head";
 
