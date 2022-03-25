@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useState } from "react";
-import { getHolders } from "../util/get-holders";
+import { getHolders } from "../util/holder-snapshot";
 import { download } from "../util/download";
 import jsonFormat from "json-format";
 import { ModalContext } from "../providers/modal-provider";

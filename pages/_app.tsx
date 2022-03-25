@@ -74,7 +74,7 @@ function MyApp({ Component, pageProps }) {
                       Token Metadata
                     </div>
                   </MenuLink>
-                  <MenuLink activatesDrawer={false} href="/get-holders">
+                  <MenuLink activatesDrawer={false} href="/holder-snapshot">
                     <div>
                       <i className="fa-solid fa-camera mr-3"></i>
                       Holder Snapshot

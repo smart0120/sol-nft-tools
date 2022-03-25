@@ -43,7 +43,7 @@ export default function SideMenu() {
             Token Metadata
           </div>
         </MenuLink>
-        <MenuLink href="/get-holders">
+        <MenuLink href="/holder-snapshot">
           <i className="fa-solid fa-camera mr-3"></i>
           <span> Holder Snapshot</span>
         </MenuLink>

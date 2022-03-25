@@ -57,6 +57,11 @@ module.exports = withTM({
         destination: "/arweave-upload",
         permanent: true,
       },
+      {
+        source: "/get-holders",
+        destination: "/holder-snapshot",
+        permanent: true,
+      },
     ];
   },
   async rewrites() {
