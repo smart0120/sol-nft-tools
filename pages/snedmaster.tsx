@@ -90,7 +90,7 @@ export default function GibAirdrop() {
             blockhash = await (await connection.getRecentBlockhash()).blockhash;
           } catch (e) {
             console.log(e);
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await new Promise((resolve) => setTimeout(resolve, 1000));
           }
         }
         const tx = new Transaction({
@@ -197,14 +197,16 @@ export default function GibAirdrop() {
 
                 <div className="ml-auto">
                   <div className="btn-group">
-                    <a
-                      className="btn btn-circle btn-sm"
-                      rel="noreferrer"
-                      target="_blank"
-                      href={`https://solanabeach.io/address/${wallet?.publicKey}`}
-                    >
-                      <i className="fas fa-external-link-square-alt" />
-                    </a>
+                    {wallet?.connected && (
+                      <a
+                        className="btn btn-circle btn-sm"
+                        rel="noreferrer"
+                        target="_blank"
+                        href={`https://solanabeach.io/address/${wallet?.publicKey}`}
+                      >
+                        <i className="fas fa-external-link-square-alt" />
+                      </a>
+                    )}
                   </div>
                 </div>
               </div>
