@@ -39,12 +39,12 @@ module.exports = withTM({
     return [
       {
         source: "/",
-        destination: "/get-nft-mints",
+        destination: "/nft-mints",
         permanent: false,
       },
       {
         source: "/get-mints",
-        destination: "/get-nft-mints",
+        destination: "/nft-mints",
         permanent: true,
       },
       {
@@ -55,6 +55,11 @@ module.exports = withTM({
       {
         source: "/get-ar-links",
         destination: "/arweave-upload",
+        permanent: true,
+      },
+      {
+        source: "/get-minters",
+        destination: "/nft-minters",
         permanent: true,
       },
       {

@@ -26,7 +26,7 @@ export default function SideMenu() {
             />
           </a>
         </li>
-        <MenuLink href="/get-nft-mints">
+        <MenuLink href="/nft-mints">
           <div>
             <i className="fa-solid fa-fingerprint mr-3"></i>
             Get NFT Mints
@@ -47,7 +47,7 @@ export default function SideMenu() {
           <i className="fa-solid fa-camera mr-3"></i>
           <span> Holder Snapshot</span>
         </MenuLink>
-        <MenuLink href="/get-minters">
+        <MenuLink href="/nft-minters">
           <i className="fa-solid fa-coins mr-3"></i>
           <span> NFT Minters</span>
         </MenuLink>

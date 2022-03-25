@@ -57,7 +57,7 @@ function MyApp({ Component, pageProps }) {
                       />
                     </a>
                   </li>
-                  <MenuLink activatesDrawer={false} href="/get-nft-mints">
+                  <MenuLink activatesDrawer={false} href="/nft-mints">
                     <div>
                       <i className="fa-solid fa-fingerprint mr-3"></i>
                       Get NFT Mints
@@ -80,7 +80,7 @@ function MyApp({ Component, pageProps }) {
                       Holder Snapshot
                     </div>
                   </MenuLink>
-                  <MenuLink activatesDrawer={false} href="/get-minters">
+                  <MenuLink activatesDrawer={false} href="/nft-minters">
                     <i className="fa-solid fa-coins mr-3"></i>
                     NFT Minters
                   </MenuLink>
