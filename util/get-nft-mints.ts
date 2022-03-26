@@ -32,7 +32,7 @@ export const getMints = async (creatorId: string, url: string) => {
     deserializeUnchecked(METADATA_SCHEMA, Metadata, b.account.data)
   );
   download(
-    "mints-creatorId-" + Date.now() + ".json",
+    `mints-creatorId-${creatorId}-${new Date()}.json`,
     jsonFormat(
       deserialized.map((g) => new PublicKey(g.mint).toBase58()),
       {
