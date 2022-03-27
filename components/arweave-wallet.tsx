@@ -6,7 +6,7 @@ import { shortenAddress } from "../util/shorten-address";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { BundlrContext } from "../providers/bundlr-provider";
 
-export function ArweaveWallet() {
+export default function ArweaveWallet() {
   const wallet = useWallet();
   const [solBalance, setSolBalance] = useState<number>();
   const { connection } = useConnection();

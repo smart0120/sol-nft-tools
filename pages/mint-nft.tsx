@@ -17,7 +17,7 @@ import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import FileTile from "../components/file-tile";
 import { Creator, Data } from "../util/mint/schema";
 import { URL_MATCHER } from "../util/url-matcher";
-import { ArweaveWallet } from "./arweave-wallet";
+import ArweaveWallet from "../components/arweave-wallet";
 import { BundlrContext } from "../providers/bundlr-provider";
 import { mintNFT } from "../util/mint";
 import { AlertContext } from "../providers/alert-provider";
