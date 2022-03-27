@@ -13,7 +13,7 @@ import { AlertContext } from "../providers/alert-provider";
 import IdField from "../components/id-field";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 
-export default function GibAirdrop() {
+export default function Snedmaster() {
   const [loading, setLoading] = useState(false);
   const { connection } = useConnection();
   const [solBalance, setSolBalance] = useState<number | "none">("none");

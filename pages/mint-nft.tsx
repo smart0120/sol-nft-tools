@@ -35,7 +35,7 @@ const fileToBuffer = (
   });
 };
 
-export default function GibAirdrop({ endpoint }) {
+export default function GibAirdrop() {
   const {
     register,
     handleSubmit,
@@ -47,7 +47,7 @@ export default function GibAirdrop({ endpoint }) {
   const [numberOfFiles, setNumberOfFiles] = useState(0);
   const [files, setFiles] = useState<File[]>([]);
   const [mint, setMint] = useState("");
-  const { bundler, fund, balance: bundlrBalance } = useContext(BundlrContext);
+  const { bundler, fund } = useContext(BundlrContext);
   const { connection } = useConnection();
   const handleRemoveFile = (name: string) => {
     setFiles(files.filter((f) => f.name !== name));

@@ -271,8 +271,8 @@ export default function BurnNFTs() {
         false
       );
       const instruction = createBurnInstruction(
-        mint,
         mintAssociatedAccountAddress,
+        mint,
         publicKey,
         1,
         []
