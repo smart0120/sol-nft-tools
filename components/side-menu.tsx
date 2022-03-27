@@ -4,8 +4,6 @@ import { ArweaveURI } from "../util/arweave-uri";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { MenuLink } from "./menu-link";
 
-
-
 export default function SideMenu() {
   return (
     <div className="drawer-side lg:hidden">
@@ -54,6 +52,10 @@ export default function SideMenu() {
         <MenuLink href="/burn-nfts">
           <i className="fa-solid fa-fire mr-3"></i>
           <span>Burn NFTs</span>
+        </MenuLink>
+        <MenuLink href="/mint-nft">
+          <i className="fa-solid fa-hammer mr-3"></i>
+          Mint NFT
         </MenuLink>
         {/* <MenuLink href="/find-stuck-sol">Find Stuck SOL</MenuLink> */}
         <MenuLink href="/arweave-upload">

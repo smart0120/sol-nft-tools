@@ -10,13 +10,18 @@ export function ArweaveWallet() {
   const wallet = useWallet();
   const [solBalance, setSolBalance] = useState<number>();
   const { connection } = useConnection();
-  const { balance: bundlrBalance, bundlerHttpAddress } = useContext(BundlrContext);
+  const { balance: bundlrBalance, bundlerHttpAddress } =
+    useContext(BundlrContext);
 
   const { setAlertState } = useContext(AlertContext);
 
   useEffect(() => {
     if (wallet?.publicKey) {
-      connection.getBalance(wallet?.publicKey).then((b) => setSolBalance(b));
+      const iv = setInterval(() => {
+        connection.getBalance(wallet?.publicKey).then((b) => setSolBalance(b));
+      }, 1000);
+
+      return () => clearInterval(iv);
     }
   }, [connection, wallet?.publicKey]);
 
@@ -40,7 +45,7 @@ export function ArweaveWallet() {
                   setAlertState({
                     message: "Copied to clipboard!",
                     duration: 2000,
-                    open: true
+                    open: true,
                   })
                 }
               >
@@ -62,9 +67,9 @@ export function ArweaveWallet() {
           </div>
         </div>
       </div>
-      {solBalance / LAMPORTS_PER_SOL < .02 && (
+      {solBalance / LAMPORTS_PER_SOL < 0.02 && (
         <div className="alert alert-error mt-6 border border-red-500">
-          Warning! Your balance is too low to mint reliably!  
+          Warning! Your balance is too low to mint reliably!
         </div>
       )}
     </>

@@ -40,17 +40,13 @@ export function BundlrProvider({ children }) {
   const defaultCurrency = "solana";
   const defaultSelection = "Phantom";
 
-  const [address, setAddress] = useState<string>();
   const [balance, setBalance] = useState<string>();
-  const [img, setImg] = useState<Buffer>();
-  const [price, setPrice] = useState<BigNumber>();
   const [bundler, setBundler] = useState<WebBundlr>();
   const bundlerHttpAddress = "https://node1.bundlr.network";
   const [withdrawAmount, setWithdrawAmount] = React.useState<string>();
-  //   const [provider, setProvider] = React.useState<any>();
 
   const { setAlertState } = useContext(AlertContext);
-  const intervalRef = React.useRef<number>();
+  const intervalRef = React.useRef<NodeJS.Timer>();
 
   useEffect(() => {
     if (wallet.publicKey) {
@@ -61,30 +57,25 @@ export function BundlrProvider({ children }) {
   const clean = async () => {
     clearInterval(intervalRef.current);
     setBalance(undefined);
-    setImg(undefined);
-    setPrice(undefined);
     setBundler(undefined);
-    // setProvider(undefined);
-    setAddress(undefined);
   };
 
-  const toProperCase = (s: string) => {
-    return s.charAt(0).toUpperCase() + s.substring(1).toLowerCase();
-  };
-  const toggleRefresh = async () => {
-    if (intervalRef) {
-      clearInterval(intervalRef.current);
+  useEffect(() => {
+    if (bundler && !intervalRef) {
+      const iv = setInterval(async () => {
+        bundler
+          ?.getLoadedBalance()
+          .then((r) => {
+            setBalance(r.toString());
+          })
+          .catch((_) => clearInterval(intervalRef.current));
+      }, 5000);
+  
+      intervalRef.current = iv;
+  
+      return () => clearInterval(iv)
     }
-
-    intervalRef.current = window.setInterval(async () => {
-      bundler
-        ?.getLoadedBalance()
-        .then((r) => {
-          setBalance(r.toString());
-        })
-        .catch((_) => clearInterval(intervalRef.current));
-    }, 5000);
-  };
+  }, []);
 
   useEffect(() => {
     bundler?.getLoadedBalance().then((r) => {
@@ -104,77 +95,10 @@ export function BundlrProvider({ children }) {
     return conv;
   };
 
-  const handleFileClick = () => {
-    var fileInputEl = document.createElement("input");
-    fileInputEl.type = "file";
-    fileInputEl.accept = "image/*";
-    fileInputEl.style.display = "none";
-    document.body.appendChild(fileInputEl);
-    fileInputEl.addEventListener("input", function (e) {
-      handleUpload(e as any);
-      document.body.removeChild(fileInputEl);
-    });
-    fileInputEl.click();
-  };
 
-  const handleUpload = async (evt: React.ChangeEvent<HTMLInputElement>) => {
-    let files = evt.target.files;
-    let reader = new FileReader();
-    if (files && files.length > 0) {
-      reader.onload = function () {
-        if (reader.result) {
-          setImg(Buffer.from(reader.result as ArrayBuffer));
-        }
-      };
-      reader.readAsArrayBuffer(files[0]);
-    }
-  };
-
-  const handlePrice = async () => {
-    if (img) {
-      const price = await bundler?.utils.getPrice(defaultCurrency, img.length);
-      //@ts-ignore
-      setPrice(price?.toString());
-    }
-  };
-
-  const uploadFile = async () => {
-    if (img) {
-      await bundler?.uploader
-        .upload(img, [{ name: "Content-Type", value: "image/png" }])
-        .then((res) => {
-          setAlertState({
-            severity:
-              res?.status === 200 || res?.status === 201 ? "success" : "error",
-            message: `
-            ${
-              res?.status === 200 || res?.status === 201
-                ? "Successful!"
-                : `Unsuccessful! ${res?.status}`
-            }
-
-            ${res?.data.id ? `https://arweave.net/${res.data.id}` : undefined}
-            `,
-            duration: 15000,
-          });
-        })
-        .catch((e) => {
-          setAlertState({
-            severity: "error",
-            message: `Failed to upload - ${e}`,
-            open: true, duration: 3000
-          });
-        });
-    }
-  };
 
   const fund = async (fundAmount) => {
     if (bundler && fundAmount) {
-      setAlertState({
-        severity: "info",
-        message: "Funding...",
-        duration: 15000,
-      });
       const value = parseInput(fundAmount);
       if (!value) return;
       await bundler
@@ -185,13 +109,15 @@ export function BundlrProvider({ children }) {
             message: `Funded ${res?.target}
         tx ID : ${res?.id}`,
             duration: 10000,
+            open: true, 
           });
         })
         .catch((e) => {
           setAlertState({
             severity: "error",
             message: `Failed to fund - ${e.data?.message || e.message}`,
-            open: true, duration: 10000
+            open: true, 
+            duration: 10000
           });
         });
     }
@@ -247,9 +173,7 @@ export function BundlrProvider({ children }) {
       clearInterval(intervalRef.current);
     }
     if (wallet) {
-      //   setProvider(undefined);
       setBundler(undefined);
-      setAddress(undefined);
       return;
     }
 
@@ -271,8 +195,6 @@ export function BundlrProvider({ children }) {
   };
 
   const initBundlr = async (provider) => {
-    debugger;
-
     const bundlr = new WebBundlr(bundlerHttpAddress, defaultCurrency, provider);
     try {
       // Check for valid bundlr node
@@ -301,7 +223,6 @@ export function BundlrProvider({ children }) {
       open: true,
       duration: 5000
     });
-    setAddress(bundlr?.address);
     setBundler(bundlr);
   };
 

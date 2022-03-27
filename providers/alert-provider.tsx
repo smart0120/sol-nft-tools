@@ -20,7 +20,9 @@ export function AlertProvider({ children }) {
     severity: undefined,
   });
   const setAlertState = (state: AlertState) => {
-    _setAlertState(state);
+    if (!state.open && state.open !== false) {
+      state.duration = 1000;
+    }
     if (state?.duration && !isNaN(state.duration)) {
       const timeout = setTimeout(() => {
         _setAlertState({
@@ -30,8 +32,10 @@ export function AlertProvider({ children }) {
         })
       }, state.duration);
 
+      _setAlertState(state);
       return () => clearTimeout(timeout);
     }
+    _setAlertState(state);
   }
   return (
     <AlertContext.Provider value={{ alertState, setAlertState }}>

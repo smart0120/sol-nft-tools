@@ -1,7 +1,7 @@
 // DISCLAIMER:
 // THIS FILE IS ABSOLUTE CHAOS AND I KNOW IT!
 
-import React, { useCallback, useContext, useState } from "react";
+import React, { useCallback, useContext, useMemo, useState } from "react";
 import { AttributesForm } from "../components/attributes-form";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 
@@ -20,6 +20,7 @@ import { URL_MATCHER } from "../util/url-matcher";
 import { ArweaveWallet } from "./arweave-wallet";
 import { BundlrContext } from "../providers/bundlr-provider";
 import { mintNFT } from "../util/mint";
+import { AlertContext } from "../providers/alert-provider";
 
 const fileToBuffer = (
   file: File
@@ -57,83 +58,101 @@ export default function GibAirdrop({ endpoint }) {
   const handleRemoveFile = (name: string) => {
     setFiles(files.filter((f) => f.name !== name));
   };
+  const { setAlertState } = useContext(AlertContext);
 
-  const FilesForm = () => (
-    <>
-      <label className="label" htmlFor="files">
-        <span className="label-text">Files (up to 4)*</span>
-      </label>
-      <div className="btn-group">
-        {numberOfFiles < 4 && (
-          <button
-            className="btn btn-primary"
-            onClick={() => setNumberOfFiles(numberOfFiles + 1)}
-          >
-            Add file
-          </button>
-        )}
-        {numberOfFiles > 1 && (
-          <button
-            className="btn btn-error"
-            onClick={() => {
-              setNumberOfFiles(numberOfFiles - 1);
-              setFiles(files.slice(0, numberOfFiles - 1));
-            }}
-          >
-            Remove file
-          </button>
-        )}
-      </div>
-      <div className="upload-field grid grid-cols-2 gap-4 my-4">
-        {Array.from({ length: numberOfFiles })
-          .fill("")
-          .map((num, i) => (
-            <FileTile
-              key={i}
-              file={files[i]}
-              remove={handleRemoveFile}
-              setFiles={setFiles}
-              files={files}
-            />
-          ))}
-      </div>
-
-      {!!files?.length && (
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <div>
-            <label className="label" htmlFor="imageUrlFileName">
-              Image URL
-            </label>
-            <select {...register("imageUrlFileName")} className="select w-full">
-              <option selected disabled value=""></option>
-              {files.map((f) => (
-                <option value={f.name}>{f.name}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="label" htmlFor="animationUrlFileName">
-              Animation URL
-            </label>
-            <select
-              {...register("animationUrlFileName")}
-              className="select w-full"
+  const FilesForm = useMemo(
+    () => (
+      <>
+        <label className="label" htmlFor="files">
+          <span className="label-text">Files (up to 4)*</span>
+        </label>
+        <div className="btn-group">
+          {numberOfFiles < 4 && (
+            <button
+              className="btn btn-primary"
+              onClick={(e) => {
+                e.preventDefault();
+                setNumberOfFiles(numberOfFiles + 1);
+              }}
             >
-              <option selected disabled value=""></option>
-              {files.map((f) => (
-                <option value={f.name}>{f.name}</option>
-              ))}
-            </select>
-          </div>
+              Add file
+            </button>
+          )}
+          {numberOfFiles > 1 && (
+            <button
+              className="btn btn-error"
+              onClick={(e) => {
+                e.preventDefault();
+                setNumberOfFiles(numberOfFiles - 1);
+                setFiles(files.slice(0, numberOfFiles - 1));
+              }}
+            >
+              Remove file
+            </button>
+          )}
         </div>
-      )}
-      <br />
-    </>
+        <div className="upload-field grid grid-cols-2 gap-4 my-4">
+          {Array.from({ length: numberOfFiles })
+            .fill("")
+            .map((num, i) => (
+              <FileTile
+                key={i}
+                file={files[i]}
+                remove={handleRemoveFile}
+                setFiles={setFiles}
+                files={files}
+              />
+            ))}
+        </div>
+
+        {!!files?.length && (
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <label className="label" htmlFor="imageUrlFileName">
+                Image URL
+              </label>
+              <select
+                {...register("imageUrlFileName")}
+                className="select w-full"
+              >
+                <option selected disabled value=""></option>
+                {files.map((f) => (
+                  <option value={f.name}>{f.name}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="label" htmlFor="animationUrlFileName">
+                Animation URL
+              </label>
+              <select
+                {...register("animationUrlFileName")}
+                className="select w-full"
+              >
+                <option selected disabled value=""></option>
+                {files.map((f) => (
+                  <option value={f.name}>{f.name}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
+        <br />
+      </>
+    ),
+    [files, numberOfFiles, setNumberOfFiles]
   );
 
   const upload = useCallback(
     async (formData) => {
       setLoading(true);
+      setAlertState!({
+        message: (
+          <button className="loading btn btn-ghost">Starting Upload</button>
+        ),
+        open: true,
+      });
+
       const m = Object.assign({
         name: formData.name,
         symbol: formData.symbol || null,
@@ -153,101 +172,159 @@ export default function GibAirdrop({ endpoint }) {
         },
       });
 
-      const priceApprox = await files.reduce(async (acc, curr) => {
-        const bytes = (await fileToBuffer(curr)).buffer.byteLength;
-        const price = await bundler?.utils.getPrice("solana", bytes);
-        const nr = price.toNumber();
-        return (await acc) + nr;
-      }, Promise.resolve(0));
+      try {
+        const priceApprox = await files.reduce(async (acc, curr) => {
+          const bytes = (await fileToBuffer(curr)).buffer.byteLength;
+          const price = await bundler?.utils.getPrice("solana", bytes);
+          const nr = price.toNumber();
+          return (await acc) + nr;
+        }, Promise.resolve(0));
 
-      debugger;
-      if (priceApprox * 1.1 > +bundlrBalance) {
-        await fund(priceApprox / LAMPORTS_PER_SOL);
-      }
+        const balance = await bundler
+          ?.getLoadedBalance()
+          .then((r) => r.toNumber());
 
-      const mapping = [];
-      for (const file of files) {
-        bundler.uploader.contentType = "";
-        const buff = (await fileToBuffer(file)).buffer;
-        const res = (
-          await bundler.uploader.upload(Buffer.from(buff), [
-            { name: "Content-Type", value: file.type },
+        if (priceApprox * 1.1 > balance) {
+          setAlertState!({
+            message: (
+              <button className="loading btn btn-ghost">
+                Funding Arweave...
+              </button>
+            ),
+            open: true,
+          });
+          debugger
+          await fund(Math.round(priceApprox * 1.1) / LAMPORTS_PER_SOL);
+        }
+
+        const mapping = [];
+        let i = 1;
+        for (const file of files) {
+          setAlertState!({
+            message: (
+              <button className="loading btn btn-ghost">
+                Uploading file {i} of {files.length}
+              </button>
+            ),
+            open: true,
+          });
+          bundler.uploader.contentType = "";
+          const buff = (await fileToBuffer(file)).buffer;
+          const res = (
+            await bundler.uploader.upload(Buffer.from(buff), [
+              { name: "Content-Type", value: file.type },
+            ])
+          ).data;
+          mapping.push({
+            file: file,
+            link: `https://arweave.net/${res.id}`,
+          });
+          i++;
+        }
+        m.properties.files = mapping.map(({ link, file }) => ({
+          uri: link + `?ext=${file.type.split("/")[1]}`,
+          type: file.type,
+        }));
+
+        let selectedAnimation = mapping.find(
+          (_m) => _m.file.name === formData.animationUrlFileName
+        );
+
+        m.animation_url = selectedAnimation
+          ? `${selectedAnimation.link}?ext=${
+              selectedAnimation.file.type.split("/")[1]
+            }`
+          : mapping.find((_m) => _m.file.type.startsWith("video"))?.link || "";
+
+        let selectedImage = mapping.find(
+          (_m) => _m.file.name === formData?.imageUrlFileName
+        );
+        m.image = selectedImage
+          ? `${selectedImage.link}?ext=${selectedImage.file.type.split("/")[1]}`
+          : m.properties.files[0].uri || "";
+        setAlertState!({
+          message: (
+            <button className="loading btn btn-ghost">
+              Uploading manifest
+            </button>
+          ),
+          open: true,
+        });
+        const metaTx = (
+          await bundler.uploader.upload(Buffer.from(JSON.stringify(m)), [
+            { name: "Content-Type", value: "application/json" },
           ])
         ).data;
-        mapping.push({
-          file: file,
-          link: `https://arweave.net/${res.id}`,
+
+        const creators = [
+          new Creator({
+            address: wallet.publicKey.toBase58(),
+            share: 100,
+            verified: 1,
+          }),
+        ];
+
+        const data = new Data({
+          symbol: m.symbol || "",
+          name: m.name || "",
+          uri: `https://arweave.net/${metaTx.id}`,
+          sellerFeeBasisPoints: !Number.isNaN(+m.seller_fee_basis_points)
+            ? +m.seller_fee_basis_points
+            : 0,
+          creators,
         });
-      }
-      m.properties.files = mapping.map(({ link, file }) => ({
-        uri: link + `?ext=${file.type.split("/")[1]}`,
-        type: file.type,
-      }));
 
-      let selectedAnimation = mapping.find(
-        (_m) => _m.file.name === formData.animationUrlFileName
-      );
-
-      m.animation_url = selectedAnimation
-        ? `${selectedAnimation.link}?ext=${
-            selectedAnimation.file.type.split("/")[1]
-          }`
-        : mapping.find((_m) => _m.file.type.startsWith("video"))?.link || "";
-
-      let selectedImage = mapping.find(
-        (_m) => _m.file.name === formData?.imageUrlFileName
-      );
-      m.image = selectedImage
-        ? `${selectedImage.link}?ext=${selectedImage.file.type.split("/")[1]}`
-        : m.properties.files[0].uri || "";
-
-      const metaTx = (
-        await bundler.uploader.upload(Buffer.from(JSON.stringify(m)), [
-          { name: "Content-Type", value: "application/json" },
-        ])
-      ).data;
-
-      const creators = [
-        new Creator({
-          address: wallet.publicKey.toBase58(),
-          share: 100,
-          verified: 1,
-        }),
-      ];
-
-      const data = new Data({
-        symbol: m.symbol || "",
-        name: m.name || "",
-        uri: `https://arweave.net/${metaTx.id}`,
-        sellerFeeBasisPoints: !Number.isNaN(+m.seller_fee_basis_points)
-          ? +m.seller_fee_basis_points
-          : 0,
-        creators,
-      });
-
-      const mintTxId = await mintNFT(connection, wallet, data);
-      if (mintTxId === "failed") {
-        alert(mintTxId);
-        setLoading(false);
-      } else {
-        let confirmed;
-        while (!confirmed) {
-          const tx = await connection
-            .getTransaction(mintTxId, { commitment: "confirmed" })
-            .catch((e) => {
-              alert(e);
+        setAlertState!({
+          message: (
+            <button className="loading btn btn-ghost">Minting NFT</button>
+          ),
+          open: true,
+        });
+        const mintTxId = await mintNFT(connection, wallet, data);
+        if (mintTxId === "failed") {
+          alert(mintTxId);
+          setLoading(false);
+        } else {
+          let confirmed = false;
+          while (!confirmed) {
+            setAlertState!({
+              message: (
+                <>
+                  <button className="loading btn btn-ghost"></button> Confirming
+                  transaction{" "}
+                  <a href={`https://explorer.solana.com/tx/${mintTxId}`} target="_blank" rel="noreferrer">
+                    {mintTxId.slice(0, 3)} ...{" "}
+                    {mintTxId.slice(mintTxId.length - 3)}
+                  </a>
+                </>
+              ),
+              open: true,
             });
+            const tx = await connection
+              .getTransaction(mintTxId, { commitment: "confirmed" })
+              .catch((e) => {
+                alert(e);
+              });
 
-          if (tx && tx?.meta?.postTokenBalances[0]?.mint) {
-            debugger;
-            setMint(tx?.meta?.postTokenBalances[0]?.mint);
-            confirmed = true;
-          } else {
-            await new Promise((resolve) => setTimeout(resolve, 100));
+            if (tx && tx?.meta?.postTokenBalances[0]?.mint) {
+              setMint(tx?.meta?.postTokenBalances[0]?.mint);
+              setAlertState({
+                severity: 'success',
+                duration: 5000,
+                message: 'Success!',
+                open: true
+              })
+              confirmed = true;
+            } else {
+              await new Promise((resolve) => setTimeout(resolve, 100));
+            }
           }
         }
+        setLoading(false);
+      } catch (e) {
+        console.error(e);
+        setLoading(false);
       }
-      setLoading(false);
     },
     [wallet?.publicKey, files, bundler?.address]
   );
@@ -439,7 +516,7 @@ export default function GibAirdrop({ endpoint }) {
                 )}
               </div>
               <AttributesForm register={register} />
-              <FilesForm />
+              {FilesForm}
               {wallet && (
                 <button
                   className={`btn ${loading ? "loading" : ""}`}
