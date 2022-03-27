@@ -11,35 +11,37 @@ import {
   WalletMultiButton,
 } from "@solana/wallet-adapter-react-ui";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import {
-  resolveToWalletAddress,
-  getParsedNftAccountsByOwner,
-} from "@nfteyez/sol-rayz";
-import axios from "axios";
 import { useRouter } from "next/router";
 import { PublicKey, Transaction } from "@solana/web3.js";
-import * as spl from "@solana/spl-token";
 
 import { ModalContext } from "../providers/modal-provider";
 import { AlertContext } from "../providers/alert-provider";
 import Head from "next/head";
+import { getAllUserTokens } from "solana-nft-metadata";
+import { getMeta } from "../util/token-metadata";
+import {
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  Token,
+  TOKEN_PROGRAM_ID,
+} from "@solana/spl-token";
+// import * as spl from '@solana/spl-token';
 
 function NFTPreview({ nft }) {
   return (
     <>
-      <strong className="text-center">{nft.data.name}</strong>
+      <strong className="text-center">{nft.metadata?.name}</strong>
       <div className="w-full bg-black flex items-center justify-center rounded">
         {nft.image ? (
           // eslint-disable-next-line
           <img
-            src={nft.image}
+            src={nft?.image}
             alt=""
             className="w-full block h-24 object-contain"
           />
         ) : null}
         {nft.video ? (
           <video width={100} height={300} autoPlay loop>
-            <source src={nft.video.uri} type={nft.video.type} />
+            <source src={nft?.video?.uri} type={nft?.video?.type} />
           </video>
         ) : null}
       </div>
@@ -119,43 +121,45 @@ export default function BurnNFTs() {
   );
 
   const handleNFTs = useCallback(async () => {
+    debugger
+
     if (!publicKey) {
       return;
     }
 
     try {
       dispatch({ type: "started" });
-      debugger;
       dispatch({
         type: "publicAddress",
         payload: { publicAddress: publicKey.toBase58() },
       });
-      const nfts = await getParsedNftAccountsByOwner({
-        publicAddress: publicKey.toBase58(),
-        connection,
+
+      const d = await getAllUserTokens(publicKey, {
+        connection: connection,
       });
-      const promises = nfts.map(({ data }) => axios(data?.uri));
-      const nftsWithImagesData = await Promise.all(promises);
 
-      const nftsWithImages = nfts.map((nft) => {
-        const match = nftsWithImagesData.find(
-          ({ data }) => data?.name === nft?.data?.name
-        );
+      const data = (await getMeta(
+        d.map((r) => `${r.mint}`),
+        () => {},
+        "https://alice.genesysgo.net"
+      ).toPromise()).filter(d => !d.failed);
 
-        if (match) {
-          if (match.data?.image) {
-            return { ...nft, image: match.data?.image };
-          } else if (match.data?.properties?.category === "video") {
+      const nftsWithImages = data.map((nft) => {
+        if (nft) {
+          if (nft.metadata?.image) {
+            return { ...nft, image: nft.metadata?.image };
+          } else if (nft.metadata?.properties?.category === "video") {
             return {
               ...nft,
               image: null,
-              video: { ...match?.data?.properties?.files[0] },
+              video: { ...nft?.metadata?.properties?.files[0] },
             };
           } else return { ...nft, image: null, video: null };
         } else return { ...nft, image: null, video: null };
       });
       dispatch({ type: "success", payload: { nfts: nftsWithImages } });
     } catch (err) {
+      console.log(err)
       dispatch({ type: "error" });
     }
   }, [publicKey, dispatch]);
@@ -235,23 +239,28 @@ export default function BurnNFTs() {
 
     try {
       dispatch({ type: "burning" });
+      debugger
       const mint = new PublicKey(state.selectedNFT.mint);
-      const mintAssociatedAccountAddress = await spl.getAssociatedTokenAddress(
+
+      const mintAssociatedAccountAddress =
+        await Token.getAssociatedTokenAddress(
+          ASSOCIATED_TOKEN_PROGRAM_ID,
+          TOKEN_PROGRAM_ID,
+          mint,
+          publicKey,
+          false
+        );
+      const instruction = Token.createBurnInstruction(
+        TOKEN_PROGRAM_ID,
         mint,
-        publicKey,
-        false,
-        spl.TOKEN_PROGRAM_ID,
-        spl.ASSOCIATED_TOKEN_PROGRAM_ID
-      );
-      const instruction = spl.createBurnInstruction(
         mintAssociatedAccountAddress,
-        mint,
         publicKey,
-        1,
-        []
+        [],
+        1
       );
 
-      const closeIx = spl.createCloseAccountInstruction(
+      const closeIx = Token.createCloseAccountInstruction(
+        ASSOCIATED_TOKEN_PROGRAM_ID,
         mintAssociatedAccountAddress,
         publicKey,
         publicKey,
