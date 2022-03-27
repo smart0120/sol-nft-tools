@@ -26,7 +26,7 @@ import {
     createMasterEditionInstruction,
   } from "./utils";
   import BN from "bn.js";
-  import { AnchorWallet } from "@solana/wallet-adapter-react";
+  import { AnchorWallet, WalletContextState } from "@solana/wallet-adapter-react";
   
   const METAPLEX_PROGRAM_ID = new PublicKey(
     "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
@@ -34,9 +34,8 @@ import {
   
   export async function mintNFT(
     connection: Connection,
-    wallet: AnchorWallet,
+    wallet: WalletContextState,
     data: Data,
-    user: PublicKey,
   ): Promise<string> {
     const { publicKey } = wallet;
     try {
@@ -68,18 +67,16 @@ import {
       // Derive associated token account for user
       const assoc = await getAssociatedTokenAddress(
         mint.publicKey,
-        user
+        publicKey
       ).catch();
   
       // Create associated account for user
       const createAssocTokenAccountIx =
         createAssociatedTokenAccountInstruction(
-          ASSOCIATED_TOKEN_PROGRAM_ID,
-          TOKEN_PROGRAM_ID,
-          mint.publicKey,
+          publicKey,
           assoc,
-          user,
-          publicKey
+          publicKey,
+          mint.publicKey,
         );
   
       // Create mintTo ix; mint to user's associated account
@@ -159,10 +156,10 @@ import {
       const recent = await connection.getRecentBlockhash();
       tx.recentBlockhash = recent.blockhash;
       tx.feePayer = publicKey;
-      tx.sign(mint)
+      await tx.sign(mint)
   
-      await wallet.signTransaction(tx);
-      const txId =  await connection.sendRawTransaction(tx.serialize());
+      const txId = await wallet.sendTransaction(tx, connection);
+      // const txId =  await connection.sendRawTransaction(tx.serialize({requireAllSignatures: false}));
   
       return txId;
     } catch (e) {

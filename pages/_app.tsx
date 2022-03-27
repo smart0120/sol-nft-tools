@@ -12,6 +12,7 @@ import { useEndpoint } from "../hooks/use-endpoint";
 import TopMenu from "../components/top-menu";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { MenuLink } from "../components/menu-link";
+import { BundlrProvider } from "../providers/bundlr-provider";
 
 const WalletProvider = dynamic(
   () => import("../contexts/ClientWalletProvider"),
@@ -29,6 +30,8 @@ function MyApp({ Component, pageProps }) {
       <WalletProvider>
         <AlertProvider>
           <ModalProvider>
+    <BundlrProvider>
+
             <Head>
               <title>🛠️ Pentacle Tools</title>
             </Head>
@@ -88,6 +91,10 @@ function MyApp({ Component, pageProps }) {
                     <i className="fa-solid fa-fire mr-3"></i>
                     Burn NFTs
                   </MenuLink>
+                  {/* <MenuLink activatesDrawer={false} href="/mint-nft">
+
+                    Mint NFT
+                  </MenuLink> */}
                   <MenuLink activatesDrawer={false} href="/arweave-upload">
                     <i className="fa-solid fa-file-arrow-up mr-3"></i>
                     Arweave Upload
@@ -136,7 +143,7 @@ function MyApp({ Component, pageProps }) {
                 </ul>
 
                 <main
-                  className={`my-20 px-3 lg:col-span-1 col-span-2`}
+                  className={`my-28 px-3 lg:col-span-1 col-span-2`}
                   style={{ maxWidth: "100%" }}
                 >
                   <div
@@ -150,6 +157,7 @@ function MyApp({ Component, pageProps }) {
 
               <SideMenu />
             </div>
+            </BundlrProvider>
           </ModalProvider>
         </AlertProvider>
       </WalletProvider>

@@ -25,6 +25,7 @@
     "arbundles": "0.3.3",
     "arweave": "^1.10.17",
     "axios": "^0.26.1",
+    "bignumber.js": "^9.0.2",
     "borsh": "^0.6.0",
     "bs58": "^4.0.1",
     "daisyui": "^1.16.2",
