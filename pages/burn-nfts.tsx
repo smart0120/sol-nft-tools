@@ -125,12 +125,15 @@ export default function BurnNFTs() {
 
     try {
       dispatch({ type: "started" });
-      const publicAddress = await resolveToWalletAddress({
-        text: publicKey.toBase58(),
+      debugger;
+      dispatch({
+        type: "publicAddress",
+        payload: { publicAddress: publicKey.toBase58() },
+      });
+      const nfts = await getParsedNftAccountsByOwner({
+        publicAddress: publicKey.toBase58(),
         connection,
       });
-      dispatch({ type: "publicAddress", payload: { publicAddress } });
-      const nfts = await getParsedNftAccountsByOwner({ publicAddress });
       const promises = nfts.map(({ data }) => axios(data?.uri));
       const nftsWithImagesData = await Promise.all(promises);
 
