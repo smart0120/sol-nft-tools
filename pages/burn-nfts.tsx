@@ -427,7 +427,12 @@ export default function BurnNFTs() {
           type="button"
           className="btn shadow rounded-box"
           onClick={handleNextPage}
-          disabled={state.nfts.length < page * itemsPerPage}
+          disabled={
+            page >=
+            (state.nfts?.length % itemsPerPage === 0
+              ? state.nfts?.length / itemsPerPage
+              : Math.floor(state.nfts?.length / itemsPerPage) + 1)
+          }
         >
           <i className="fa-solid fa-angle-right"></i>
         </button>
