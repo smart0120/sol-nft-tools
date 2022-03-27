@@ -6,10 +6,12 @@ import {
   Transaction,
 } from "@solana/web3.js";
 import {
-  ASSOCIATED_TOKEN_PROGRAM_ID,
   TOKEN_PROGRAM_ID,
   MintLayout,
-  Token,
+  getAssociatedTokenAddress,
+  createAssociatedTokenAccountInstruction,
+  createMintToInstruction,
+  createInitializeMintInstruction,
 } from "@solana/spl-token";
 import {
   Data,
@@ -55,8 +57,7 @@ export async function mintNFT(
 
     // Initalize mint ix
     // Creator keypair is mint and freeze authority
-    const initMintIx = Token.createInitMintInstruction(
-      TOKEN_PROGRAM_ID,
+    const initMintIx = createInitializeMintInstruction(
       mint.publicKey,
       0,
       publicKey,
@@ -64,18 +65,15 @@ export async function mintNFT(
     );
 
     // Derive associated token account for user
-    const assoc = await Token.getAssociatedTokenAddress(
-      ASSOCIATED_TOKEN_PROGRAM_ID,
-      TOKEN_PROGRAM_ID,
+    const assoc = await getAssociatedTokenAddress(
       mint.publicKey,
-      publicKey
+      publicKey,
+      false
     ).catch();
 
     // Create associated account for user
     const createAssocTokenAccountIx =
-      Token.createAssociatedTokenAccountInstruction(
-        ASSOCIATED_TOKEN_PROGRAM_ID,
-        TOKEN_PROGRAM_ID,
+      createAssociatedTokenAccountInstruction(
         publicKey,
         assoc,
         publicKey,
@@ -83,13 +81,12 @@ export async function mintNFT(
       );
 
     // Create mintTo ix; mint to user's associated account
-    const mintToIx = Token.createMintToInstruction(
-      TOKEN_PROGRAM_ID,
+    const mintToIx = createMintToInstruction(
       mint.publicKey,
       assoc,
       publicKey, // Mint authority
+      1,
       [], // No multi-sign signers
-      1
     );
 
     // Derive metadata account

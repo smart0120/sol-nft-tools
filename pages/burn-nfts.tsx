@@ -12,19 +12,19 @@ import {
 } from "@solana/wallet-adapter-react-ui";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { useRouter } from "next/router";
-import { PublicKey, Transaction } from "@solana/web3.js";
+import { ParsedAccountData, PublicKey, Transaction } from "@solana/web3.js";
 
 import { ModalContext } from "../providers/modal-provider";
 import { AlertContext } from "../providers/alert-provider";
 import Head from "next/head";
-import { getAllUserTokens } from "solana-nft-metadata";
 import { getMeta } from "../util/token-metadata";
 import {
-  ASSOCIATED_TOKEN_PROGRAM_ID,
-  Token,
+  createBurnInstruction,
+  createCloseAccountInstruction,
+  getAssociatedTokenAddress,
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
-// import * as spl from '@solana/spl-token';
+import * as metaplex from "@metaplex-foundation/mpl-token-metadata";
 
 function NFTPreview({ nft }) {
   return (
@@ -121,7 +121,7 @@ export default function BurnNFTs() {
   );
 
   const handleNFTs = useCallback(async () => {
-    debugger
+    debugger;
 
     if (!publicKey) {
       return;
@@ -133,16 +133,39 @@ export default function BurnNFTs() {
         type: "publicAddress",
         payload: { publicAddress: publicKey.toBase58() },
       });
-
-      const d = await getAllUserTokens(publicKey, {
-        connection: connection,
-      });
-
-      const data = (await getMeta(
-        d.map((r) => `${r.mint}`),
-        () => {},
-        "https://alice.genesysgo.net"
-      ).toPromise()).filter(d => !d.failed);
+      const accounts = await connection.getParsedProgramAccounts(
+        TOKEN_PROGRAM_ID, // new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA")
+        {
+          filters: [
+            {
+              dataSize: 165, // number of bytes
+            },
+            {
+              memcmp: {
+                offset: 32, // number of bytes
+                bytes: publicKey.toBase58(), // base58 encoded string
+              },
+            },
+          ],
+        }
+      );
+      console.log(accounts);
+      const mints = accounts.map(
+        (a) => (a.account.data as ParsedAccountData).parsed.info.mint
+      );
+      debugger;
+      // console.log(e)
+      // const d = await metaplex.Metadata.findByOwnerV2(connection, publicKey);
+      // console.log(d);
+      debugger;
+      const data = (
+        await getMeta(
+          mints,
+          () => {},
+          "https://alice.genesysgo.net"
+        ).toPromise()
+      ).filter((e) => !e.failed);
+      debugger;
 
       const nftsWithImages = data.map((nft) => {
         if (nft) {
@@ -159,7 +182,7 @@ export default function BurnNFTs() {
       });
       dispatch({ type: "success", payload: { nfts: nftsWithImages } });
     } catch (err) {
-      console.log(err)
+      console.log(err);
       dispatch({ type: "error" });
     }
   }, [publicKey, dispatch]);
@@ -239,28 +262,23 @@ export default function BurnNFTs() {
 
     try {
       dispatch({ type: "burning" });
-      debugger
+      debugger;
       const mint = new PublicKey(state.selectedNFT.mint);
 
-      const mintAssociatedAccountAddress =
-        await Token.getAssociatedTokenAddress(
-          ASSOCIATED_TOKEN_PROGRAM_ID,
-          TOKEN_PROGRAM_ID,
-          mint,
-          publicKey,
-          false
-        );
-      const instruction = Token.createBurnInstruction(
-        TOKEN_PROGRAM_ID,
+      const mintAssociatedAccountAddress = await getAssociatedTokenAddress(
+        mint,
+        publicKey,
+        false
+      );
+      const instruction = createBurnInstruction(
         mint,
         mintAssociatedAccountAddress,
         publicKey,
-        [],
-        1
+        1,
+        []
       );
 
-      const closeIx = Token.createCloseAccountInstruction(
-        ASSOCIATED_TOKEN_PROGRAM_ID,
+      const closeIx = createCloseAccountInstruction(
         mintAssociatedAccountAddress,
         publicKey,
         publicKey,

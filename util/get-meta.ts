@@ -257,6 +257,7 @@ async function getMetadataKey(
 ): Promise<StringPublicKey> {
   const PROGRAM_IDS = programIds();
 
+  debugger
   return (
     await findProgramAddress(
       [
