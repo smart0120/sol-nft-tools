@@ -23,7 +23,8 @@ import {
   createMasterEditionInstruction,
 } from "./utils";
 import BN from "bn.js";
-import { AnchorWallet, WalletContextState } from "@solana/wallet-adapter-react";
+import { WalletContextState } from "@solana/wallet-adapter-react";
+const sleep = (ms: number) => new Promise(resolve =>  setTimeout(resolve, ms));
 
 const METAPLEX_PROGRAM_ID = new PublicKey(
   "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
@@ -147,8 +148,20 @@ export async function mintNFT(
       publicKey,
       buffer
     );
+    let blockhash;
+    while (!blockhash) {
+      try {
+        blockhash = await connection.getRecentBlockhash();
+      } catch (e) {
+        console.log(e);
+        await sleep(1000);
+      }
+    }
 
-    let tx = new Transaction()
+    let tx = new Transaction({
+      recentBlockhash: blockhash,
+      feePayer: publicKey,
+    })
       .add(createMintAccountIx)
       .add(initMintIx)
       .add(createAssocTokenAccountIx)
@@ -156,14 +169,9 @@ export async function mintNFT(
       .add(createMetadataIx)
       .add(createMasterEditionIx);
 
-    const recent = await connection.getRecentBlockhash();
-    tx.recentBlockhash = recent.blockhash;
-    tx.feePayer = publicKey;
     await tx.sign(mint);
 
     const txId = await wallet.sendTransaction(tx, connection);
-    // const txId =  await connection.sendRawTransaction(tx.serialize({requireAllSignatures: false}));
-
     return txId;
   } catch (e) {
     console.log(e);
