@@ -5,14 +5,8 @@ import React, { useCallback, useContext, useMemo, useState } from "react";
 import { AttributesForm } from "../components/attributes-form";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 
-// import { mintNFT } from "../util/mint";
-
 import { Controller, useForm } from "react-hook-form";
-import {
-  useAnchorWallet,
-  useConnection,
-  useWallet,
-} from "@solana/wallet-adapter-react";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import FileTile from "../components/file-tile";
 import { Creator, Data } from "../util/mint/schema";
@@ -117,7 +111,9 @@ export default function GibAirdrop({ endpoint }) {
               >
                 <option selected disabled value=""></option>
                 {files.map((f, i) => (
-                  <option key={i} value={f.name}>{f.name}</option>
+                  <option key={i} value={f.name}>
+                    {f.name}
+                  </option>
                 ))}
               </select>
             </div>
@@ -131,7 +127,9 @@ export default function GibAirdrop({ endpoint }) {
               >
                 <option selected disabled value=""></option>
                 {files.map((f, i) => (
-                  <option key={i} value={f.name}>{f.name}</option>
+                  <option key={i} value={f.name}>
+                    {f.name}
+                  </option>
                 ))}
               </select>
             </div>
@@ -193,7 +191,6 @@ export default function GibAirdrop({ endpoint }) {
             ),
             open: true,
           });
-          debugger
           await fund(Math.round(priceApprox * 1.1) / LAMPORTS_PER_SOL);
         }
 
@@ -292,7 +289,11 @@ export default function GibAirdrop({ endpoint }) {
                 <>
                   <button className="loading btn btn-ghost"></button> Confirming
                   transaction{" "}
-                  <a href={`https://explorer.solana.com/tx/${mintTxId}`} target="_blank" rel="noreferrer">
+                  <a
+                    href={`https://explorer.solana.com/tx/${mintTxId}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
                     {mintTxId.slice(0, 3)} ...{" "}
                     {mintTxId.slice(mintTxId.length - 3)}
                   </a>
@@ -309,11 +310,11 @@ export default function GibAirdrop({ endpoint }) {
             if (tx && tx?.meta?.postTokenBalances[0]?.mint) {
               setMint(tx?.meta?.postTokenBalances[0]?.mint);
               setAlertState({
-                severity: 'success',
+                severity: "success",
                 duration: 5000,
-                message: 'Success!',
-                open: true
-              })
+                message: "Success!",
+                open: true,
+              });
               confirmed = true;
             } else {
               await new Promise((resolve) => setTimeout(resolve, 100));
