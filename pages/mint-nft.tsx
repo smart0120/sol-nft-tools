@@ -116,8 +116,8 @@ export default function GibAirdrop({ endpoint }) {
                 className="select w-full"
               >
                 <option selected disabled value=""></option>
-                {files.map((f) => (
-                  <option value={f.name}>{f.name}</option>
+                {files.map((f, i) => (
+                  <option key={i} value={f.name}>{f.name}</option>
                 ))}
               </select>
             </div>
@@ -130,8 +130,8 @@ export default function GibAirdrop({ endpoint }) {
                 className="select w-full"
               >
                 <option selected disabled value=""></option>
-                {files.map((f) => (
-                  <option value={f.name}>{f.name}</option>
+                {files.map((f, i) => (
+                  <option key={i} value={f.name}>{f.name}</option>
                 ))}
               </select>
             </div>
