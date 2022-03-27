@@ -23,8 +23,8 @@ const selectFile = (contentType, multiple): Promise<File[]> => {
 interface FileTileState {
   file: File;
   remove: (name: string) => void;
-  setFiles: Function;
-  files: File[];
+  setFiles?: Function;
+  files?: File[];
 }
 
 export default function FileTile({ file, remove, setFiles, files }: FileTileState) {
