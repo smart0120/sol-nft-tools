@@ -121,8 +121,6 @@ export default function BurnNFTs() {
   );
 
   const handleNFTs = useCallback(async () => {
-    debugger;
-
     if (!publicKey) {
       return;
     }
@@ -149,15 +147,13 @@ export default function BurnNFTs() {
           ],
         }
       );
-      console.log(accounts);
-      const mints = accounts.map(
-        (a) => (a.account.data as ParsedAccountData).parsed.info.mint
-      );
-      debugger;
-      // console.log(e)
-      // const d = await metaplex.Metadata.findByOwnerV2(connection, publicKey);
-      // console.log(d);
-      debugger;
+      const mints = accounts
+        .filter(
+          (a) =>
+            (a.account.data as ParsedAccountData).parsed.info.tokenAmount
+              .uiAmount
+        )
+        .map((a) => (a.account.data as ParsedAccountData).parsed.info.mint);
       const data = (
         await getMeta(
           mints,
@@ -165,7 +161,6 @@ export default function BurnNFTs() {
           "https://alice.genesysgo.net"
         ).toPromise()
       ).filter((e) => !e.failed);
-      debugger;
 
       const nftsWithImages = data.map((nft) => {
         if (nft) {
@@ -262,7 +257,6 @@ export default function BurnNFTs() {
 
     try {
       dispatch({ type: "burning" });
-      debugger;
       const mint = new PublicKey(state.selectedNFT.mint);
 
       const mintAssociatedAccountAddress = await getAssociatedTokenAddress(
