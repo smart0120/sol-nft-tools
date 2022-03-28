@@ -83,21 +83,27 @@ export default function GibMints() {
           </svg>
           Be aware: Solanas latest update killed the way that we used to fetch
           the mints for a certain candy machine. Right now this site is
-          implementing experimental crawling. It can be quite slow (&gt;30 minutes) and is not
-          100% reliable
+          implementing experimental crawling. It can be quite slow (&gt;30
+          minutes) and is not 100% reliable.
+          <br />
+          <strong>
+            This is using the Candy Machine ID, not as previously the verified creator!
+          </strong>
         </div>
       </div>
       <hr className="opacity-10 my-4" />
       <div className="card bg-gray-900">
         <form
-          onSubmit={handleSubmit(({ address, wlToken }) => fetchMints(address, wlToken))}
+          onSubmit={handleSubmit(({ address, wlToken }) =>
+            fetchMints(address, wlToken)
+          )}
           className={`w-full flex flex-col`}
         >
           <div className="card-body">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div>
                 <label className="mb-4 justify-center label">
-                  Please enter SOL/CM address 
+                  Please enter CM address
                 </label>
                 <input
                   {...register("address", {
@@ -123,7 +129,7 @@ export default function GibMints() {
               </div>
               <div>
                 <label className="mb-4 justify-center label">
-                 If there was a whitelist token, please enter its mint
+                  If there was a whitelist token, please enter its mint
                 </label>
                 <input
                   {...register("wlToken", {
