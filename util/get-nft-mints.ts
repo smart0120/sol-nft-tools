@@ -1,44 +1,115 @@
-import { Connection, PublicKey } from "@solana/web3.js";
-import { deserializeUnchecked } from "borsh";
-import jsonFormat from "json-format";
+import { ConfirmedSignatureInfo, Connection, PublicKey } from "@solana/web3.js";
+import { from, mergeMap, toArray } from "rxjs";
 import { download } from "./download";
-import { METADATA_PROGRAM_ID } from "./accounts";
-import { toPublicKey } from "./to-publickey";
-import { Metadata, METADATA_SCHEMA } from "./metadata-schema";
+import jsonFormat from "json-format";
+import { sleep } from "@bundlr-network/client/build/common/utils";
 
-export const getMints = async (creatorId: string, url: string) => {
+export const getMints = async (
+  creatorId: string,
+  url: string,
+  setCounter: (nr: number) => void,
+  wlToken
+) => {
+  let start = Date.now();
   const connection = new Connection(url);
-  const a = await connection.getProgramAccounts(
-    toPublicKey(METADATA_PROGRAM_ID),
-    {
-      encoding: "base64",
-      filters: [
-        {
-          memcmp: {
-            offset: 326,
-            bytes: creatorId,
-          },
-        },
-        {
-          memcmp: {
-            offset: 358, // first creator verified position
-            bytes: "2", // 1 as base58 string
-          },
-        },
-      ],
+  let before;
+  const allTxs = new Map();
+  const txs = new Map();
+  const mints = [];
+  let done = false;
+  let tries = 0;
+  const maxtries = 30;
+  let sameHashTries = 0;
+
+  while (!done) {
+    let resolvedTxs: ConfirmedSignatureInfo[];
+
+    if (tries >= maxtries) {
+      console.log("breaking..");
+      break;
     }
-  );
-  const deserialized = a.map((b) =>
-    deserializeUnchecked(METADATA_SCHEMA, Metadata, b.account.data)
-  );
-  download(
-    `mints-creatorId-${creatorId}-${new Date()}.json`,
-    jsonFormat(
-      deserialized.map((g) => new PublicKey(g.mint).toBase58()),
-      {
-        type: "space",
-        size: 2,
+    try {
+      resolvedTxs = await connection.getSignaturesForAddress(
+        new PublicKey(creatorId),
+        { before: before, limit: 1000 }
+      );
+      console.log({ tries, resolvedTxs: resolvedTxs.length });
+      resolvedTxs
+        .filter((tx) => !tx?.err)
+        .forEach((tx) => allTxs.set(tx.signature, tx));
+      if (!resolvedTxs.length) {
+        tries++;
+        await sleep(500);
+      } else {
+        const newBefore = resolvedTxs[resolvedTxs.length - 1];
+        tries = 0;
+        console.log(`
+        seconds since start: ${(Date.now() - start.valueOf()) / 1000}
+        current blocktime: ${new Date(newBefore.blockTime * 1000)}
+        `);
+        console.log({ new: newBefore.signature, before });
+        if (newBefore.signature === before) {
+          sameHashTries++;
+          if (sameHashTries >= maxtries) {
+            done = true;
+          }
+          console.log(`retrying getSigs`, {
+            newBefore: newBefore,
+            after: before,
+          });
+        } else {
+          before = newBefore.signature;
+          sameHashTries = 0;
+        }
       }
-    )
-  );
+    } catch (e) {
+      console.log(e);
+    }
+    done = false;
+  }
+  console.log(`
+  
+  
+  DONEE!!!!!
+  
+  `);
+
+  await new Promise((resolve) => {
+    from([...allTxs.values()].filter((tx) => tx && !tx?.err))
+      .pipe(
+        mergeMap(async (tx) => {
+          let txContent;
+          while (!txContent) {
+            try {
+              txContent = await connection.getTransaction(tx.signature);
+              const withBalanceChange = txContent?.meta.postTokenBalances
+                .filter((b) => b.mint !== wlToken)
+                .find((b) => b.uiTokenAmount.uiAmount);
+
+              if (withBalanceChange) {
+                if (!txs.has(withBalanceChange.mint)) {
+                  mints.push(withBalanceChange.mint);
+                  txs.set(tx.signature, tx);
+                  setCounter(txs.size);
+                }
+              }
+            } catch (e) {
+              console.error(e);
+            }
+          }
+
+          return txContent;
+        }, 10),
+        toArray()
+      )
+      .subscribe(async (res) => {
+        download(
+          `mints-creatorId-${creatorId}-${Date.now()}.json`,
+          jsonFormat(mints)
+        );
+        
+        console.log(txs.size);
+        resolve(undefined);
+      });
+  });
 };
