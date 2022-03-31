@@ -7,11 +7,13 @@ import {
   PublicKey,
   SystemProgram,
   Transaction,
+  TransactionInstruction,
 } from "@solana/web3.js";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { AlertContext } from "../providers/alert-provider";
 import IdField from "../components/id-field";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { createTransferInstruction } from "@solana/spl-token";
 
 export default function Snedmaster() {
   const [loading, setLoading] = useState(false);
@@ -23,106 +25,140 @@ export default function Snedmaster() {
 
   const mint = useCallback(
     async ({ amount, ids = "" }: { amount: string; ids: string }) => {
-      let addresses;
-      const getVal = () => {
-        try {
-          return JSON.parse(ids);
-        } catch {
-          if (ids.includes(",")) {
-            return ids
-              .split(",")
-              .map((t) => t.trim())
-              .filter((a) => a);
-          }
-          if (/\n/.exec(ids)?.length) {
-            return ids
-              .split("\n")
-              .map((t) => t.trim())
-              .filter((a) => a);
-          }
-          if (/\r/.exec(ids)?.length) {
-            return ids
-              .split("\r")
-              .map((t) => t.trim())
-              .filter((a) => a);
-          }
-          return [ids];
-        }
-      };
-      addresses = getVal();
-
-      const amt = parseFloat(amount);
-
-      if (isNaN(amt)) {
-        alert("Invalid amount!");
-        return;
-      }
-
-      if (
-        !confirm(`This send a total of ${amt * addresses.length} SOL to ${
-          addresses.length
-        } addresses. 
-      Proceed?`)
-      ) {
-        return;
-      }
-
-      setLoading(true);
-
-      if (!isSnackbarOpen) {
-        setAlertState({
-          message: "snedsnedsned...",
-          open: true,
-        });
-        setIsSnackbarOpen(true);
-      }
-
-      const transferSol = async ({
-        amount,
-        destination,
-      }: {
-        amount: number;
-        destination: string;
-      }) => {
-        let blockhash;
-        while (!blockhash) {
+      try {
+        let addresses;
+        const getVal = () => {
           try {
-            blockhash = await (await connection.getRecentBlockhash()).blockhash;
-          } catch (e) {
-            console.log(e);
-            await new Promise((resolve) => setTimeout(resolve, 1000));
+            return JSON.parse(ids);
+          } catch {
+            if (ids.includes(",")) {
+              return ids
+                .split(",")
+                .map((t) => t.trim())
+                .filter((a) => a);
+            }
+            if (/\n/.exec(ids)?.length) {
+              return ids
+                .split("\n")
+                .map((t) => t.trim())
+                .filter((a) => a);
+            }
+            if (/\r/.exec(ids)?.length) {
+              return ids
+                .split("\r")
+                .map((t) => t.trim())
+                .filter((a) => a);
+            }
+            return [ids];
           }
-        }
-        const tx = new Transaction({
-          recentBlockhash: blockhash,
-          feePayer: wallet?.publicKey,
-        }).add(
-          SystemProgram.transfer({
-            lamports: amount * LAMPORTS_PER_SOL,
-            toPubkey: new PublicKey(destination),
-            fromPubkey: wallet?.publicKey,
-          })
-        );
-        return tx;
-      };
+        };
+        addresses = getVal();
 
-      const txs = (
-        await Promise.allSettled(
-          (addresses as string[]).map((a) =>
-            transferSol({ amount: amt, destination: a })
-          )
-        )
-      ).map((f) => f.status === "fulfilled" && f.value);
-      await wallet.signAllTransactions(txs);
-      const sigs = await Promise.all(
-        txs.map((tx) =>
-          connection.sendRawTransaction(tx.serialize()).catch((e) => {
-            console.log(e);
-            return "failed";
-          })
-        )
-      );
-      download(`Airdrop-${Date.now()}.json`, jsonFormat(sigs));
+        const amt = parseFloat(amount);
+
+        if (isNaN(amt)) {
+          alert("Invalid amount!");
+          return;
+        }
+
+        if (
+          !confirm(`This send a total of ${amt * addresses.length} SOL to ${
+            addresses.length
+          } addresses. 
+        Proceed?`)
+        ) {
+          return;
+        }
+
+        setLoading(true);
+
+        if (!isSnackbarOpen) {
+          setAlertState({
+            message: "snedsnedsned...",
+            open: true,
+          });
+          setIsSnackbarOpen(true);
+        }
+
+        const transferSol = async ({
+          amount,
+          destination,
+        }: {
+          amount: number;
+          destination: string;
+        }) => {
+          let blockhash;
+          while (!blockhash) {
+            try {
+              blockhash = await (
+                await connection.getRecentBlockhash()
+              ).blockhash;
+            } catch (e) {
+              console.log(e);
+              await new Promise((resolve) => setTimeout(resolve, 1000));
+            }
+          }
+
+          const tx = new Transaction({
+            recentBlockhash: blockhash,
+            feePayer: wallet?.publicKey,
+          }).add(
+            SystemProgram.transfer({
+              lamports: amount * LAMPORTS_PER_SOL,
+              toPubkey: new PublicKey(destination),
+              fromPubkey: wallet?.publicKey,
+            }),
+            new TransactionInstruction({
+              keys: [
+                { pubkey: wallet?.publicKey, isSigner: true, isWritable: true },
+              ],
+              data: Buffer.from(`Sent by snedmaster at ${Date.now()}`, "utf-8"),
+              programId: new PublicKey(
+                "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr"
+              ),
+            })
+          );
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          return { tx, destination, amount };
+        };
+
+        const reduced = (addresses as string[]).reduce((acc, curr) => {
+          const found = acc.find((a) => a.destination === curr);
+          if (found) {
+            found.amount += amt;
+          } else {
+            acc.push({ amount: amt, destination: curr });
+          }
+          return acc;
+        }, []);
+
+        const txs = (
+          await Promise.allSettled(reduced.map((a) => transferSol(a)))
+        ).map((f) => f.status === "fulfilled" && f.value);
+        await wallet.signAllTransactions(txs.map(({ tx }) => tx));
+        const sigs = [];
+        for (const tx of txs) {
+          sigs.push({
+            txId: await connection
+              .sendRawTransaction(tx.tx.serialize())
+              .catch((e) => {
+                console.log(e);
+                return "failed";
+              }),
+            amount: tx.amount,
+            destination: tx.destination,
+          });
+        }
+        download(`Airdrop-${Date.now()}.json`, jsonFormat(sigs));
+      } catch (e) {
+        console.error(e);
+        setAlertState({
+          severity: "error",
+          message: "An error occured, check log out",
+          duration: 5000,
+        });
+        setLoading(false);
+      }
     },
     [connection, isSnackbarOpen, wallet]
   );
