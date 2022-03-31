@@ -24,7 +24,6 @@ import {
   getAssociatedTokenAddress,
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
-import * as metaplex from "@metaplex-foundation/mpl-token-metadata";
 
 function NFTPreview({ nft }) {
   return (
