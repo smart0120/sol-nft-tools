@@ -167,11 +167,11 @@ const extendBorsh = () => {
 
 extendBorsh();
 
-async function getMetadata(pubkey: PublicKey, url: string) {
+async function getMetadata(pubkey: PublicKey, connection: Connection) {
   let metadata;
 
   try {
-    const metadataPromise = await fetchMetadataFromPDA(pubkey, url);
+    const metadataPromise = await fetchMetadataFromPDA(pubkey, connection);
 
     if (metadataPromise && metadataPromise.data.length > 0) {
       metadata = decodeMetadata(metadataPromise.data);
@@ -200,8 +200,7 @@ async function getMetadataKey(
   )[0];
 }
 
-async function fetchMetadataFromPDA(pubkey: PublicKey, url: string) {
-  const connection = new Connection(url);
+async function fetchMetadataFromPDA(pubkey: PublicKey, connection: Connection) {
   const metadataKey = await getMetadataKey(pubkey.toBase58());
   const metadataInfo = await connection.getAccountInfo(
     toPublicKey(metadataKey)
@@ -212,11 +211,11 @@ async function fetchMetadataFromPDA(pubkey: PublicKey, url: string) {
 
 let mints = [];
 const createJsonObject = async (
-  url: string,
   key: string,
-  setCounter: Function
+  setCounter: Function,
+  connection: Connection
 ): Promise<unknown> => {
-  const tokenMetadata = await getMetadata(toPublicKey(key), url);
+  const tokenMetadata = await getMetadata(toPublicKey(key), connection);
   if (!tokenMetadata?.data?.uri) {
     mints.push({ mint: key, failed: true, message: "no associated metadata found" });
     return Promise.resolve();
@@ -251,10 +250,10 @@ const createJsonObject = async (
 export const getMeta = (
   tokens: string[],
   setCounter: (a: any) => void,
-  url: string
+  connection: Connection
 ) => {
   return from(tokens).pipe(
-    mergeMap((id) => createJsonObject(url, id, setCounter), 10),
+    mergeMap((id) => createJsonObject(id, setCounter, connection), 10),
     toArray(),
     map(() => [...mints]),
     tap(() => (mints = []))

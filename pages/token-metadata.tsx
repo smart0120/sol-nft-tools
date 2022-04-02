@@ -5,9 +5,9 @@ import jsonFormat from "json-format";
 import { ModalContext } from "../providers/modal-provider";
 import { useForm } from "react-hook-form";
 import { getAddresses, validateSolAddressArray } from "../util/validators";
-import { useEndpoint } from "../hooks/use-endpoint";
 import { AlertContext } from "../providers/alert-provider";
 import Head from "next/head";
+import { useConnection } from "@solana/wallet-adapter-react";
 
 export default function GetMeta() {
   const {
@@ -19,7 +19,7 @@ export default function GetMeta() {
   const [counter, setCounter] = useState(0);
   const [len, setLen] = useState(0);
   const { setModalState } = useContext(ModalContext);
-  const { endpoint } = useEndpoint();
+  const { connection } = useConnection();
   const { setAlertState } = useContext(AlertContext);
 
   const fetchMeta = ({ mints }: { mints: string }) => {
@@ -36,7 +36,7 @@ export default function GetMeta() {
 
     setLen(parsed.length);
     setLoading(true);
-    getMeta(parsed, setCounter, endpoint).subscribe({
+    getMeta(parsed, setCounter, connection).subscribe({
       next: (e) => {
         download("gib-meta.json", jsonFormat(e, { size: 1, type: "tab" }));
         setLoading(false);
