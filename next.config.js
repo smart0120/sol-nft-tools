@@ -68,13 +68,5 @@ module.exports = withTM({
         permanent: true,
       },
     ];
-  },
-  async rewrites() {
-    return [
-      {
-        source: "/:any*",
-        destination: "/",
-      },
-    ];
-  },
+  }
 });
