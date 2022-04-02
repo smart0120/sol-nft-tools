@@ -879,6 +879,14 @@
     superstruct "^0.14.2"
     tweetnacl "^1.0.0"
 
+"@strata-foundation/web3-token-auth@^3.4.6-alpha.1":
+  version "3.4.6-alpha.1"
+  resolved "https://registry.yarnpkg.com/@strata-foundation/web3-token-auth/-/web3-token-auth-3.4.6-alpha.1.tgz#810dc54d72fa946e5575a4e43808b7ea51182377"
+  integrity sha512-CXb3gYlSg/qZ3Wl97IqUAHGRG/N9QYWn47XueBC3YSxInGKAdJwKwC/7GbpLdgmWYbyGJXaGWcMBdj+2wxjJNw==
+  dependencies:
+    "@solana/web3.js" "^1.32.0"
+    localstorage-memory "^1.0.3"
+
 "@supercharge/promise-pool@^2.1.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@supercharge/promise-pool/-/promise-pool-2.1.0.tgz#7e9bc2e55060a77641858b391fa8439228457fff"
@@ -3672,6 +3680,11 @@ lines-and-columns@^1.1.6:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/lines-and-columns/-/lines-and-columns-1.2.4.tgz#eca284f75d2965079309dc0ad9255abb2ebc1632"
   integrity sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==
+
+localstorage-memory@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/localstorage-memory/-/localstorage-memory-1.0.3.tgz#566b37968fe0c4d76ba36a6da564fa613945ca72"
+  integrity sha512-t9P8WB6DcVttbw/W4PIE8HOqum8Qlvx5SjR6oInwR9Uia0EEmyUeBh7S+weKByW+l/f45Bj4L/dgZikGFDM6ng==
 
 locate-path@^2.0.0:
   version "2.0.0"
