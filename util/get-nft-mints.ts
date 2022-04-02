@@ -14,7 +14,7 @@ export const getMints = async (
   let before;
   const allTxs = new Map();
   const txs = new Map();
-  const mints = [];
+  const mints = new Set();
   let done = false;
   let tries = 0;
   const maxtries = 30;
@@ -81,13 +81,14 @@ export const getMints = async (
           while (!txContent) {
             try {
               txContent = await connection.getTransaction(tx.signature);
+              // This doesnt work right
               const withBalanceChange = txContent?.meta.postTokenBalances
                 .filter((b) => b.mint !== wlToken)
                 .find((b) => b.uiTokenAmount.uiAmount);
 
               if (withBalanceChange) {
                 if (!txs.has(withBalanceChange.mint)) {
-                  mints.push(withBalanceChange.mint);
+                  mints.add(withBalanceChange.mint);
                   txs.set(tx.signature, tx);
                   setCounter(txs.size);
                 }
@@ -104,7 +105,7 @@ export const getMints = async (
       .subscribe(async (res) => {
         download(
           `mints-creatorId-${creatorId}-${Date.now()}.json`,
-          jsonFormat(mints)
+          jsonFormat([...mints])
         );
         
         console.log(txs.size);
