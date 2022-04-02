@@ -3,7 +3,8 @@ import { mergeMap, toArray, map, tap } from "rxjs/operators";
 import { TOKEN_PROGRAM_ID } from "./accounts";
 let holders = {};
 let i = 0;
-const getTokenHolder = (url, key, setCounter) => {
+const getTokenHolder = (url, key, setCounter, token) => {
+  debugger
   return fetch(url, {
     body: `{
         "jsonrpc":"2.0", 
@@ -29,6 +30,7 @@ const getTokenHolder = (url, key, setCounter) => {
     `,
     headers: {
       "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
     },
     method: "POST",
   })
@@ -52,9 +54,9 @@ const getTokenHolder = (url, key, setCounter) => {
     });
 };
 
-export const getHolders = (mintIds: string[], setCounter, url) => {
+export const getHolders = (mintIds: string[], setCounter, url, token) => {
   return from(mintIds).pipe(
-    mergeMap((id) => getTokenHolder(url, id, setCounter), 10),
+    mergeMap((id) => getTokenHolder(url, id, setCounter, token), 10),
     toArray(),
     map(() => ({ ...holders })),
     tap(() => {

@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { getAddresses, validateSolAddressArray } from "../util/validators";
 import { AlertContext } from "../providers/alert-provider";
 import Head from "next/head";
+import useToken from "../hooks/useToken";
 export default function GetHolders() {
   const {
     register,
@@ -20,6 +21,8 @@ export default function GetHolders() {
   const { setModalState } = useContext(ModalContext);
   const { setAlertState } = useContext(AlertContext);
   const endpoint = process.env.NEXT_PUBLIC_RPC!;
+  //@ts-ignore
+  const {token} = useToken();
   const fetchHolders = useCallback(
     async ({ mints }: { mints: string }) => {
       const parsed = getAddresses(mints);
@@ -34,7 +37,7 @@ export default function GetHolders() {
       setLen(parsed.length);
       setLoading(true);
 
-      getHolders(parsed, setCounter, endpoint).subscribe({
+      getHolders(parsed, setCounter, endpoint, token).subscribe({
         next: (e) => {
           download("gib-holders.json", jsonFormat(e, { size: 1, type: "tab" }));
           setLoading(false);
@@ -42,7 +45,7 @@ export default function GetHolders() {
         error: (e) => {
           setModalState({
             open: true,
-            message: e,
+            message: JSON.stringify(e),
           });
           setLoading(false);
         },
