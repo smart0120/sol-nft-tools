@@ -6,12 +6,11 @@ import { sleep } from "@bundlr-network/client/build/common/utils";
 
 export const getMints = async (
   creatorId: string,
-  url: string,
+  connection: Connection,
   setCounter: (nr: number) => void,
   wlToken
 ) => {
   let start = Date.now();
-  const connection = new Connection(url);
   let before;
   const allTxs = new Map();
   const txs = new Map();

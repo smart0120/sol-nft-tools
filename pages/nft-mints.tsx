@@ -2,10 +2,9 @@ import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { SOL_ADDRESS_REGEXP } from "../util/validators";
 import { ModalContext } from "../providers/modal-provider";
-import { useEndpoint } from "../hooks/use-endpoint";
 import { AlertContext } from "../providers/alert-provider";
 import { getMints } from "../util/get-nft-mints";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import Head from "next/head";
 
 export default function GibMints() {
@@ -17,7 +16,7 @@ export default function GibMints() {
   } = useForm();
   const [loading, setLoading] = useState(false);
   const { setModalState } = useContext(ModalContext);
-  const { endpoint } = useEndpoint();
+  const { connection } = useConnection();
   const { setAlertState } = useContext(AlertContext);
   const { connected, publicKey } = useWallet();
   const [counter, setCounter] = useState(0);
@@ -31,7 +30,7 @@ export default function GibMints() {
       open: true,
     });
     setLoading(true);
-    getMints(val, endpoint, setCounter, wlToken)
+    getMints(val, connection, setCounter, wlToken)
       .then(() => {
         setLoading(false);
       })
@@ -81,14 +80,19 @@ export default function GibMints() {
               d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
             />
           </svg>
-          Be aware: Solanas latest update killed the way that we used to fetch
-          the mints for a certain candy machine. Right now this site is
-          implementing experimental crawling. It can be quite slow (&gt;30
-          minutes) and is not 100% reliable.
+          <div>
+            Be aware: Solanas latest update killed the way that we used to fetch
+            the mints for a certain candy machine. Right now this site is
+            implementing experimental crawling. It can be quite slow (&gt;30
+            minutes) and is not 100% reliable.
+          </div>
           <br />
-          <strong>
-            This is using the Candy Machine ID, not as previously the verified creator!
-          </strong>
+          <div>
+            <strong>
+              This is using the Candy Machine ID, not as previously the verified
+              creator!
+            </strong>
+          </div>
         </div>
       </div>
       <hr className="opacity-10 my-4" />
