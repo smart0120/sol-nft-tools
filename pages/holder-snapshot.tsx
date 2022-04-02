@@ -5,7 +5,6 @@ import jsonFormat from "json-format";
 import { ModalContext } from "../providers/modal-provider";
 import { useForm } from "react-hook-form";
 import { getAddresses, validateSolAddressArray } from "../util/validators";
-import { useEndpoint } from "../hooks/use-endpoint";
 import { AlertContext } from "../providers/alert-provider";
 import Head from "next/head";
 export default function GetHolders() {
@@ -20,12 +19,16 @@ export default function GetHolders() {
   const [loading, setLoading] = useState(false);
   const { setModalState } = useContext(ModalContext);
   const { setAlertState } = useContext(AlertContext);
-  const { endpoint } = useEndpoint();
+  const endpoint = process.env.NEXT_PUBLIC_RPC!;
   const fetchHolders = useCallback(
     async ({ mints }: { mints: string }) => {
       const parsed = getAddresses(mints);
       setAlertState({
-        message:  <button className="btn btn-disabled btn-ghost loading">Downloading your data.</button>,
+        message: (
+          <button className="btn btn-disabled btn-ghost loading">
+            Downloading your data.
+          </button>
+        ),
         open: true,
       });
       setLen(parsed.length);
@@ -56,7 +59,7 @@ export default function GetHolders() {
 
   return (
     <>
-          <Head>
+      <Head>
         <title>🛠️ Pentacle Tools - 📷 NFT Holders</title>
       </Head>
       <div className="prose max-w-full text-center mb-3">

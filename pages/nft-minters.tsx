@@ -4,7 +4,6 @@ import jsonFormat from "json-format";
 import { ModalContext } from "../providers/modal-provider";
 import { useForm } from "react-hook-form";
 import { getAddresses, validateSolAddressArray } from "../util/validators";
-import { useEndpoint } from "../hooks/use-endpoint";
 import { AlertContext } from "../providers/alert-provider";
 import { useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
@@ -23,7 +22,7 @@ export default function GetHolders() {
   const [loading, setLoading] = useState(false);
   const { setModalState } = useContext(ModalContext);
   const { setAlertState } = useContext(AlertContext);
-  const { endpoint } = useEndpoint();
+  const endpoint = process.env.NEXT_PUBLIC_RPC!;
   const { connection } = useConnection();
 
   const fetchMinters = useCallback(

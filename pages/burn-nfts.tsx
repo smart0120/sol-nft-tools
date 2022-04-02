@@ -154,11 +154,7 @@ export default function BurnNFTs() {
         )
         .map((a) => (a.account.data as ParsedAccountData).parsed.info.mint);
       const data = (
-        await getMeta(
-          mints,
-          () => {},
-          "https://alice.genesysgo.net"
-        ).toPromise()
+        await getMeta(mints, () => {}, connection).toPromise()
       ).filter((e) => !e.failed);
 
       const nftsWithImages = data.map((nft) => {
