@@ -57,7 +57,7 @@ export default function GetHolders() {
         },
       });
     },
-    [endpoint, setAlertState, setModalState]
+    [endpoint, setAlertState, setModalState, token]
   );
 
   return (
