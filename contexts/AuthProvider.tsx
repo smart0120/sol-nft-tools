@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import Cookies from "universal-cookie";
 import AuthContext from "./AuthContext";
 
-const cookies = new Cookies();
 
 const AuthProvider = (props: any) => {
+  const cookies = new Cookies();
   const [token, setToken] = useState<string>();
   return (
     <AuthContext.Provider
@@ -14,6 +14,7 @@ const AuthProvider = (props: any) => {
           const { access_token }: { access_token: string } = await req.json();
           cookies.set("gengo_auth", access_token);
           setToken(access_token);
+          return access_token;
         },
         validateToken: async () => {
           const tokenResponse = await fetch("/api/validate-token");
