@@ -90,7 +90,7 @@ export const getMints = async (
                 if (!txs.has(withBalanceChange.mint)) {
                   mints.add(withBalanceChange.mint);
                   txs.set(tx.signature, tx);
-                  setCounter(txs.size);
+                  setCounter(mints.size);
                 }
               }
             } catch (e) {
