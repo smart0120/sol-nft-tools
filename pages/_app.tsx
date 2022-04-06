@@ -194,6 +194,8 @@ function Context({ children }: { children: React.ReactNode }) {
                     {" "}
                     Solana has pushed out some changes which affect many of the
                     tools here. Errors are expected.
+                    <br/>
+                    <strong>There is no support for these tools, they are open source and free to use!</strong>
                   </span>
                 </div>
               </div>
