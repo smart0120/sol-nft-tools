@@ -175,7 +175,7 @@ function Context({ children }: { children: React.ReactNode }) {
             style={{ maxWidth: "100%" }}
           >
             <div className="mx-auto" style={{ maxWidth: "100%", width: 800 }}>
-              <div className="alert alert-warning mb-8">
+              {/* <div className="alert alert-warning mb-8">
                 <div>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -198,7 +198,7 @@ function Context({ children }: { children: React.ReactNode }) {
                     <strong>There is no support for these tools, they are open source and free to use!</strong>
                   </span>
                 </div>
-              </div>
+              </div> */}
               {children}
             </div>
           </main>

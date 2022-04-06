@@ -38,15 +38,11 @@ module.exports = withTM({
   async redirects() {
     return [
       {
-        source: "/",
-        destination: "/nft-mints",
+        source: "/",        
+        destination: "/token-metadata",
         permanent: false,
       },
-      {
-        source: "/get-mints",
-        destination: "/nft-mints",
-        permanent: true,
-      },
+
       {
         source: "/get-meta",
         destination: "/token-metadata",
