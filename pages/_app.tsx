@@ -14,9 +14,7 @@ import TopMenu from "../components/top-menu";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { MenuLink } from "../components/menu-link";
 import { BundlrProvider } from "../providers/bundlr-provider";
-import AuthProvider from "../contexts/AuthProvider";
 import { AppProps } from "next/app";
-import Cookies from "universal-cookie";
 const endpoint = process.env.NEXT_PUBLIC_RPC!;
 
 const WalletProvider = dynamic(
@@ -27,37 +25,31 @@ const WalletProvider = dynamic(
 );
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
-
   return (
     <>
-      <AuthProvider>
-        <WalletProvider>
-          <AlertProvider>
-            <ModalProvider>
-              <BundlrProvider>{children}</BundlrProvider>
-            </ModalProvider>
-          </AlertProvider>
-        </WalletProvider>
-      </AuthProvider>
+      <WalletProvider>
+        <AlertProvider>
+          <ModalProvider>
+            <BundlrProvider>{children}</BundlrProvider>
+          </ModalProvider>
+        </AlertProvider>
+      </WalletProvider>
     </>
   );
 };
 function Context({ children }: { children: React.ReactNode }) {
-  const cookies = new Cookies();
-
   return (
     <ConnectionProvider
       endpoint={endpoint}
       config={{
-        confirmTransactionInitialTimeout: 120000,
+        confirmTransactionInitialTimeout: 180000,
         fetchMiddleware: tokenAuthFetchMiddleware({
-          getToken:  async () => {
+          getToken: async () => {
             const req = await fetch("/api/get-token");
             const { access_token }: { access_token: string } = await req.json();
-            cookies.set("gengo_auth", access_token);
             return access_token;
-          }
-        })
+          },
+        }),
       }}
     >
       <Head>
