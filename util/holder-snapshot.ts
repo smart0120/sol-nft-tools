@@ -1,11 +1,9 @@
 import { from } from "rxjs";
 import { mergeMap, toArray, map, tap } from "rxjs/operators";
-import Cookies from "universal-cookie";
 import { TOKEN_PROGRAM_ID } from "./accounts";
 let holders = {};
 let i = 0;
 const getTokenHolder = (url, key, setCounter, token) => {
-  const cookies = new Cookies();
 
   return fetch(url, {
     body: `{
@@ -32,7 +30,7 @@ const getTokenHolder = (url, key, setCounter, token) => {
     `,
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer " + cookies.get('gengo_auth'),
+      Authorization: "Bearer " + token,
     },
     method: "POST",
   })
