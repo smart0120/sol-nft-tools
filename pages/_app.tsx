@@ -195,7 +195,7 @@ function Context({ children }: { children: React.ReactNode }) {
 
             </div>
           </main>
-          <div className="text-center absolute right-6 bottom-6 hidden xl:block">
+          <div className="text-center fixed right-6 bottom-6 hidden xl:block">
             RPC powered by 
             <a href="https://twitter.com/GenesysGo" target="_blank" rel="noreferrer noopener">
               <img  className="w-16 mx-auto" src="https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/SHDWyBxihqiCj6YekG2GUr7wqKLeLAMK1gHZck9pL6y/logo.png" alt="Genesysgo" />
