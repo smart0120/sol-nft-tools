@@ -11,13 +11,13 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data | string>
 ) {
-    if (
-    process.env.VERCEL_ENV === "production" &&
-    req.headers.host !== "pentacle.tools" &&
-    req.headers.referer !== "https://pentacle.tools"
-  ) {
-    return res.status(401).send(req.headers.host!);
-  }
+  //   if (
+  //   process.env.VERCEL_ENV === "production" &&
+  //   req.headers.host !== "pentacle.tools" &&
+  //   req.headers.referer !== "https://pentacle.tools"
+  // ) {
+  //   return res.status(401).send(req.headers.host!);
+  // }
   const token = Base64.encode(
     `${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`
   );
