@@ -28,10 +28,6 @@ const getTokenHolder = (url, key, setCounter, token) => {
           }
         ]}
     `,
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + token,
-    },
     method: "POST",
   })
     .then((res) => res.json())

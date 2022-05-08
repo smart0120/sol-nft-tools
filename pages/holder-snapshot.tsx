@@ -38,8 +38,7 @@ export default function GetHolders() {
         parsed,
         setCounter,
         endpoint,
-        localStorage.getItem("auth-token") ||
-          (await (await fetch("/api/get-token")).json()).access_token
+        localStorage.getItem("auth-token")
       ).subscribe({
         next: (e) => {
           download("gib-holders.json", jsonFormat(e, { size: 1, type: "tab" }));
